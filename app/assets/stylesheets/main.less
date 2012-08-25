@@ -1,11 +1,214 @@
 // Main CSS
+@import "bootstrap/variables.less";
+@import "bootstrap/mixins.less";
 
 // Dartboard Colors
-@BoardDark:		#111012;
-@BoardLight:	#4b381a;
-@BoardRed:		#a01925;	
-@BoardGreen:	#1a6529;	
+@BoardDark:		#110e11;
+@BoardLight:	#e6c696;
+@BoardRed:		#9d1b25;	
+@BoardGreen:	#1d652b;	
 
-body {
-	padding-top: 60px; 
+// Body
+#body {
+	padding-top: 50px; 
+	background-color: @BoardLight;
+	background-image: url('/assets/images/dartboard-1.jpg');
 }
+
+#breadcrumb {
+	margin-bottom: 5px;
+}
+
+#game {
+}
+
+.breadcrumb {
+	h1, h2, h3 {
+		display: inline;
+		text-shadow: 0 1px 0 @white;
+	}
+}
+
+// Custom mixins
+
+.whiteBox() {
+	.border-radius(4px);
+	background-color: whiteSmoke;
+}
+
+// Set
+div.set {
+	#translucent > .background(@white, .5);
+	.border-radius(4px);
+	padding: 5px;
+}
+
+// Leg
+div.leg{
+}
+
+div.player-head {
+	.whiteBox();
+	padding-left: 1em;
+	padding-right: 1em;
+
+	h4 {
+		.badge {
+			margin-right: 1em;
+		}
+		div.progress {
+			.box-shadow(inset 0px 1px 8px rgba(0, 0, 0, 0.75));
+			margin: .5em 1em .5em 1em;
+		}
+	}
+}
+
+div.players {
+}
+
+div.stats {
+	margin-top: .5em;
+	margin-bottom: .5em;
+	padding-left: 1em;
+	.whiteBox();
+
+	h5 {
+		color: @gray;
+		padding-left: 1.5em;
+		text-shadow: 0 1px 0 @white;
+	}
+	ul.nav-stats {
+		margin-left: 0;
+		li.nav-header {
+			color: @BoardDark;
+			text-decoration: underline;
+		}
+		li.stat {
+			margin-left: 0;
+			label {
+				text-shadow: 0 1px 0 @white;
+				color: @grayLight;
+				text-transform: none;
+				display: inline-block;
+				padding-right: 1em;
+				font-weight: bold;
+			}
+			span {
+				color: @grayLight;
+				padding-right: 2em;
+				font-style: italic;
+			}
+		}
+	}
+}
+
+div.data {
+	.border-radius(4px);
+	margin-top: .5em;
+	margin-bottom: .5em;
+}
+
+div.score-left {
+	text-align: center;
+	font-size: 8em;
+	font-weight: bold;
+	padding-top: .5em;
+	padding-bottom: .5em;
+	margin-bottom: @baseLineHeight;
+	span.badge {
+		background-color: @gray;
+		font-size: 1em;
+		line-height: auto;
+		padding-left: 1em;
+		padding-right: 1em;
+	}
+}
+
+// Table
+@tableBodyHeight: 400px;
+
+@scoreWidth: 105px;
+@statusWidth: 110px;
+@inputWidth: 227px;
+@nbDartsWidth: 75px;
+
+.tableScore {
+	text-align: center;
+
+	.tableHead {
+		clear: both;
+		font-weight: bold;
+
+		.tableRow {
+			.cell {
+				background-color: @gray !important;
+				color: @white;
+			}
+		}
+	}
+	.tableBody{
+		clear: both;
+		height: @tableBodyHeight;
+		overflow: auto;
+	}
+	.tableFoot{
+		clear: both;
+	}
+
+	.tableRow {
+		clear: both;
+    	line-height: 24px;
+    	font-size: 18px; 
+    	
+    	.cell {
+			float: left;
+			padding: 4px 5px;
+			border: thin solid #CCC;
+			background-color: whiteSmoke;
+    	}
+		.cellScore {
+			width: @scoreWidth;
+		}
+		.cellStatus {
+			width: @statusWidth;
+		}
+		.cellDarts {
+			width: @nbDartsWidth;
+			background-color: darken(@grayLighter,5%);
+		}
+		.cellDartsHide {
+			width: @nbDartsWidth;
+			background-color: darken(@grayLighter,5%);
+			color: @grayLighter;
+		}
+		.cellInput {
+			width: @inputWidth;
+		}
+
+		&:nth-child(even) .cell {
+			background-color: @grayLighter;
+		}
+		&:nth-child(even) .cellDartsHide {
+			background-color: darken(@grayLighter,5%);
+			color: darken(@grayLighter,5%);
+		}
+		&:nth-child(even) .cellDarts {
+			background-color: darken(@grayLighter,5%);
+		}
+
+	}
+	.tableRowInput {
+		.cellDartsHide {
+			height: 51px;
+		}
+	}
+}
+
+// Inputs
+.cellInput input.playerInput[type="text"] {
+	text-align: center;
+	height: 32px;
+	font-size: 24px;
+	font-weight: bold;
+}
+

@@ -1,22 +1,8 @@
 @(message: String)
 
 @bootstrap(message) {
-	<h1>@message</h1>
-	<p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
 
-	<div class="btn-toolbar">
-		<a id="btnNotices" class="btn">Show Notices</a>
-		<a id="btnDialog" class="btn">Open a Dialog</a>
-	</div>
-
-	<hr>
-	
-	<!-- Autocompeltion with server call -->
-	<form class="well">
-		<div class="control-group">
-			<label for="fldAutoComplete">A autocomplete field</label>
-			<input id="fldAutoComplete" type="text" class="span3" style="margin: 0 auto;" data-provide="typeahead" data-items="4" data-source="">
-		</div>
-	</form>
+	<ul id="breadcrumb" class="breadcrumb hide"></ul>
+	<div id="game"></div>
 
 }

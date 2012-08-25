@@ -1,4 +1,4 @@
-<div class="navbar navbar-fixed-top">
+<div class="navbar navbar-fixed-top navbar-inverse">
     <div class="navbar-inner">
         <div class="container">
             <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -6,12 +6,19 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="#">Project name</a>
+            <a class="brand" href="#">OpenDarts v2</a>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">New Game <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                          <li><a id="btnNewX01" href="#">x01 (501, 301, 170, ...)</a></li>
+                          <li class="disabled"><a id="btnNewCricket" href="#">Cricket</a></li>
+                        </ul>
+                      </li>
+                </ul>
+                <ul class="nav pull-right">
                     <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
