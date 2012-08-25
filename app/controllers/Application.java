@@ -13,7 +13,7 @@ import ui.*;
 public class Application extends Controller {
 
 	public static Result index() {
-		return ok(index.render("Play 2.0 with Twitter Bootstrap"));
+		return ok(index.render("OpenDarts v2"));
 	}
 
 	public static Result getNotices() {
