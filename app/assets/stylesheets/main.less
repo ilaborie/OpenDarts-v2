@@ -11,7 +11,7 @@
 // Body
 #body {
 	padding-top: 50px; 
-	background-color: @BoardLight;
+	background-color: @BoardDark;
 	background-image: url('/assets/images/dartboard-1.jpg');
 }
 
@@ -132,6 +132,16 @@ div.score-left {
 @inputWidth: 227px;
 @nbDartsWidth: 75px;
 
+
+.normal {
+}
+.win{
+	background-color: lighten(@green,40%) !important;
+}
+.broken {
+	background-color: lighten(@red,40%) !important;
+}
+
 .tableScore {
 	text-align: center;
 
@@ -206,9 +216,74 @@ div.score-left {
 
 // Inputs
 .cellInput input.playerInput[type="text"] {
+	background-color: @yellow;
 	text-align: center;
 	height: 32px;
 	font-size: 24px;
 	font-weight: bold;
 }
+.cellInput input.playerInput[disabled] {
+	background-color: @inputDisabledBackground;
+}
 
+// Score Color
+@colorScore0x: #7f7f7f;
+@colorScore5x: #667f63;
+@colorScore6x: #4a7f42;
+@colorScore7x: #375e6e;
+@colorScore8x: #243d9d;
+@colorScore9x: #1514cc;
+@colorScore10x: #1000fb;
+@colorScore11x: #1600eb;
+@colorScore12x: #1f00db;
+@colorScore13x: #2a00cc;
+@colorScore14x: #3600bc;
+@colorScore15x: #4300ac;
+@colorScore16x: #50009d;
+@colorScore17x: #5e068d;
+@colorScore18x: #6b0e7f;
+.score0x, .score1x, .score2x, .score3x, .score4x {
+	color: @colorScore0x;
+}
+.score5x {
+	color: @colorScore5x;
+}
+.score6x {
+	color: @colorScore6x;
+}
+.score7x {
+	color: @colorScore7x;
+}
+.score8x {
+	color: @colorScore8x;
+}
+.score9x {
+	color: @colorScore9x;
+}
+.score10x {
+	color: @colorScore10x;
+}
+.score11x {
+	color: @colorScore11x;
+}
+.score12x {
+	color: @colorScore12x;
+}
+.score13x {
+	color: @colorScore13x;
+}
+.score14x {
+	color: @colorScore14x;
+}
+.score15x {
+	color: @colorScore15x;
+}
+.score16x {
+	color: @colorScore16x;
+}
+.score17x {
+	color: @colorScore17x;
+}
+.score18x {
+	color: @colorScore18x;
+}

@@ -16,6 +16,44 @@ function GameX01(options) {
 		id = x01.currentGame.getId() +1;
 	} // else 0
 
+	// GameX01 next
+	this.next= function() {
+		if (!currentSet.isFinished()) {
+			// Continue set
+			currentSet.next();
+		} else {
+			finishedSets.push(currentSet);
+			$("#"+currentSet.uuid).hide();
+
+			// check Winner
+			var toWin = option.nbSets;
+			for(var i=0; i<option.players.length; i++) {
+				var p = option.players[i];
+				if(toWin===this.getPlayerWin(p)) {
+					// Winner
+					winner = p;
+					this.displayFinished();
+					return;
+				}
+			}
+			// Create a new Set
+			currentSet = new SetX01(this);
+			currentSet.start();
+
+			// Display new set
+			var $set = currentSet.display();
+			$("#game").append($set);
+		}
+	};
+
+	// GameX01 displayFinished
+	this.displayFinished = function() {
+		$(".breadcrumb").addClass("hide");
+		var msg = "" + this.getName() +" Finished!";
+		msg += "Winner: " + this.getWinner();
+		// TODO
+		alert(msg);
+	};
 
 	// GameX01 getPlayers
 	this.getPlayers = function() {
@@ -27,11 +65,16 @@ function GameX01(options) {
 		return winner;
 	};
 
+	// GameX01 isFinished
+	this.isFinished = function() {
+		return (winner!==null);
+	};
+
 	// GameX01 getPlayerWin
 	this.getPlayerWin = function(player) {
 		var res = 0;
 		for (var i=0; i<finishedSets.length; i++) {
-			if (player===finishedSets[i]) {
+			if (player===finishedSets[i].getWinner()) {
 				res++;
 			}
 		}
@@ -76,7 +119,6 @@ function GameX01(options) {
 		return res;
 	};
 
-
 	// GameX01 start
 	this.start = function() {
 		console.log("start " + this.getName());
@@ -105,8 +147,8 @@ function GameX01(options) {
 		$game.empty();
 
 		// Title
-		var $title = $('<li/>').append($("<h1/>").append(this.getName())).append($("<h1/>").addClass("divider").append("&gt;"));
-		$(".breadcrumb").removeClass("hide").append($title);
+		$(".breadcrumb li h1:first-child").empty().append(this.getName());
+		$(".breadcrumb").removeClass("hide");
 
 		// Create Sets
 		$.each(this.getSets(), function(index, set){

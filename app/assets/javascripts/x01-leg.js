@@ -7,7 +7,6 @@ function LegX01(parentSet) {
 	var parent = parentSet;
 	var players = [];
 
-
 	// Status
 	var winner = null;
 	var playersScore = {};
@@ -31,6 +30,58 @@ function LegX01(parentSet) {
 		}
 		players.push(previousLeg.getPlayers()[0]);
 	}
+
+	// LegX01 next
+	this.next= function() {
+		if (!currentEntry.isFinished()) {
+			// Continue entry
+			var leg = this;
+			currentEntry.next(function() {
+				leg.afterEntryNext();
+			});
+		} else {
+			// Create a new Entry
+			currentEntry = new EntryX01(this,currentEntry.index+1);
+			entries.push(currentEntry);
+
+			// Display new Entry
+			$("#" + this.uuid +" .tableBody .tableRowInput")
+				.before(currentEntry.display());
+
+			this.next();
+		}
+	};
+
+	// Handle entry.next result
+	this.afterEntryNext = function () {
+		var lastPlayer = currentEntry.getLastPlayer();
+		var status = currentEntry.getStatus(lastPlayer);
+		
+		// Update player score
+		var score = currentEntry.getLeft(lastPlayer);
+		playersScore[lastPlayer.uuid] = score;
+
+		// Update Left
+		$("#"+this.getLeftPlayerId(lastPlayer) +" span").html(score);
+
+		// Winning
+		if("win"===status) {
+			// Winner
+			winner = p;
+			this.displayFinished();
+			parent.next();
+		} else {
+			this.next();
+		}
+	};
+
+	// LegX01 displayFinished
+	this.displayFinished = function() {
+		// TODO better message
+		var msg = "" + this.getName() +" Finished!";
+		msg += "Winner: " + this.getWinner();
+		alert(msg);
+	};
 
 	// LegX01 getPlayers
 	this.getPlayers = function() {
@@ -59,14 +110,14 @@ function LegX01(parentSet) {
 		return winner;
 	};
 
-	// LegX01 isFinised
-	this.isFinised = function() {
+	// LegX01 isFinished
+	this.isFinished = function() {
 		return (winner!==null);
 	};
 
 	// LegX01 getScore
 	this.getPlayerScore = function(player){
-		return playersScore[player];
+		return playersScore[player.uuid];
 	};
 
 	// LegX01 getEntires
@@ -77,24 +128,24 @@ function LegX01(parentSet) {
 	// LegX01 start
 	this.start = function() {
 		console.log("start " + this.getName());
-		currentEntry = new EntryX01(this,0);
-		entries.push(currentEntry);
-
 		// Score
 		for (var idx=0; idx<players.length; idx++) {
 			p = players[idx];
-			playersScore[p] = parent.getOption().score;
+			playersScore[p.uuid] = parent.getOption().score;
 		}
+
+		// Entry
+		currentEntry = new EntryX01(this,0);
+		entries.push(currentEntry);
 	};
 
 	// LegX01 display
 	this.display = function() {
 		// Create Leg
-		var $leg = $('<div/>').addClass("leg").attr("id","leg-"+this.getId());
+		var $leg = $('<div/>').addClass("leg").attr("id",this.uuid);
 
 		// Set title
-		var $title = $('<li/>').append($("<h3/>").append(this.getName()));
-		$(".breadcrumb").append($title);
+		$(".breadcrumb li h3:first-child").empty().append(this.getName());
 
 		// Players
 		var ps = parent.getParent().getPlayers();
@@ -123,28 +174,29 @@ function LegX01(parentSet) {
 			var $progress = this.getPlayerProgress(p);
 			$h.append($progress);
 
-			playersheader[p.id] = $("<div/>").addClass("player-head").addClass("span6")
-				.attr("id","head-player-"+p.id).append($h);
+			playersheader[p.uuid] = $("<div/>").addClass("player-head").addClass("span6")
+				.attr("id","head-player-"+p.uuid).append($h);
 
 			// stat
 			var $stat = myself.createStats(p);
-			playersStats[p.id] = $stat;
+			playersStats[p.uuid] = $stat;
 
 			// Score
 			var $score = $("<div/>").addClass("score-left").addClass("span6")
-				.attr("id","left-player-"+p.id).append($("<span/>").addClass("badge").append(this.getPlayerScore(p)));
-			playersScore[p.id] = $score;
+				.attr("id",this.getLeftPlayerId(p)).append(
+					$("<span/>").addClass("badge").append(this.getPlayerScore(p)));
+			playersScore[p.uuid] = $score;
 		}
 
 		// Players header
 		var $head = $("<div/>").addClass("row-fluid");
-		$head.append(playersheader[player1.id]);
-		$head.append(playersheader[player2.id].addClass("pull-right"));
+		$head.append(playersheader[player1.uuid]);
+		$head.append(playersheader[player2.uuid].addClass("pull-right"));
 		$leg.append($head);
 
 		// Players div
 		var $players = $("<div/>").addClass("players").addClass("row-fluid");
-		$players.append(playersStats[player1.id]);
+		$players.append(playersStats[player1.uuid]);
 
 		// div Table
 		var $divTable = $("<div>").addClass("data").addClass("span6");
@@ -152,13 +204,13 @@ function LegX01(parentSet) {
 		$divTable.append($table);
 		$players.append($divTable);
 
-		$players.append(playersStats[player2.id]);
+		$players.append(playersStats[player2.uuid]);
 		$leg.append($players);
 
 		// Players scores
 		var $scores = $("<div/>").addClass("row-fluid");
-		$scores.append(playersScore[player1.id]);
-		$scores.append(playersScore[player2.id]);
+		$scores.append(playersScore[player1.uuid]);
+		$scores.append(playersScore[player2.uuid]);
 
 		$leg.append($scores);
 
@@ -167,7 +219,7 @@ function LegX01(parentSet) {
 
 	// Player stats
 	this.createStats = function(player) {
-		var $stat = $("<div/>").addClass("stats").addClass("span3").attr("id","stats-player-"+p.id).addClass("wip");
+		var $stat = $("<div/>").addClass("stats").addClass("span3").attr("id","stats-player-"+p.uuid).addClass("wip");
 				
 		// Game
 		var gameStats = ["Sets","Legs", "Tons", "180", "60+", "100+","Avg.", "Avg. 3", "Avg. Leg", "Best Leg", "Best out"];
@@ -192,8 +244,8 @@ function LegX01(parentSet) {
 		var $head = $("<div/>").addClass("tableHead");
 		var $rowHead = $("<div/>").addClass("tableRow");
 
-		for(var l=0; l<players.length; l++) {
-			if (l!==0) {
+		for(var i=0; i<players.length; i++) {
+			if (i!==0) {
 				$rowHead.append($("<div/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
 			}
 
@@ -206,21 +258,10 @@ function LegX01(parentSet) {
 		// Body
 		var entry = null;
 		var $body = $("<div/>").addClass("tableBody");
-		for (var i=0; i<entries.length; i++) {
-			entry = entries[i];
+		for (var j=0; j<entries.length; j++) {
+			entry = entries[j];
 
-			var $rowEntry = $("<div/>").addClass("tableRow");
-
-			for(var j=0; j<players.length; j++) {
-				if (j!==0) {
-					$rowEntry.append($("<div/>").addClass("cell").addClass("cellDarts").append(entry.getName())) ;
-				}
-
-				var p = players[j];
-				$rowEntry.append($("<div/>").addClass("cell").addClass("cellScore").append(entry.getScore(p)));
-				$rowEntry.append($("<div/>").addClass("cell").addClass("cellStatus").append(entry.getLeft(p)));
-			}
-
+			var $rowEntry = entry.display();
 			$body.append($rowEntry);
 		}
 		
@@ -234,11 +275,12 @@ function LegX01(parentSet) {
 			var q = players[k];
 			var $input = $("<input/>",  {
 					type: "text",
-					id: "input-player-" + players[0].id,
+					id: this.getInputPlayerId(q),
 					"class" : "playerInput"
 				}).attr("disabled", "disabled");
 		
-			$rowInput.append($("<div/>").addClass("cell").addClass("cellInput").append($input));
+			$rowInput.append($("<div/>").addClass("cell").addClass("cellInput")
+				.addClass("control-group").append($input));
 		}
 	
 		$body.append($rowInput);
@@ -246,6 +288,16 @@ function LegX01(parentSet) {
 		// Final Table
 		$res.append($head).append($body);
 		return $res;
+	};
+
+	// Input player id
+	this.getInputPlayerId = function(player) {
+		return "input"+this.uuid+"-player" + player.uuid;
+	};
+
+	// Left player id
+	this.getLeftPlayerId = function(player) {
+		return "left"+this.uuid+"-player" + player.uuid;
 	};
 
 	// Players progress

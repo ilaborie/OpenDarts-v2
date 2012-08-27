@@ -32,6 +32,45 @@ function SetX01(parentGame) {
 		players.push(previousSet.getPlayers()[0]);
 	}
 
+	// SetX01 next
+	this.next= function() {
+		if (!currentLeg.isFinished()) {
+			// Continue leg
+			currentLeg.next();
+		} else {
+			finishedlegs.push(currentLeg);
+			$("#"+currentLeg.uuid).hide();
+
+			// check Winner
+			var toWin = parent.getOption().nbLegs;
+			for(var i=0; i<players.length; i++) {
+				var p = players[i];
+				if(toWin===this.getPlayerWin(p)) {
+					// Winner
+					winner = p;
+					this.displayFinished();
+					parent.next();
+					return;
+				}
+			}
+			// Create a new Leg
+			currentLeg = new LegX01(this);
+			currentLeg.start();
+
+			// Display new leg
+			var $leg = currentLeg.display();
+			$("#" + this.uuid).append($leg);
+		}
+	};
+
+	// SetX01 displayFinished
+	this.displayFinished = function() {
+		// TODO better info
+		var msg = "" + this.getName() +" Finished!";
+		msg += "Winner: " + this.getWinner();
+		alert(msg);
+	};
+
 	// SetX01 start
 	this.start = function() {
 		console.log("start " + this.getName());
@@ -55,11 +94,16 @@ function SetX01(parentGame) {
 		return winner;
 	};
 
+	// SetX01 isFinished
+	this.isFinished = function() {
+		return (winner!==null);
+	};
+
 	// SetX01 getPlayerWin
 	this.getPlayerWin = function(player) {
 		var res = 0;
 		for (var i=0; i<finishedlegs.length; i++) {
-			if (player===finishedlegs[i]) {
+			if (player===finishedlegs[i].getWinner()) {
 				res++;
 			}
 		}
@@ -105,11 +149,10 @@ function SetX01(parentGame) {
 
 	// SetX01 display
 	this.display = function () {
-		var $set = $('<div/>').addClass("set").attr("id","set-"+this.getId());
+		var $set = $('<div/>').addClass("set").attr("id",this.uuid);
 
 		// Set title
-		var $title = $('<li/>').append($("<h2/>").append(this.getName())).append($("<h2/>").addClass("divider").append("&gt;"));
-		$(".breadcrumb").append($title);
+		$(".breadcrumb li h2:first-child").empty().append(this.getName());
 
 		// Create Legs
 		$.each(this.getLegs(), function (idx, leg){

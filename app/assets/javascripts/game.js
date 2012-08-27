@@ -1,5 +1,26 @@
 // Define some default objets
 
+// Utilities
+
+
+/**
+ * Create an UUID
+ */
+this.createUuid = function() {
+    var S4 = function() {
+       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    };
+    return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+};
+
+/**
+ * isInteger
+ */
+var isInteger = function(s) {
+  return ((""+s).search(/^-?[0-9]+$/) === 0);
+};
+
+
 // TODO Board & Darts
 
 
@@ -8,8 +29,8 @@
 var players = {};
 
 
-function Player(id, name, surname) {
-	this.id = id;
+function Player(name, surname) {
+	this.uuid = createUuid();
 	this.name = name;
 	this.surname = surname;
 
@@ -31,9 +52,9 @@ function Player(id, name, surname) {
 	};
 }
 
-var Philou = new Player("1", "Philou", "The Failure");
+var Philou = new Player("Philou", "The Failure");
 
-var HAL = new Player("c7", "HAL",null);
+var HAL = new Player("HAL",null);
 HAL.com = true;
 HAL.comLevel = 7;
 
