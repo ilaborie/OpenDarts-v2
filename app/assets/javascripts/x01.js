@@ -13,6 +13,56 @@ var x01 =  {
 	currentGame: null
 };
 
+// Input Shortcurt definition
+var shortcuts = [];
+shortcuts[112] =  0;
+shortcuts[113] =  26;
+shortcuts[114] =  41;
+shortcuts[115] =  45;
+shortcuts[116] =  60;
+shortcuts[117] =  81;
+shortcuts[118] =  85;
+shortcuts[119] =  100;
+shortcuts[120] =  function(entry, callback) {
+	var leg = entry.getParent();
+	var player = entry.getLastPlayer();
+	var left = leg.getPlayerScore(player);
+
+	var $input = $("#"+leg.getInputPlayerId(player));
+	var value = $input.val();
+	
+	if (isInteger(value)) {
+		var val = parseInt(value, 10);
+		var score = (left - val);
+		entry.processValue(score,callback);
+	} else {
+		entry.processValue(value, callback);
+	}
+};
+shortcuts[121] =  function(entry, callback) { processFinish(1,entry, callback); };
+shortcuts[122] =  function(entry, callback) { processFinish(2,entry, callback); };
+shortcuts[123] =  function(entry, callback) { processFinish(3,entry, callback); };
+
+// Finish
+var processFinish = function(nbDart, entry, callback) {
+	var leg = entry.getParent();
+	var player = entry.getLastPlayer();
+	var $input = $("#"+leg.getInputPlayerId(player));
+	var left = leg.getPlayerScore(player);
+
+	if (couldFinish(left, nbDart)) {
+		$input.parent().removeClass("error").removeAttr("title").tooltip("destroy");
+		entry.handleNewInput("win", left, callback);
+	} else {
+		// handle error
+		$input.val(left);
+		$input.parent().addClass("error").attr("title","Cheater !").tooltip({
+			placement : "bottom"
+		}).tooltip("show");
+	}
+};
+
+
 // Show new X01
 var showNewX01 = function() {
 	// Show dialog with options

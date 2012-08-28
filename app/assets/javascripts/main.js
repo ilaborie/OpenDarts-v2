@@ -7,4 +7,11 @@ $(function() {
 
 	// XXX auto start
 	$("#btnNewX01").click();
+
+	$("#btnTest").click(function() {
+		createNotice({
+			message: "plop",
+			kind: "error"
+		});
+	});
 });

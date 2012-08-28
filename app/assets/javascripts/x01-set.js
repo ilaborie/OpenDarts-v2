@@ -65,10 +65,13 @@ function SetX01(parentGame) {
 
 	// SetX01 displayFinished
 	this.displayFinished = function() {
-		// TODO better info
 		var msg = "" + this.getName() +" Finished!";
-		msg += "Winner: " + this.getWinner();
-		alert(msg);
+		msg += "Winner: " + this.getWinner().getName();
+
+		createNotice({
+			message: msg,
+			kind: "success"
+		});
 	};
 
 	// SetX01 start

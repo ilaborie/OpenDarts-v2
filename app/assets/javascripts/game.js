@@ -2,6 +2,29 @@
 
 // Utilities
 
+/**
+ * Create a dynamic notice
+ */
+var createNotice = function(notice) {
+	var $div = $("<div>").html("<a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>")
+		.append(notice.message).addClass("alert fade in alert-" + notice.kind);
+	$("#notices").append($div);
+	$div.fadeIn(100).delay(1000).fadeOut(400, function() {
+		$div.remove();
+		if ($("#notices div").length===0) {
+			$("#notices").empty();
+		}
+	});
+};
+
+/**
+ * Open Modal
+ */
+var openModalDialog = function(title,message) {
+	$("#modalDialog .modal-header h3").text(title);
+	$("#modalDialog .modal-body p").text(message);
+	$("#modalDialog").modal();
+};
 
 /**
  * Create an UUID

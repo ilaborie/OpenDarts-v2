@@ -44,6 +44,7 @@ function EntryX01(parentLeg, index) {
 	// Ask an Input
 	this.askNewInput = function(callback) {
 		var entry = this;
+		// TODO mngt Computer
 		// Ask Human
 		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
 		$input.removeAttr("disabled","disabled").focus();
@@ -55,32 +56,50 @@ function EntryX01(parentLeg, index) {
 		// Enter
 		$input.unbind("keypress").keypress(function(e) {
 			var k = e.which;
-			if (k===13 || k===9) {
+			if (k===13) { // Enter
 				entry.processInput(e, callback);
 				e.preventDefault();
 				return false;
-			} // TODO handle F1 -> F12
+			}
+			return true;
+		});
+		// Shortcuts
+		$input.unbind("keyup").keyup(function(e) {
+			var k = e.which;
+			var fun = shortcuts[k];
+			if ($.isFunction(fun)) {
+				fun(entry,callback);
+				e.preventDefault();
+				return false;
+			} else if (isInteger(fun)) {
+				var val = parseInt(fun,10);
+				entry.processValue(val,callback);
+				e.preventDefault();
+				return false;
+			}
 			return true;
 		});
 	};
 
 	// Process Input
 	this.processInput = function(e, callback){
+		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
+				
+		var value = $input.val();
+		this.processValue(value, callback);
+	};
+
+	// Process value
+	this.processValue = function(value,  callback) {
 		var left = playerLeft[lastPlayer.uuid];
 		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
 		$input.parent().removeClass("error").removeAttr("title").tooltip("destroy");
-		
-		var value = 0;
-		var status = null;
-		// TODO mngt Computer
-		
-		value = $input.val();
-		status = validateInputX01(this, value, left);
+
+		var status = validateInputX01(this, value, left);
 		if (status==="normal" || status==="win" || status==="broken") {
 			// OK, let's go
 			this.handleNewInput(status, parseInt(value, 10), callback);
 		} else {
-			//console.log(status);
 			// handle error
 			$input.parent().addClass("error").attr("title",status).tooltip({
 				placement : "bottom"
@@ -128,6 +147,11 @@ function EntryX01(parentLeg, index) {
 	// EntryX01 getName
 	this.getName = function() {
 		return "#" + (index+1)*3;
+	};
+
+	// getParent
+	this.getParent = function() {
+		return parent;
 	};
 
 	// EntryX01 getScore

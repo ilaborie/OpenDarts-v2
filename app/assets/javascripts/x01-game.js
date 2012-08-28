@@ -48,11 +48,14 @@ function GameX01(options) {
 
 	// GameX01 displayFinished
 	this.displayFinished = function() {
-		$(".breadcrumb").addClass("hide");
+		//$(".breadcrumb").addClass("hide");
 		var msg = "" + this.getName() +" Finished!";
-		msg += "Winner: " + this.getWinner();
-		// TODO
-		alert(msg);
+		msg += "Winner: " + this.getWinner().getName();
+
+		createNotice({
+			message: msg,
+			kind: "success"
+		});
 	};
 
 	// GameX01 getPlayers

@@ -77,10 +77,13 @@ function LegX01(parentSet) {
 
 	// LegX01 displayFinished
 	this.displayFinished = function() {
-		// TODO better message
 		var msg = "" + this.getName() +" Finished!";
-		msg += "Winner: " + this.getWinner();
-		alert(msg);
+		msg += "Winner: " + this.getWinner().getName();
+
+		createNotice({
+			message: msg,
+			kind: "success"
+		});
 	};
 
 	// LegX01 getPlayers
@@ -167,7 +170,7 @@ function LegX01(parentSet) {
 			var name = p.getName();
 			var $h = $("<h4/>");
 			if (idx===0) {
-				$h.append($("<span/>").addClass("badge").append(""));
+				$h.append($('<i class="icon-asterisk"></i>'));
 			}
 			$h.append(name);
 			// Multi Progress
