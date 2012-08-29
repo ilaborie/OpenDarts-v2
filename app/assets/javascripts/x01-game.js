@@ -36,6 +36,9 @@ function GameX01(options) {
 					return;
 				}
 			}
+
+			currentSet.displayFinished();
+
 			// Create a new Set
 			currentSet = new SetX01(this);
 			currentSet.start();
@@ -48,14 +51,41 @@ function GameX01(options) {
 
 	// GameX01 displayFinished
 	this.displayFinished = function() {
-		//$(".breadcrumb").addClass("hide");
-		var msg = "" + this.getName() +" Finished!";
-		msg += "Winner: " + this.getWinner().getName();
+		var title = this.getName() +" Finished!";
+		var msg = "<h4>Winner: " + this.getWinner().getName() + "</h4>";
+		msg += '<ul class="nav nav-list game-detail">' + this.getGameScore() + '</ul>';
 
-		createNotice({
-			message: msg,
-			kind: "success"
-		});
+		// Notifiy
+		openModalDialog(title, msg);
+	};
+
+	// Get set score
+	this.getGameScore = function () {
+		var msg = "";
+		var toWin = option.nbSets;
+		// display detail
+		for (var j=0; j< finishedSets.length; j++) {
+			var set = finishedSets[j];
+			msg += '<li class="nav-header">';
+			msg += set.getName();
+			msg += " - " + set.getWinner().getName();
+			msg +="</li>";
+				
+			for(var i=0; i<option.players.length; i++) {
+				var p = option.players[i];
+				var win = this.getPlayerWin(p);
+				msg +="<li>";
+				if(toWin===win) {
+					msg += "<strong>" + p.getName() + ": " + win + "</strong>";
+				} else {
+					msg += p.getName() + ": " + win;
+				}
+				msg += "<br>&nbsp;&nbsp;";
+				msg += set.getPlayerSetScore(p);
+				msg +="</li>";
+			}
+		}
+		return msg;
 	};
 
 	// GameX01 getPlayers

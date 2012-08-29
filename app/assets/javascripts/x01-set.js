@@ -48,11 +48,13 @@ function SetX01(parentGame) {
 				if(toWin===this.getPlayerWin(p)) {
 					// Winner
 					winner = p;
-					this.displayFinished();
 					parent.next();
 					return;
 				}
 			}
+
+			currentLeg.displayFinished();
+
 			// Create a new Leg
 			currentLeg = new LegX01(this);
 			currentLeg.start();
@@ -65,13 +67,53 @@ function SetX01(parentGame) {
 
 	// SetX01 displayFinished
 	this.displayFinished = function() {
-		var msg = "" + this.getName() +" Finished!";
-		msg += "Winner: " + this.getWinner().getName();
+		var title = this.getName() +" Finished!";
+		var msg = "<h4>Winner: " + this.getWinner().getName() + "</h4>";
+		msg += '<ul class="nav nav-list">' + this.getSetScore() + '</ul>';
 
-		createNotice({
-			message: msg,
-			kind: "success"
-		});
+		// Notifiy
+		openModalDialog(title, msg);
+	};
+
+	// Get set score
+	this.getSetScore = function () {
+		var msg = '';
+		var toWin = parent.getOption().nbLegs;
+		for(var i=0; i<players.length; i++) {
+			msg += '<li class="nav-header">';
+			var p = players[i];
+			var win = this.getPlayerWin(p);
+			if(toWin===win) {
+				msg += "<strong>" + p.getName() + ": " + win + "</strong>";
+			} else {
+				msg += p.getName() + ": " + win;
+			}
+			// display detail
+			for (var j=0; j< finishedlegs.length; j++) {
+				var leg = finishedlegs[j];
+				msg += leg.getPlayerLegScore(p);
+			}
+			msg +="</li>";
+		}
+		return msg;
+	};
+	this.getPlayerSetScore = function(player) {
+		var msg = "";
+		for(var i=0; i<finishedlegs.length; i++) {
+			var leg = finishedlegs[i];
+			if (i>0) {
+				msg += ", ";
+			}
+
+			msg += "[ ";
+			if (leg.getWinner().uuid === player.uuid){
+				msg += leg.getPlayerLegScore(player);
+			} else {
+				msg += "<em>" + leg.getPlayerLegScore(player) + "</em>";
+			}
+			msg += " ]";
+		}
+		return msg;
 	};
 
 	// SetX01 start

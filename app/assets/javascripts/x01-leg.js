@@ -67,8 +67,7 @@ function LegX01(parentSet) {
 		// Winning
 		if("win"===status) {
 			// Winner
-			winner = p;
-			this.displayFinished();
+			winner = lastPlayer;
 			parent.next();
 		} else {
 			this.next();
@@ -77,13 +76,26 @@ function LegX01(parentSet) {
 
 	// LegX01 displayFinished
 	this.displayFinished = function() {
-		var msg = "" + this.getName() +" Finished!";
-		msg += "Winner: " + this.getWinner().getName();
+		var title = this.getName() +" Finished!";
+		var msg = "Winner: " + this.getWinner().getName();
+		msg += " with " + this.getLegScore();
 
-		createNotice({
-			message: msg,
-			kind: "success"
-		});
+		// Notifiy
+		openModalDialog(title, msg);
+	};
+
+	// get leg score
+	this.getLegScore = function() {
+		return currentEntry.getNbDartsPlayed();
+	};
+	this.getPlayerLegScore = function(player) {
+		var msg = "";
+		if (currentEntry.getWinner().uuid === player.uuid) {
+			msg += "<strong>" + currentEntry.getEntryScore(player) + "</strong>";
+		} else {
+			msg += currentEntry.getEntryScore(player);
+		}
+		return msg;
 	};
 
 	// LegX01 getPlayers

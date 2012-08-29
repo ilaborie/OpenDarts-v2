@@ -13,6 +13,7 @@
     <!-- Style -->
     @minified=@{ if (play.Play.isProd()) ".min" else "" }
     <link rel="shortcut icon" type="images/png" href="@routes.Assets.at("images/favicon.png")">
+    <!-- TODO Google Web font -->
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main"+minified+".css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap"+minified+".css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-responsive"+minified+".css")">
@@ -49,7 +50,7 @@
     <script src="@routes.Assets.at("javascripts/bootstrap/bootstrap-scrollspy"+minified+".js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/bootstrap/bootstrap-tab"+minified+".js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/bootstrap/bootstrap-tooltip"+minified+".js")" type="text/javascript"></script>
-    <script src="@routes.Assets.at("javascripts/bootstrap/bootstrap-transition"+minified+".js")" bootstrap-typeaheade="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/bootstrap/bootstrap-transition"+minified+".js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/bootstrap/bootstrap-typeahead"+minified+".js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/bootstrap/bootstrap-popover"+minified+".js")" type="text/javascript"></script>
     

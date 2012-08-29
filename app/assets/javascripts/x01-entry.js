@@ -13,6 +13,7 @@ function EntryX01(parentLeg, index) {
 	var playerLeft = {};
 	var playerStatus = {}; // normal, win, broken
 	this.nbDart = null;
+	var winner = null;
 
 	console.log("new entry: " + index);
 
@@ -124,6 +125,10 @@ function EntryX01(parentLeg, index) {
 		playerLeft[lastPlayer.uuid] = left;
 		playerStatus[lastPlayer.uuid] =status;
 
+		if(status === "win") {
+			winner = lastPlayer;
+		}
+
 		// Update Entry display
 		$("#"+this.getScoreId(lastPlayer)).addClass(status).html(this.getScore(lastPlayer)).addClass(function() {
 			var z =  Math.floor(value/10);
@@ -159,7 +164,7 @@ function EntryX01(parentLeg, index) {
 	this.getScore = function(player) {
 		var res;
 		if (playerStatus[player.uuid] === "win") {
-			res = "+" + this.nbDart +" (" + (index*3 + this.nbDart) +")";
+			res = "+" + this.nbDart +" (" +this.getNbDartsPlayed() +")";
 		} else {
 			res = playerScore[player.uuid];
 			if (typeof res !== "number") {
@@ -167,6 +172,24 @@ function EntryX01(parentLeg, index) {
 			}
 		}
 		return res;
+	};
+	// getEntryScore
+	this.getEntryScore = function(player) {
+		if (player===winner) {
+			return this.getNbDartsPlayed();
+		} else {
+			return "-";
+		}
+	};
+
+	// Nb darts
+	this.getNbDartsPlayed = function() {
+		return (index*3 + this.nbDart);
+	};
+
+	// get winner
+	this.getWinner = function() {
+		return winner;
 	};
 
 	// EntryX01 getLeft

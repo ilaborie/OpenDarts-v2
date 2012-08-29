@@ -20,10 +20,21 @@ var createNotice = function(notice) {
 /**
  * Open Modal
  */
-var openModalDialog = function(title,message) {
-	$("#modalDialog .modal-header h3").text(title);
-	$("#modalDialog .modal-body p").text(message);
-	$("#modalDialog").modal();
+var openModalDialog = function(title,message, func) {
+	$("#modalDialog .modal-header h3").html(title);
+	$("#modalDialog .modal-body p").html(message);
+
+	if ((typeof func !== "undefined")  && $.isFunction(fun)) {
+		$("#modalDialogOk").show().unbind("click").click(function(e) {
+			fun(e);
+		});
+	} else {
+		$("#modalDialogOk").hide();
+	}
+
+	$("#modalDialog").on("shown", function() {
+			$("#modalDialog .modal-footer a.btn").focus();
+		}).modal("show");
 };
 
 /**

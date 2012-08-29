@@ -52,6 +52,7 @@ var processFinish = function(nbDart, entry, callback) {
 
 	if (couldFinish(left, nbDart)) {
 		$input.parent().removeClass("error").removeAttr("title").tooltip("destroy");
+		entry.nbDart = nbDart;
 		entry.handleNewInput("win", left, callback);
 	} else {
 		// handle error
