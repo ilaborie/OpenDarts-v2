@@ -277,7 +277,9 @@ function LegX01(parentSet) {
 
 			var q = players[k];
 			var $input = $("<input/>",  {
-					type: "text",
+					type: "integer",
+					min: 0,
+					max: 180,
 					id: this.getInputPlayerId(q),
 					"class" : "playerInput"
 				}).attr("disabled", "disabled");

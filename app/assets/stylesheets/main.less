@@ -209,18 +209,20 @@ div.score-left {
 	}
 	.tableRowInput {
 		.cellDartsHide {
-			height: 51px;
+			height: 38px;
 		}
 	}
 }
 
 // Inputs
-.cellInput input.playerInput[type="text"] {
+.cellInput input.playerInput[type="integer"] {
+	.box-shadow(inset 0px 1px 8px rgba(0, 0, 0, 0.75));
 	background-color: @yellow;
 	text-align: center;
 	height: 32px;
 	font-size: 24px;
 	font-weight: bold;
+
 }
 .cellInput input.playerInput[disabled] {
 	background-color: @inputDisabledBackground;
