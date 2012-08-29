@@ -9,7 +9,7 @@ var createNotice = function(notice) {
 	var $div = $("<div>").html("<a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>")
 		.append(notice.message).addClass("alert fade in alert-" + notice.kind);
 	$("#notices").append($div);
-	$div.fadeIn(100).delay(1000).fadeOut(400, function() {
+	$div.fadeIn(100).delay(5000).fadeOut(400, function() {
 		$div.remove();
 		if ($("#notices div").length===0) {
 			$("#notices").empty();

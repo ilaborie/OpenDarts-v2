@@ -106,7 +106,7 @@ var showNewX01 = function() {
 
 
 // Validate Input
-var validateInputX01 = function(entry,input, score) {
+var validateInputX01 = function(entry,input, score, callback) {
 	var status = null;
 	if (isInteger(input)) {
 		var val = parseInt(input, 10);
@@ -118,17 +118,24 @@ var validateInputX01 = function(entry,input, score) {
 			if ((val > score) || (val === (score-1))) {
 				status = "broken";
 			} else if (val === score) {
-				entry.nbDart = getNbDart(score);
-				switch(entry.nbDart) {
-					case 0:
-						status = "broken";
-						break;
-					case 1:
-					case 2:
-					case 3:
-						status = "win";
-						break;
-				}
+				getNbDart(score, function(nbDart) {
+					entry.nbDart = nbDart;
+					switch(entry.nbDart) {
+						case 0:
+							status = "broken";
+							break;
+						case 1:
+						case 2:
+						case 3:
+							status = "win";
+							break;
+						default:
+							status = null;
+							break;
+					}
+					// Go ahead
+					entry.handleNewInput(status, val, callback);
+				});
 			} else {
 				status = "normal";
 			}
@@ -140,23 +147,75 @@ var validateInputX01 = function(entry,input, score) {
 };
 
 // get NbDarts to finish
-var getNbDart = function(score) {
-	var nbDart = null;
-		do {
-			nbDart = prompt("Nb Dart to finish ? (0 for broken)");
-			if (!isInteger(nbDart)) {
-				nbDart = null;
-			} else {
-				nbDart = parseInt(nbDart, 10);
-				if (nbDart<0 || nbDart>3 || (nbDart!==0 && !couldFinish(score, nbDart))) {
-					nbDart = null;
-				}
-			}
-		} while (nbDart===null);
-	return nbDart;
+var getNbDart = function(score, func) {
+	var $defaultButton = null;
+
+	var $btn;
+	var btns = ["#btnThreeDarts", "#btnTwoDarts", "#btnOneDart"];
+
+	$btn = $(btns[0]);
+	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func(3); });
+	if (couldFinish(score,3)) {
+		$btn.removeAttr("disabled");
+		$defaultButton = $btn;
+	} else {
+		$btn.attr("disabled", "disabled");
+	}
+
+	$btn = $(btns[1]);
+	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func(2); });
+	if (couldFinish(score,2)) {
+		$btn.removeAttr("disabled");
+		$defaultButton = $btn;
+	} else {
+		$btn.attr("disabled", "disabled");
+	}
+
+	$btn = $(btns[2]);
+	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func(1); });
+	if (couldFinish(score,1)) {
+		$btn.removeAttr("disabled");
+		$defaultButton = $btn;
+	} else {
+		$btn.attr("disabled", "disabled");
+	}
+
+	// Broken
+	$("#btnBroken").unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func(0); });
+
+	// Handle shortcuts
+	$("#nbDartDialog .btn").keydown(function(e) {
+		var key = e.which;
+		switch(key) {
+			case 48:
+			case 96:
+				$("#btnBroken").click();
+				break;
+			case 49:
+			case 97:
+				if (couldFinish(score,1)) $("#btnOneDart").click();
+				break;
+			case 50:
+			case 98:
+				if (couldFinish(score,2)) $("#btnTwoDarts").click();
+				break;
+			case 51:
+			case 99:
+				if (couldFinish(score,3)) $("#btnThreeDarts").click();
+				break;
+			default:
+				return true;
+		}
+		e.preventDefault();
+		return false;
+	});
+	// Open Dialog
+	$("#nbDartDialog").on("shown", function() {
+		$defaultButton.focus();
+	}).modal("show");
 };
 
-
+// Could finish
 var couldFinish = function (score, nbDart) {
 	var result = false;
 

@@ -51,6 +51,7 @@ function EntryX01(parentLeg, index) {
 		// TODO Tab
 		$input.unbind("blur").blur(function(e) {
 			//entry.processInput(e, callback);
+			e.preventDefault();
 			return false;
 		});
 		// Enter
@@ -95,11 +96,11 @@ function EntryX01(parentLeg, index) {
 		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
 		$input.parent().removeClass("error").removeAttr("title").tooltip("destroy");
 
-		var status = validateInputX01(this, value, left);
+		var status = validateInputX01(this, value, left, callback);
 		if (status==="normal" || status==="win" || status==="broken") {
 			// OK, let's go
 			this.handleNewInput(status, parseInt(value, 10), callback);
-		} else {
+		} else if (status !== null){
 			// handle error
 			$input.parent().addClass("error").attr("title",status).tooltip({
 				placement : "bottom"

@@ -1,6 +1,7 @@
 @(message: String)
 
 @bootstrap(message) {
+	<!-- Breadcrumb -->
 	<div id="breadcrumb" class="hide span12">
 		<ul class="breadcrumb">
 			<li><h1></h1><h1 class="divider">&gt;</h1></li>
@@ -8,6 +9,25 @@
 			<li><h3></h3><h3 class="divider">&gt;</h3></li>
 		</ul>
 	</div>
+
+	<!-- Game -->
 	<div id="game"></div>
 
+	<!-- NbDart Dialog -->
+    <div id="nbDartDialog" class="modal hide fade" >
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3>How many dart(s) ?</h3>
+        </div>
+        <div class="modal-body">
+            <p>
+            	<button id="btnOneDart" class="btn btn-success">One Dart</button>
+            	<button id="btnTwoDarts" class="btn btn-success">Two Darts</button>
+            	<button id="btnThreeDarts" class="btn btn-success">Three Darts</button>
+            </p>
+        </div>
+        <div class="modal-footer">
+            	<button id="btnBroken" class="btn btn-danger">Broken</button>
+        </div>
+    </div>
 }
