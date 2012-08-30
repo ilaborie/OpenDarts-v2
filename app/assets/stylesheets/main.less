@@ -134,12 +134,64 @@ div.score-left {
 	padding-top: .5em;
 	padding-bottom: .5em;
 	margin-bottom: @baseLineHeight;
-	span.badge {
-		background-color: @gray;
+
+	background-color: @BoardDark;
+	color: @BoardLight;
+	-webkit-border-radius: 9px;
+	.box-shadow(4px 4px 16px rgba(0, 0, 0, 0.75));
+	text-shadow: 4px 4px 16px fadeout(@BoardLight, 50%);
+}
+
+#computerThrowDialog .modal-body {
+	text-align: center;
+	font-size: 4em;
+	font-weight: bold;
+	padding-top: .5em;
+	padding-bottom: .5em;
+	
+	.wished > div, .done > div  {
+  		.border-radius(9px);
 		font-size: 1em;
 		line-height: auto;
-		padding-left: 1em;
-		padding-right: 1em;
+		padding-bottom: .5em;
+		padding-top: .5em;
+		margin-bottom: .25em;
+	}
+
+	.wished > div {
+		.box-shadow(inset 2px 2px 16px rgba(0, 0, 0, 0.5));
+		font-style: italic;
+		color: @gray;
+		background-color: @grayLighter;
+	}
+	.done > div {
+		.box-shadow(4px 4px 16px rgba(0, 0, 0, .75));
+	}
+
+	.none{
+		color: @grayDark;
+		text-shadow: 0px 1px 2px rbga(0,0,0,0.5);
+		background-color: @grayLighter;
+	}
+	.black{
+		color: @BoardDark;
+		text-shadow: 0px 1px 2px rbga(0,0,0,0.5);
+		background-color: @BoardLight;
+	}
+	.white{
+		color: @BoardLight;
+		text-shadow: 0px 1px 2px rbga(0,0,0,0.5);
+		background-color: @BoardDark;
+	}
+	.red{
+		color: @BoardDark;
+		text-shadow: 0px 1px 2px rbga(0,0,0,0.5);
+		background-color: @BoardRed;
+	}
+	.green{
+		color: @BoardLight;
+		text-shadow: 0px 1px 2px rbga(0,0,0,0.5);
+		background-color: @BoardGreen;
 	}
 }
 

@@ -62,7 +62,7 @@ function LegX01(parentSet) {
 		playersScore[lastPlayer.uuid] = score;
 
 		// Update Left
-		$("#"+this.getLeftPlayerId(lastPlayer) +" span").html(score);
+		$("#"+this.getLeftPlayerId(lastPlayer)).html(score);
 
 		// Winning
 		if("win"===status) {
@@ -142,7 +142,6 @@ function LegX01(parentSet) {
 
 	// LegX01 start
 	this.start = function() {
-		console.log("start " + this.getName());
 		// Score
 		for (var idx=0; idx<players.length; idx++) {
 			p = players[idx];
@@ -198,8 +197,7 @@ function LegX01(parentSet) {
 
 			// Score
 			var $score = $("<div/>").addClass("score-left").addClass("span6")
-				.attr("id",this.getLeftPlayerId(p)).append(
-					$("<span/>").addClass("badge").append(this.getPlayerScore(p)));
+				.attr("id",this.getLeftPlayerId(p)).append(this.getPlayerScore(p));
 			playersScore[p.uuid] = $score;
 		}
 

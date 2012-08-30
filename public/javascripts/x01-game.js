@@ -154,7 +154,6 @@ function GameX01(options) {
 
 	// GameX01 start
 	this.start = function() {
-		console.log("start " + this.getName());
 		if (x01.currentGame) {
 			if (!x01.currentGame.close()) {
 				return;

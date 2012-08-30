@@ -15,8 +15,6 @@ function EntryX01(parentLeg, index) {
 	this.nbDart = null;
 	var winner = null;
 
-	console.log("new entry: " + index);
-
 	for (var i=0; i<players.length; i++) {
 		var p = players[i];
 		playerLeft[p.uuid] = parent.getPlayerScore(p);
@@ -44,19 +42,74 @@ function EntryX01(parentLeg, index) {
 	};
 	// Ask an Input
 	this.askNewInput = function(callback) {
-		var entry = this;
-		// TODO mngt Computer
-		// Ask Human
 		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
+		
+		if (lastPlayer.com) {
+			// Ask Computer
+			this.askComputerPlayer($input, callback);
+		} else {
+			// ask human
+			this.askHumanPlayer($input, callback);
+		}
+	};
+
+	// askComputerPlayer
+	this.askComputerPlayer = function($input, callback) {
+		var entry = this;
+		var score = parent.getPlayerScore(lastPlayer);
+		$input.focus();
+
+		// Open Dialog
+		var msg = lastPlayer.getName() + " require " + score;
+		$("#computerThrowDialog .done").empty();
+		$("#computerThrowDialog .wished").empty();
+		$("#computerThrowDialog h3").html(msg);
+		$("#computerThrowDialog").modal("show");
+
+		// Call to server
+		$.postJSON("/x01/ComputerPlayer", {
+			left: score,
+			lvl: lastPlayer.comLevel,
+			type: lastPlayer.comTarget
+		}, function(json) {
+			entry.showDart(entry, json, 0, callback);
+		});
+	};
+
+	// Show Computer darts
+	this.showDart = function(entry, json, idx, callback) {
+		var dart = json.darts[idx];
+		if ($.isPlainObject(dart)) {
+			var $badgeWished = $("<div/>").addClass("span4").append(dart.wished);
+			$("#computerThrowDialog .wished").append($badgeWished);
+
+			var $badgeDone = $("<div/>").addClass("span4").addClass(dart.color).append(dart.done);
+			$("#computerThrowDialog .done").append($badgeDone);
+
+			setTimeout(function() {
+				entry.showDart(entry, json, idx+1, callback);
+			},1000);
+		} else {
+			setTimeout(function() {
+				$("#computerThrowDialog").modal("hide");
+				entry.handleNewInput(json.status, json.score, callback);
+			});
+		}
+	};
+
+	// askHumanPlayer
+	this.askHumanPlayer = function($input, callback) {
+		var entry = this;
 		$input.removeAttr("disabled","disabled").focus();
-		// TODO Tab
-		$input.unbind("blur").blur(function(e) {
+		// Ask Human
+		$input.blur(function(e) {
+			// TODO Tab
 			//entry.processInput(e, callback);
 			e.preventDefault();
 			return false;
 		});
 		// Enter
-		$input.unbind("keypress").keypress(function(e) {
+		$input.keypress(function(e) {
 			var k = e.which;
 			if (k===13) { // Enter
 				entry.processInput(e, callback);
@@ -66,7 +119,7 @@ function EntryX01(parentLeg, index) {
 			return true;
 		});
 		// Shortcuts
-		$input.unbind("keyup").keyup(function(e) {
+		$input.keyup(function(e) {
 			var k = e.which;
 			var fun = shortcuts[k];
 			if ($.isFunction(fun)) {
@@ -100,6 +153,7 @@ function EntryX01(parentLeg, index) {
 		var status = validateInputX01(this, value, left, callback);
 		if (status==="normal" || status==="win" || status==="broken") {
 			// OK, let's go
+			$input.unbind("keypress").unbind("blur").unbind("keyup");
 			this.handleNewInput(status, parseInt(value, 10), callback);
 		} else if (status !== null){
 			// handle error

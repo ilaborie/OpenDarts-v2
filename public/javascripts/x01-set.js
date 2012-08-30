@@ -117,7 +117,6 @@ function SetX01(parentGame) {
 
 	// SetX01 start
 	this.start = function() {
-		console.log("start " + this.getName());
 		// Create Leg
 		currentLeg = new LegX01(this);
 		currentLeg.start();
