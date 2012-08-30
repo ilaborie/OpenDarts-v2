@@ -1,3 +1,4 @@
+
 // Initialize
 $(function() {
 	// TODO Check configuration

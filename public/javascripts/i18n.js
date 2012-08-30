@@ -1,6 +1,4 @@
 // Labels and messages
-
-
 function Messages() {
 	var keys = {
 		hello : "Hello"
@@ -19,6 +17,6 @@ function Messages() {
 
 		return msg;
 	};
-};
+}
 
 var msg = new Messages();
