@@ -8,6 +8,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.io.Closeables;
+
 import models.dart.DartSector;
 import models.dart.DartZone;
 import models.dart.IDart;
@@ -47,19 +49,21 @@ public class Dartboard {
 		return db;
 	}
 
-	/**
-	 * Load.
-	 *
-	 * @param app the app
-	 */
+	/** Load.
+	 * 
+	 * @param app the app */
 	public static void load(Application app) {
 		db = new Dartboard();
 		// load player stats
 		String resource = "/dartboard/DartBoard.properties";
-		try (InputStream in = app.resourceAsStream(resource)) {
+		InputStream in = null;
+		try {
+			in = app.resourceAsStream(resource);
 			db.boardProps.load(in);
 		} catch (IOException e) {
 			Logger.error("Fail to load computer level stats", e);
+		} finally {
+			Closeables.closeQuietly(in);
 		}
 		db.dartboard = new DartboardProperties(db.boardProps);
 

@@ -13,6 +13,7 @@ import play.Application;
 import services.dart.DartService;
 
 import com.google.common.collect.Maps;
+import com.google.common.io.Closeables;
 
 /** The Class BestDart. */
 public final class BestDart {
@@ -40,12 +41,16 @@ public final class BestDart {
 			String res =
 					MessageFormat.format("/x01/BestDart_{0}.properties",
 							Integer.valueOf(i));
-			try (InputStream in = app.resourceAsStream(res)) {
+			InputStream in = null;
+			try {
+				in = app.resourceAsStream(res); 
 				props.load(in);
 				BestDart bestDart = new BestDart(i, props);
 				bestDarts.put(Integer.valueOf(i), bestDart);
 			} catch (IOException e) {
 				throw new RuntimeException("Fail to load computer level stats", e);
+			} finally {
+				Closeables.closeQuietly(in);
 			}
 		}
 	}
