@@ -45,7 +45,7 @@ function LegX01(parentSet) {
 			entries.push(currentEntry);
 
 			// Display new Entry
-			$("#" + this.uuid +" .tableBody .tableRowInput")
+			$("#" + this.uuid +" .tableRowInput")
 				.before(currentEntry.display());
 
 			this.next();
@@ -63,6 +63,7 @@ function LegX01(parentSet) {
 
 		// Update Left
 		$("#"+this.getLeftPlayerId(lastPlayer)).html(score);
+		window.scrollTo(0,document.body.scrollHeight);
 
 		// Winning
 		if("win"===status) {
@@ -243,7 +244,7 @@ function LegX01(parentSet) {
 
 	// Player stats
 	this.createStats = function(player) {
-		var $stat = $("<div/>").addClass("stats").addClass("span3").attr("id","stats-player-"+p.uuid).addClass("wip");
+		var $stat = $("<div/>").addClass("stats").addClass("hidden-phone").addClass("span3").attr("id","stats-player-"+p.uuid).addClass("wip");
 				
 		// Game
 		var gameStats = ["Sets","Legs", "Tons", "180", "60+", "100+","Avg.", "Avg. 3", "Avg. Leg", "Best Leg", "Best out"];
@@ -262,26 +263,26 @@ function LegX01(parentSet) {
 
 	// Create Table
 	this.createTable = function(players) {
-		var $res = $("<div/>").addClass("tableScore");
+		var $res = $("<table/>").addClass("table").addClass("table-striped").addClass("table-bordered").addClass("tableScore");
 
 		// Head
-		var $head = $("<div/>").addClass("tableHead");
-		var $rowHead = $("<div/>").addClass("tableRow");
+		var $head = $("<thead/>");
+		var $rowHead = $("<tr/>");
 
 		for(var i=0; i<players.length; i++) {
 			if (i!==0) {
-				$rowHead.append($("<div/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
+				$rowHead.append($("<th/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
 			}
 
-			$rowHead.append($("<div/>").addClass("cell").addClass("cellScore").append("Score"));
-			$rowHead.append($("<div/>").addClass("cell").addClass("cellStatus").append(parent.getOption().score));
+			$rowHead.append($("<th/>").addClass("cell").addClass("cellScore").append("Score"));
+			$rowHead.append($("<th/>").addClass("cell").addClass("cellStatus").append(parent.getOption().score));
 		}
 	
 		$head.append($rowHead);
 		
 		// Body
 		var entry = null;
-		var $body = $("<div/>").addClass("tableBody");
+		var $body = $("<tbody/>");
 		for (var j=0; j<entries.length; j++) {
 			entry = entries[j];
 
@@ -290,10 +291,10 @@ function LegX01(parentSet) {
 		}
 		
 		// Foot
-		var $rowInput = $("<div/>").addClass("tableRow").addClass("tableRowInput");
+		var $rowInput = $("<tr/>").addClass("tableRowInput");
 		for(var k=0; k<players.length; k++) {
 			if (k!==0) {
-				$rowInput.append($("<div/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
+				$rowInput.append($("<td/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
 			}
 
 			var q = players[k];
@@ -305,7 +306,7 @@ function LegX01(parentSet) {
 					"class" : "playerInput"
 				}).attr("disabled", "disabled");
 		
-			$rowInput.append($("<div/>").addClass("cell").addClass("cellInput")
+			$rowInput.append($('<td colspan="2"/>').addClass("cell").addClass("cellInput")
 				.addClass("control-group").append($input));
 		}
 	

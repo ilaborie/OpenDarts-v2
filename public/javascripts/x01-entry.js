@@ -279,19 +279,19 @@ function EntryX01(parentLeg, index) {
 
 	// EntryX01 display
 	this.display = function() {
-		var $rowEntry = $("<div/>").addClass("tableRow");
+		var $rowEntry = $("<tr/>");
 
 		var ps = parent.getParent().getParent().getPlayers();
 		for(var j=0; j<ps.length; j++) {
 			if (j!==0) {
-				$rowEntry.append($("<div/>").addClass("cell").addClass("cellDarts").append(this.getName())) ;
+				$rowEntry.append($("<td/>").addClass("cell").addClass("cellDarts").append(this.getName())) ;
 			}
 
 			var p = ps[j];
-			$rowEntry.append($("<div/>").addClass("cell").addClass("cellScore")
+			$rowEntry.append($("<td/>").addClass("cell").addClass("cellScore")
 				.attr("id",this.getScoreId(p))
 				.append(this.getScore(p)));
-			$rowEntry.append($("<div/>").addClass("cell").addClass("cellStatus")
+			$rowEntry.append($("<td/>").addClass("cell").addClass("cellStatus")
 				.attr("id",this.getLeftId(p))
 				.append(this.getLeft(p)));
 		}

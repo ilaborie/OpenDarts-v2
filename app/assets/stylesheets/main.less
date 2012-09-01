@@ -196,13 +196,57 @@ div.score-left {
 }
 
 // Table
-@tableBodyHeight: 400px;
+@colorScore0x: #7f7f7f;
+@colorScore5x: #667f63;
+@colorScore6x: #4a7f42;
+@colorScore7x: #375e6e;
+@colorScore8x: #243d9d;
+@colorScore9x: #1514cc;
+@colorScore10x: #1000fb;
+@colorScore11x: #1600eb;
+@colorScore12x: #1f00db;
+@colorScore13x: #2a00cc;
+@colorScore14x: #3600bc;
+@colorScore15x: #4300ac;
+@colorScore16x: #50009d;
+@colorScore17x: #5e068d;
 
-@scoreWidth: 105px;
-@statusWidth: 110px;
-@inputWidth: 227px;
-@nbDartsWidth: 75px;
+.tableScore {
+	thead tr th {
+		text-align: center;
+		font-weight: bold;
+		background-color: @gray !important;
+		color: @white;
+	}
 
+	.cell {
+		text-align: center;
+    	line-height: 24px;
+    	font-size: 18px; 
+		padding: 4px 5px;
+		border: thin solid #CCC;
+		background-color: whiteSmoke;
+	}
+	.cellScore {
+	}
+	.cellStatus {
+	}
+	.cellDarts {
+		background-color: darken(@grayLighter,5%);
+	}
+	.cellDartsHide {
+		background-color: darken(@grayLighter,5%);
+		color: @grayLighter;
+	}
+	.cellInput {
+	}
+
+	.tableRowInput {
+		.cellDartsHide {
+			height: 38px;
+		}
+	}
+}
 
 .normal {
 }
@@ -211,78 +255,6 @@ div.score-left {
 }
 .broken {
 	background-color: lighten(@red,40%) !important;
-}
-
-.tableScore {
-	text-align: center;
-
-	.tableHead {
-		clear: both;
-		font-weight: bold;
-
-		.tableRow {
-			.cell {
-				background-color: @gray !important;
-				color: @white;
-			}
-		}
-	}
-	.tableBody{
-		clear: both;
-		height: @tableBodyHeight;
-		overflow: auto;
-	}
-	.tableFoot{
-		clear: both;
-	}
-
-	.tableRow {
-		clear: both;
-    	line-height: 24px;
-    	font-size: 18px; 
-    	
-    	.cell {
-			float: left;
-			padding: 4px 5px;
-			border: thin solid #CCC;
-			background-color: whiteSmoke;
-    	}
-		.cellScore {
-			width: @scoreWidth;
-		}
-		.cellStatus {
-			width: @statusWidth;
-		}
-		.cellDarts {
-			width: @nbDartsWidth;
-			background-color: darken(@grayLighter,5%);
-		}
-		.cellDartsHide {
-			width: @nbDartsWidth;
-			background-color: darken(@grayLighter,5%);
-			color: @grayLighter;
-		}
-		.cellInput {
-			width: @inputWidth;
-		}
-
-		&:nth-child(even) .cell {
-			background-color: @grayLighter;
-		}
-		&:nth-child(even) .cellDartsHide {
-			background-color: darken(@grayLighter,5%);
-			color: darken(@grayLighter,5%);
-		}
-		&:nth-child(even) .cellDarts {
-			background-color: darken(@grayLighter,5%);
-		}
-
-	}
-	.tableRowInput {
-		.cellDartsHide {
-			height: 38px;
-		}
-	}
 }
 
 // Inputs
@@ -299,21 +271,6 @@ div.score-left {
 	background-color: @inputDisabledBackground;
 }
 
-// Score Color
-@colorScore0x: #7f7f7f;
-@colorScore5x: #667f63;
-@colorScore6x: #4a7f42;
-@colorScore7x: #375e6e;
-@colorScore8x: #243d9d;
-@colorScore9x: #1514cc;
-@colorScore10x: #1000fb;
-@colorScore11x: #1600eb;
-@colorScore12x: #1f00db;
-@colorScore13x: #2a00cc;
-@colorScore14x: #3600bc;
-@colorScore15x: #4300ac;
-@colorScore16x: #50009d;
-@colorScore17x: #5e068d;
 @colorScore18x: #6b0e7f;
 .score0x, .score1x, .score2x, .score3x, .score4x {
 	color: @colorScore0x;
