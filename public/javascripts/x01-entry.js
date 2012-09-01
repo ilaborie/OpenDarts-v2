@@ -47,7 +47,6 @@ function EntryX01(parentLeg, index) {
 	// Ask an Input
 	this.askNewInput = function(callback) {
 		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
-		
 		if (lastPlayer.com) {
 			// Ask Computer
 			this.askComputerPlayer($input, callback);
@@ -60,6 +59,12 @@ function EntryX01(parentLeg, index) {
 	// askComputerPlayer
 	this.askComputerPlayer = function($input, callback) {
 		var entry = this;
+		if ($(".modal-backdrop").length>0) {
+			setTimeout(function(){
+				entry.askComputerPlayer($input, callback);
+			},500);
+			return;
+		}
 		var score = parent.getPlayerScore(lastPlayer);
 		$input.focus();
 
@@ -96,9 +101,10 @@ function EntryX01(parentLeg, index) {
 			},1000);
 		} else {
 			setTimeout(function() {
-				$("#computerThrowDialog").modal("hide");
-				entry.handleNewInput(json.status, json.score, callback);
-			});
+				$("#computerThrowDialog").unbind("hidden").on("hidden",function() {
+					entry.handleNewInput(json.status, json.score, callback);
+				}).modal("hide");
+			},1000);
 		}
 	};
 
@@ -173,6 +179,10 @@ function EntryX01(parentLeg, index) {
 		// Clear Input
 		$("#"+parent.getInputPlayerId(lastPlayer))
 			.attr("disabled","disabled").val("");
+
+		// Destroy tooltip & modal
+		$(".tooltip").remove();
+		//$(".modal-backdrop").remove();
 
 		// update left, status, score
 		var left = playerLeft[lastPlayer.uuid];
@@ -271,12 +281,13 @@ function EntryX01(parentLeg, index) {
 	this.display = function() {
 		var $rowEntry = $("<div/>").addClass("tableRow");
 
-		for(var j=0; j<players.length; j++) {
+		var ps = parent.getParent().getParent().getPlayers();
+		for(var j=0; j<ps.length; j++) {
 			if (j!==0) {
 				$rowEntry.append($("<div/>").addClass("cell").addClass("cellDarts").append(this.getName())) ;
 			}
 
-			var p = players[j];
+			var p = ps[j];
 			$rowEntry.append($("<div/>").addClass("cell").addClass("cellScore")
 				.attr("id",this.getScoreId(p))
 				.append(this.getScore(p)));

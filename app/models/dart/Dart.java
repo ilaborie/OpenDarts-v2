@@ -68,22 +68,52 @@ public class Dart implements IDart {
 				} else {
 					return Color.green;
 				}
-			case EIGHT:
+			case TWENTY:
 				col= Color.black;
+				break;
+			case ONE:
+				col= Color.white;
 				break;
 			case EIGHTEEN:
 				col= Color.black;
 				break;
-			case ELEVEN:
+			case FOUR:
 				col= Color.white;
 				break;
-			case FIVE:
+			case THIRTEEN:
+				col= Color.black;
+				break;
+			case SIX:
 				col= Color.white;
+				break;
+			case TEN:
+				col= Color.black;
 				break;
 			case FIVETEEN:
 				col= Color.white;
 				break;
-			case FOUR:
+			case TWO:
+				col= Color.black;
+				break;
+			case SEVENTEEN:
+				col= Color.white;
+				break;
+			case THREE:
+				col= Color.black;
+				break;
+			case NINETEEN:
+				col= Color.white;
+				break;
+			case SEVEN:
+				col= Color.black;
+				break;
+			case SIXTEEN:
+				col= Color.white;
+				break;
+			case EIGHT:
+				col= Color.black;
+				break;
+			case ELEVEN:
 				col= Color.white;
 				break;
 			case FOURTEEN:
@@ -92,50 +122,17 @@ public class Dart implements IDart {
 			case NINE:
 				col= Color.white;
 				break;
-			case NINETEEN:
-				col= Color.white;
-				break;
-			case NONE:
-				return Color.none;
-			case ONE:
-				col= Color.white;
-				break;
-			case OUT_OF_TARGET:
-				return Color.none;
-			case SEVEN:
-				col= Color.black;
-				break;
-			case SEVENTEEN:
-				col= Color.white;
-				break;
-			case SIX:
-				col= Color.white;
-				break;
-			case SIXTEEN:
-				col= Color.white;
-				break;
-			case TEN:
-				col= Color.black;
-				break;
-			case THIRTEEN:
-				col= Color.black;
-				break;
-			case THREE:
-				col= Color.black;
-				break;
 			case TWELVE:
 				col= Color.black;
 				break;
-			case TWENTY:
-				col= Color.black;
+			case FIVE:
+				col= Color.white;
 				break;
-			case TWO:
-				col= Color.black;
-				break;
+			case NONE:
+			case OUT_OF_TARGET:
 			case UNLUCKY_DART:
-				return Color.none;
 			default:
-				break;
+				return Color.none;
 		}
 		
 		// Handle zone

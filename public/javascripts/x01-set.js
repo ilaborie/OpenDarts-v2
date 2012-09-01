@@ -88,7 +88,7 @@ function SetX01(parentGame) {
 		for (var j=0; j< finishedlegs.length; j++) {
 			var leg = finishedlegs[j];
 			msg += '<li class="nav-header">';
-			msg += leg.getName();
+			msg += leg.getNameWinner();
 			msg += "</li>";
 			msg += "<li>";
 			msg += leg.getWinner().getName() + " with "+ leg.getLegScore() +" darts";

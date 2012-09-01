@@ -72,8 +72,8 @@ div.player-head {
 	padding-right: 1em;
 
 	h4 {
-		.badge {
-			margin-right: 1em;
+		.badge-primary {
+			background-color: @btnPrimaryBackground;
 		}
 		div.progress {
 			.box-shadow(inset 0px 1px 8px rgba(0, 0, 0, 0.75));
@@ -174,14 +174,14 @@ div.score-left {
 		background-color: @grayLighter;
 	}
 	.black{
-		color: @BoardDark;
+		color: @BoardLight;
+		background-color: @BoardDark;
 		text-shadow: 0px 1px 2px rbga(0,0,0,0.5);
-		background-color: @BoardLight;
 	}
 	.white{
-		color: @BoardLight;
+		color: @BoardDark;
+		background-color: @BoardLight;
 		text-shadow: 0px 1px 2px rbga(0,0,0,0.5);
-		background-color: @BoardDark;
 	}
 	.red{
 		color: @BoardDark;

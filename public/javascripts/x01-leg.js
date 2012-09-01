@@ -77,8 +77,8 @@ function LegX01(parentSet) {
 	// LegX01 displayFinished
 	this.displayFinished = function() {
 		var title = this.getName() +" Finished!";
-		var msg = 'Winner: <strong>' + this.getWinner().getName()+'</strong>';
-		msg += ' with <span class="badge">' + this.getLegScore() +'</span> darts';
+		var msg = '<h4>Winner: <strong>' + this.getWinner().getName()+'</strong>';
+		msg += ' with <span class="badge badge-inverse">' + this.getLegScore() +'</span> darts</h4>';
 
 		// Notifiy
 		var set = parent;
@@ -115,7 +115,12 @@ function LegX01(parentSet) {
 		});
 		return res;
 	};
-
+	this.getNameWinner = function() {
+		return "Leg #" + (id+1);
+	};
+	this.getParent = function() {
+		return parent;
+	};
 	// LegX01 getWinner
 	this.getWinner = function() {
 		return winner;
@@ -180,6 +185,16 @@ function LegX01(parentSet) {
 				$h.append($('<i class="icon-asterisk"></i>'));
 			}
 			$h.append(name);
+
+			if (parent.getOption().nbSets>1) {
+				$h.append("&nbsp;");
+				$h.append($("<span>").addClass("badge").addClass("badge-primary").append(parent.getParent().getPlayerWin(p)));
+			}
+			if (parent.getOption().nbLegs>1) {
+				$h.append("&nbsp;");
+				$h.append($("<span>").addClass("badge").addClass("badge-success").append(parent.getPlayerWin(p)));
+			}
+
 			// Multi Progress
 			var $progress = this.getPlayerProgress(p);
 			$h.append($progress);
@@ -323,8 +338,8 @@ function LegX01(parentSet) {
 		var progressLeg = (( legWin / nbLegs) * 100)/nbSets;
 
 		var $progress = $("<div/>").addClass("progress").addClass("progress-striped")
-			.append($("<div/>").addClass("bar").addClass("bar-success").attr("style", "width:" + (progressSet)+"%"))
-			.append($("<div/>").addClass("bar").attr("style", "width:" + progressLeg+"%"));
+			.append($("<div/>").addClass("bar").attr("style", "width:" + (progressSet)+"%"))
+			.append($("<div/>").addClass("bar").addClass("bar-success").attr("style", "width:" + progressLeg+"%"));
 
 		return $progress;
 	};

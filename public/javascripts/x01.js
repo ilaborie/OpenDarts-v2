@@ -83,8 +83,7 @@ var showNewX01 = function() {
 	showPlayerDialog("p2", lastOption.players[1]);
 
 	// Bind Click
-	$("#btnRunX01 form").unbind("submit").submit(launchX01);
-	$("#btnRunX01").unbind("click").click(launchX01);
+	$("#newX01Dialog form").unbind("submit").submit(launchX01);
 
 	// Show Dialog
 	$("#newX01Dialog").unbind("shown").on("shown",function() {
@@ -94,7 +93,7 @@ var showNewX01 = function() {
 };
 
 // Launch x01
-var launchX01 = function() {
+var launchX01 = function(event) {
 	// new option
 	var newX01Options = {};
 	newX01Options.score = parseInt($("#startScore").val(),10);
@@ -114,6 +113,9 @@ var launchX01 = function() {
 	game.start();
 	x01.currentGame = game;
 	game.next();
+
+	event.preventDefault();
+	return false;
 };
 
 // Set player in dialog
