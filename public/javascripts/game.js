@@ -31,21 +31,53 @@ var createNotice = function(notice) {
 /**
  * Open Modal
  */
-var openModalDialog = function(title,message, func) {
+var openModalDialog = function(title, message, buttons) {
 	$("#modalDialog .modal-header h3").html(title);
 	$("#modalDialog .modal-body p").html(message);
 
-	if ((typeof func !== "undefined")  && $.isFunction(fun)) {
-		$("#modalDialogOk").show().unbind("click").click(function(e) {
-			fun(e);
-		});
+	var $buttonsBar = $("#modalDialog .modal-footer");
+	$buttonsBar.empty();
+	if (typeof buttons === "undefined") {
+		$buttonsBar.append(createButton({
+			text: "Close",
+			"data-dismiss" : "modal"
+		}));
+	} else if ($.isArray(buttons)) {
+		for(var i=0; i< buttons.length; i++) {
+			$buttonsBar.append(createButton(buttons[i]));
+		}
 	} else {
-		$("#modalDialogOk").hide();
+		$buttonsBar.append(createButton(buttons));
+	}
+	$("#modalDialog").unbind("shown").on("shown",function(){
+		$("#modalDialog .modal-footer button:last-child").focus();
+	}).modal("show");
+};
+
+/**
+ * Create a button
+ */
+var createButton = function(props) {
+	var text  = props.text;
+	var click = props.click;
+	var cssClass = "btn";
+	if (props["class"]) {
+		cssClass += " " +  props["class"];
 	}
 
-	$("#modalDialog").on("shown", function() {
-			$("#modalDialog .modal-footer a.btn").focus();
-		}).modal("show");
+	var attrs = {};
+	for (var p in props) {
+		if ((p!== "text") && (p!== "click") && (p!== "class")) {
+			attrs[p] = props[p];
+		}
+	}
+
+	$btn = $("<button/>", attrs).addClass(cssClass).html(text);
+	if (typeof click === "function") {
+		$btn.click(click);
+	}
+
+	return $btn;
 };
 
 /**
@@ -102,6 +134,7 @@ var Philou = new Player("Philou", "The Failure");
 var HAL = new Player("HAL",null);
 HAL.com = true;
 HAL.comLevel = 7;
+//HAL.comTarget = 19;
 
 players.Philou = Philou;
 players.HAL = HAL;

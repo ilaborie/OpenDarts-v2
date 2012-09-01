@@ -77,25 +77,21 @@ function LegX01(parentSet) {
 	// LegX01 displayFinished
 	this.displayFinished = function() {
 		var title = this.getName() +" Finished!";
-		var msg = "Winner: " + this.getWinner().getName();
-		msg += " with " + this.getLegScore();
+		var msg = 'Winner: <strong>' + this.getWinner().getName()+'</strong>';
+		msg += ' with <span class="badge">' + this.getLegScore() +'</span> darts';
 
 		// Notifiy
-		openModalDialog(title, msg);
+		var set = parent;
+		openModalDialog(title, msg, {
+			text: '<i class="icon-white icon-step-forward"></i> Next Leg',
+			"class" : "btn-primary",
+			click: function() { $("#modalDialog").modal("hide"); set.startNewLeg(); }
+		});
 	};
 
 	// get leg score
 	this.getLegScore = function() {
 		return currentEntry.getNbDartsPlayed();
-	};
-	this.getPlayerLegScore = function(player) {
-		var msg = "";
-		if (currentEntry.getWinner().uuid === player.uuid) {
-			msg += "<strong>" + currentEntry.getEntryScore(player) + "</strong>";
-		} else {
-			msg += currentEntry.getEntryScore(player);
-		}
-		return msg;
 	};
 
 	// LegX01 getPlayers
@@ -213,7 +209,7 @@ function LegX01(parentSet) {
 
 		// div Table
 		var $divTable = $("<div>").addClass("data").addClass("span6");
-		var $table = this.createTable(players);
+		var $table = this.createTable(ps);
 		$divTable.append($table);
 		$players.append($divTable);
 
@@ -317,8 +313,14 @@ function LegX01(parentSet) {
 
 	// Players progress
 	this.getPlayerProgress = function(player) {
-		var progressSet = (parent.getParent().getPlayerWin() / parent.getOption().nbSets) * 100;
-		var progressLeg = (parent.getPlayerWin() / parent.getOption().nbSets) * 100;
+		var nbSets = parent.getOption().nbSets;
+		var nbLegs = parent.getOption().nbLegs;
+
+		var setWin = parent.getParent().getPlayerWin(player);
+		var legWin = parent.getPlayerWin(player);
+
+		var progressSet = ( setWin / nbSets) * 100;
+		var progressLeg = (( legWin / nbLegs) * 100)/nbSets;
 
 		var $progress = $("<div/>").addClass("progress").addClass("progress-striped")
 			.append($("<div/>").addClass("bar").addClass("bar-success").attr("style", "width:" + (progressSet)+"%"))

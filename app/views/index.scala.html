@@ -1,6 +1,14 @@
 @(message: String)
 
 @bootstrap(message) {
+    <div class="hero-unit">
+        <h1>Welcome to OpenDarts</h1>
+        <p>The best Web scoring tools for Darts</p>
+        <p class="hide">
+            <a class="btn btn-success btn-large">Sign Up for Free</a>
+        </p>
+    </div>
+
 	<!-- Breadcrumb -->
 	<div id="breadcrumb" class="hide span12">
 		<ul class="breadcrumb">
@@ -12,6 +20,119 @@
 
 	<!-- Game -->
 	<div id="game"></div>
+
+    <!-- New x01 Dialog -->
+    <div id="newX01Dialog" class="modal hide fade" >
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">×</button>
+            <h3>New x01 Game</h3>
+        </div>
+        <form>
+        <div class="modal-body">
+            <div class="row-fluid">
+                <div class="span4">
+                    <label for="startScore">Score</label>
+                    <input class="text input-small" type="number" min="2" id="startScore" placeholder="x01" value="501">
+                </div>
+                <div class="span4">
+                    <label for="nbSet">Nb. set(s)</label>
+                    <input class="text input-mini" type="number" min="1" id="nbSet" placeholder="How many set(s) ?" value="1">
+                </div>
+                <div class="span4">
+                    <label for="nbLeg">Nb. Leg(s)</label>
+                    <input class="text input-mini" type="number" min="1" id="nbLeg" placeholder="How many Leg(s) ?" value="1">
+                </div>
+            </div>
+            <hr>
+            <div class="row-fluid">
+                <div class="span6 p1">
+                    <h4>First player</h4>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label class="checkbox">
+                                <input type="checkbox" id="p1IsComputer"> Computer?
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row-fluid humanPlayer">
+                        <div class="span12">
+                            <label for="p2Name">Name</label>
+                            <input type="text" require id="p1Name" placeholder="First player name" value="" required>
+                        </div>
+                    </div>
+                    <div class="row-fluid humanPlayer">
+                        <div class="span12">
+                            <label for="p2Surname">Surname</label>
+                            <input type="text" require id="p1Surname" placeholder="First player surname" value="">
+                        </div>
+                    </div>
+                    <div class="row-fluid playerComputer">
+                        <div class="span12">
+                            <label>Default Target</label>
+                            <label class="radio inline">
+                                <input type="radio" name="p1Target" id="p1Target-20"  value="20">20
+                            </label>
+                            <label class="radio inline">
+                                <input type="radio" name="p1Target" id="p1Target-19"  value="19">19
+                            </label>
+                        </div>
+                    </div> 
+                    <div class="row-fluid playerComputer">
+                        <div class="span12">
+                            <label>Level</label>
+                            <input type="range" min="0" max="15" id="p1Level">
+                            <span id="p1LevelDisplay"></span>
+                        </div>
+                    </div> 
+                </div>
+                <div class="span6 p2">
+                    <h4>Second player</h4>
+                    <div class="row-fluid">
+                        <div class="span12">
+                            <label class="checkbox">
+                                <input type="checkbox" id="p2IsComputer"> Computer?
+                            </label>
+                        </div>
+                    </div>
+                    <div class="row-fluid humanPlayer">
+                        <div class="span12">
+                            <label for="p1Name">Name</label>
+                            <input type="text" require id="p2Name" placeholder="First player name" value="" required>
+                        </div>
+                    </div>
+                    <div class="row-fluid humanPlayer">
+                        <div class="span12">
+                            <label for="p1Surname">Surname</label>
+                            <input type="text" require id="p2Surname" placeholder="First player surname" value="">
+                        </div>
+                    </div>
+                    <div class="row-fluid playerComputer">
+                        <div class="span12">
+                            <label>Default Target</label>
+                            <label class="radio inline">
+                                <input type="radio" name="p2Target" id="p2Target-20" value="20">20
+                            </label>
+                            <label class="radio inline">
+                                <input type="radio" name="p2Target" id="p2Target-19" value="19">19
+                            </label>
+                        </div>
+                    </div> 
+                    <div class="row-fluid playerComputer">
+                        <div class="span12">
+                            <label>Level</label>
+                            <input type="range" min="0" max="15" id="p2Level">
+                            <span id="p2LevelDisplay"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn" data-dismiss="modal">Close</a>
+            <button id="btnRunX01" class="btn btn-primary"><i class="icon-play icon-white"></i> Launch</button>
+        </div>
+        </form>
+    </div>
 
     <!-- Computer Throw Dialog -->
     <div id="computerThrowDialog" class="modal hide fade" >

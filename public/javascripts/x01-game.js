@@ -27,27 +27,31 @@ function GameX01(options) {
 
 			// check Winner
 			var toWin = option.nbSets;
-			for(var i=0; i<option.players.length; i++) {
-				var p = option.players[i];
-				if(toWin===this.getPlayerWin(p)) {
-					// Winner
-					winner = p;
-					this.displayFinished();
-					return;
-				}
+			var p = currentSet.getWinner();
+			if(toWin===this.getPlayerWin(p)) {
+				// Winner
+				winner = p;
+				this.displayFinished();
+				return;
 			}
-
+			
 			currentSet.displayFinished();
-
-			// Create a new Set
-			currentSet = new SetX01(this);
-			currentSet.start();
-
-			// Display new set
-			var $set = currentSet.display();
-			$("#game").append($set);
 		}
 	};
+
+	this.startNewSet = function() {
+		// Create a new Set
+		currentSet = new SetX01(this);
+		currentSet.start();
+
+		// Display new set
+		var $set = currentSet.display();
+		$("#game").append($set);
+
+		// go ahead
+		this.next();
+	};
+
 
 	// GameX01 displayFinished
 	this.displayFinished = function() {
@@ -67,20 +71,16 @@ function GameX01(options) {
 		for (var j=0; j< finishedSets.length; j++) {
 			var set = finishedSets[j];
 			msg += '<li class="nav-header">';
-			msg += set.getName();
-			msg += " - " + set.getWinner().getName();
+			msg += set.getNameWinner();
 			msg +="</li>";
-				
+
 			for(var i=0; i<option.players.length; i++) {
 				var p = option.players[i];
-				var win = this.getPlayerWin(p);
+				var win = set.getPlayerWin(p);
+
 				msg +="<li>";
-				if(toWin===win) {
-					msg += "<strong>" + p.getName() + ": " + win + "</strong>";
-				} else {
-					msg += p.getName() + ": " + win;
-				}
-				msg += "<br>&nbsp;&nbsp;";
+				msg += p.getName() + ": " + win;
+				msg += "&nbsp;&nbsp;";
 				msg += set.getPlayerSetScore(p);
 				msg +="</li>";
 			}
@@ -159,6 +159,8 @@ function GameX01(options) {
 				return;
 			}
 		}
+		$(".hero-unit").hide();
+
 		// Create set
 		currentSet = new SetX01(this);
 		currentSet.start();

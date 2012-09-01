@@ -28,11 +28,15 @@ function EntryX01(parentLeg, index) {
 			lastPlayer = players[0];
 		} else {
 			$("#"+parent.getInputPlayerId(lastPlayer)).attr("disabled","disabled");
-			// Lookup next player
-			for(var i=0; i<players.length; i++) {
-				if (players[i]===lastPlayer) {
-					lastPlayer = players[i+1];
-					break;
+
+			// Check
+			if (playerStatus[lastPlayer.uuid]!==null) {
+				// Lookup next player
+				for(var i=0; i<players.length; i++) {
+					if (players[i]===lastPlayer) {
+						lastPlayer = players[i+1];
+						break;
+					}
 				}
 			}
 		}
@@ -72,6 +76,7 @@ function EntryX01(parentLeg, index) {
 			lvl: lastPlayer.comLevel,
 			type: lastPlayer.comTarget
 		}, function(json) {
+			entry.nbDart = json.darts.length;
 			entry.showDart(entry, json, 0, callback);
 		});
 	};

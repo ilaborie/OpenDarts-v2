@@ -6,7 +6,7 @@
 var x01 =  {
 	options :  {
 		score: 501,
-		players: [],
+		players: [getPlayer("Philou"), getPlayer("HAL")],
 		nbSets: 1,
 		nbLegs: 1
 	},
@@ -67,26 +67,127 @@ var processFinish = function(nbDart, entry, callback) {
 // Show new X01
 var showNewX01 = function() {
 	// Show dialog with options
+	var lastOption;
+	if (x01.currentGame) {
+		lastOption = x01.currentGame.getOption();
+	} else {
+		lastOption = x01.options;
+	}
 
-	// XXX options
-	var newX01Options = $.extend({}, x01.options);
-	// XXX Players
+	// Set Options
+	$("#startScore").val(lastOption.score);
+	$("#nbSet").val(lastOption.nbSets);
+	$("#nbLeg").val(lastOption.nbLegs);
+
+	showPlayerDialog("p1", lastOption.players[0]);
+	showPlayerDialog("p2", lastOption.players[1]);
+
+	// Bind Click
+	$("#btnRunX01 form").unbind("submit").submit(launchX01);
+	$("#btnRunX01").unbind("click").click(launchX01);
+
+	// Show Dialog
+	$("#newX01Dialog").unbind("shown").on("shown",function() {
+		$("#startScore").focus();
+	});
+	$("#newX01Dialog").modal("show");
+};
+
+// Launch x01
+var launchX01 = function() {
+	// new option
+	var newX01Options = {};
+	newX01Options.score = parseInt($("#startScore").val(),10);
+	newX01Options.nbSets = parseInt($("#nbSet").val(),10);
+	newX01Options.nbLegs = parseInt($("#nbLeg").val(),10);
+
+	// Players
 	newX01Options.players = [];
-	newX01Options.players.push(getPlayer("Philou"));
-	newX01Options.players.push(getPlayer("HAL"));
+	newX01Options.players.push(getPlayer("p1"));
+	newX01Options.players.push(getPlayer("p2"));
 
 	// Create the new Game
 	var game = new GameX01(newX01Options);
-
+	$("#newX01Dialog").modal("hide");
+	
 	// Start
 	game.start();
 	x01.currentGame = game;
+	game.next();
+};
 
-	// Play
-	$("#btnRun").unbind('click');
-	$("#btnRun").removeClass("disabled").click(function() {
-		x01.currentGame.next();
+// Set player in dialog
+var showPlayerDialog = function(prefix, player) {
+	$("#" + prefix + "Name").val(player.name);
+	$("#" + prefix + "Surname").val(player.surname);
+
+	// Dynamic Player
+	$("#"+prefix+"IsComputer").unbind("change").change(function() {
+		if ($(this).is(":checked")) {
+			$("." + prefix + " .playerComputer").show();
+			$("." + prefix + " .humanPlayer").hide();
+		} else {
+			$("." + prefix + " .playerComputer").hide();
+			$("." + prefix + " .humanPlayer").show();
+		}
 	});
+
+	$("#"+prefix+"Level").change(function() {
+		$("#"+prefix+"LevelDisplay").html($("#"+prefix+"Level").val());
+	});
+
+	// Is computer
+	if (player.com) {
+		$("." + prefix + " .playerComputer").show();
+		$("." + prefix + " .humanPlayer").hide();
+		
+		$("#"+prefix+"IsComputer").attr("checked",true);
+		
+		// Target
+		$("#"+prefix+"Target-"+player.comTarget).attr("checked", true);
+
+		// Level
+		$("#"+prefix+"Level").val(player.comLevel);
+		$("#"+prefix+"LevelDisplay").html(player.comLevel);
+	} else {
+		$("." + prefix + " .playerComputer").hide();
+		$("." + prefix + " .humanPlayer").show();
+
+		$("#"+prefix+"IsComputer").removeAttr("checked");
+		$("#"+prefix+"Target-20").attr("checked", true);
+		$("#"+prefix+"Level").val("7");
+		$("#"+prefix+"LevelDisplay").html("7");
+	}
+};
+
+// Load player from dialog
+var getPlayer = function(prefix) {
+	var name;
+	var surname;
+
+	var isComputer = $("#"+prefix+"IsComputer").is(":checked");
+	if (isComputer) {
+		name = "Ishur #" + $("#"+prefix+"Level").val();
+		surname = "The Computer";
+	} else {
+		name = $("#" + prefix + "Name").val();
+		surname = $("#" + prefix + "Surname").val();
+
+		if (!name) {
+			name = "Mr. X";
+		}
+	}
+	
+	// Create player
+	var p = new Player(name, surname);
+
+	// Computer field
+	if (isComputer) {
+		p.com = true;
+		p.comLevel = $("#"+prefix+"Level").val();
+		p.comTarget = $("#newX01Dialog input[name="+prefix+"Target]:checked").val();
+	}
+	return p;
 };
 
 
