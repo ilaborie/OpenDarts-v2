@@ -100,13 +100,11 @@ function EntryX01(parentLeg, index) {
 
 			setTimeout(function() {
 				entry.showDart(entry, json, idx+1, callback);
-			},1000);
+			},800);
 		} else {
-			setTimeout(function() {
-				$("#computerThrowDialog").unbind("hidden").on("hidden",function() {
-					entry.handleNewInput(json.status, json.score, callback);
-				}).modal("hide");
-			},1000);
+			$("#computerThrowDialog").unbind("hidden").on("hidden",function() {
+				entry.handleNewInput(json.status, json.score, callback);
+			}).modal("hide");
 		}
 	};
 
