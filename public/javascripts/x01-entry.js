@@ -182,13 +182,11 @@ function EntryX01(parentLeg, index) {
 
 	// Process value
 	this.processValue = function(value,  callback) {
-		console.log("Process value: " + value);
 		var left = playerLeft[lastPlayer.uuid];
 		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
 		
 		var entry = this;
 		var status = analyseInputX01(this, value, left, function(status, nbDart) {
-			console.log("Satus: " + status +" nbDart: " + nbDart);
 			if (nbDart) {
 				entry.nbDart = nbDart;
 			}

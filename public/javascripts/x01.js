@@ -220,7 +220,6 @@ var validatePlayerThrow = function(event) {
 	var value = $this.val();
 	var status = validatePlayerValue(value);
 
-	console.log("Status for "+value +" => " + status);
 	event.target.setCustomValidity(status);
 };
 
