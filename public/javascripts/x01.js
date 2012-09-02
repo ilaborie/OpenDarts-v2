@@ -34,10 +34,9 @@ shortcuts[120] =  function(entry, callback) {
 	if (isInteger(value)) {
 		var val = parseInt(value, 10);
 		var score = (left - val);
-		entry.processValue(score,callback);
-	} else {
-		entry.processValue(value, callback);
+		$input.val(score);
 	}
+	$input.parent.submit();
 };
 shortcuts[121] =  function(entry, callback) { processFinish(1,entry, callback); };
 shortcuts[122] =  function(entry, callback) { processFinish(2,entry, callback); };
@@ -51,15 +50,10 @@ var processFinish = function(nbDart, entry, callback) {
 	var left = leg.getPlayerScore(player);
 
 	if (couldFinish(left, nbDart)) {
-		$input.parent().removeClass("error").removeAttr("title").tooltip("destroy");
-		entry.nbDart = nbDart;
-		entry.handleNewInput("win", left, callback);
-	} else {
-		// handle error
 		$input.val(left);
-		$input.parent().addClass("error").attr("title","Cheater !").tooltip({
-			placement : "bottom"
-		}).tooltip("show");
+		entry.nbDart = nbDart;
+		// Click on submit button
+		$("#"+entry.getParent().getSubmitPlayer(player)).click();
 	}
 };
 
@@ -192,7 +186,6 @@ var getPlayer = function(prefix) {
 	return p;
 };
 
-
 // Display one stats
  var displayStats = function($elt, name, tab) {
 	$elt.append($("<h5/>").append(name));
@@ -206,26 +199,43 @@ var getPlayer = function(prefix) {
 	$elt.append($stats);
 };
 
-
-
-
 // Validate Input
-var validateInputX01 = function(entry, input, score, callback) {
-	var status = null;
-	if (isInteger(input)) {
-		var val = parseInt(input, 10);
+var analyseInputX01 = function(entry, value, score, callback) {
+	var val = parseInt(value, 10);
+	if ((val > score) || (val === (score-1))) {
+		callback("broken");
+	} else if (val === score) {
+		if ((typeof entry.nbDart === "number") && (entry.nbDart>0)) {
+			callback("win", entry.nbDart);
+		} else {
+			getNbDart(val, callback);
+		}
+	} else {
+		callback("normal");
+	}
+};
+
+var validatePlayerThrow = function(event) {
+	var $this = $(this);
+	var value = $this.val();
+	var status = validatePlayerValue(value);
+
+	console.log("Status for "+value +" => " + status);
+	event.target.setCustomValidity(status);
+};
+
+var validatePlayerValue = function(value) {
+	var status = "";
+	if (value === "") {
+		status = "No score ?";
+	} else if (isInteger(value)) {
+		var val = parseInt(value, 10);
 		if (val<0) {
 			status = "Try harder ! You can make a positive score.";
 		} else if (val > 180 || val === 172 || val === 173 || val === 175 || val === 176 || val === 178 || val === 179) {
 			status = "Cheater !";
 		} else {
-			if ((val > score) || (val === (score-1))) {
-				status = "broken";
-			} else if (val === score) {
-				getNbDart(score, callback);
-			} else {
-				status = "normal";
-			}
+			status = "";
 		}
 	} else {
 		status = "Integer expected !";
@@ -241,7 +251,7 @@ var getNbDart = function(score, func) {
 	var btns = ["#btnThreeDarts", "#btnTwoDarts", "#btnOneDart"];
 
 	$btn = $(btns[0]);
-	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func(3); });
+	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func("win",3); });
 	if (couldFinish(score,3)) {
 		$btn.removeAttr("disabled");
 		$defaultButton = $btn;
@@ -250,7 +260,7 @@ var getNbDart = function(score, func) {
 	}
 
 	$btn = $(btns[1]);
-	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func(2); });
+	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func("win",2); });
 	if (couldFinish(score,2)) {
 		$btn.removeAttr("disabled");
 		$defaultButton = $btn;
@@ -259,7 +269,7 @@ var getNbDart = function(score, func) {
 	}
 
 	$btn = $(btns[2]);
-	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func(1); });
+	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func("win", 1); });
 	if (couldFinish(score,1)) {
 		$btn.removeAttr("disabled");
 		$defaultButton = $btn;
@@ -268,7 +278,7 @@ var getNbDart = function(score, func) {
 	}
 
 	// Broken
-	$("#btnBroken").unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func(0); });
+	$("#btnBroken").unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func("broken"); });
 
 	// Handle shortcuts
 	$("#nbDartDialog .btn").keydown(function(e) {

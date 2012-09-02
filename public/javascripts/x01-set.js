@@ -48,8 +48,9 @@ function SetX01(parentGame) {
 				winner = p;
 				parent.next();
 				return;
+			} else if (!this.isFinished()) {
+				currentLeg.displayFinished();
 			}
-			currentLeg.displayFinished();
 		}
 	};
 

@@ -24,12 +24,17 @@ function EntryX01(parentLeg, index) {
 
 	// EntryX01 next
 	this.next = function(callback) {
+		if (this.isFinished()) {
+			callback();
+		}
+
 		// Next player
 		if (!lastPlayer) {
 			// First player
 			lastPlayer = players[0];
 		} else {
 			$("#"+parent.getInputPlayerId(lastPlayer)).attr("disabled","disabled");
+			$("#"+parent.getInputPlayerId(lastPlayer)).blur();
 
 			// Check
 			if (playerStatus[lastPlayer.uuid]!==null) {
@@ -44,7 +49,31 @@ function EntryX01(parentLeg, index) {
 		}
 		
 		// Call score (handle input, status)
+		this.activatePlayer();
 		this.askNewInput(callback);
+	};
+	this.activatePlayer = function() {
+		var w = $(window).width();
+		if (w<768) {
+			var p;
+			var $head;
+			var $left;
+			for (var i=0; i<players.length; i++) {
+				p = players[i];
+				$head = $("#"+parent.getHeadPlayerId(p));
+				$left = $("#"+parent.getLeftPlayerId(p));
+				if (p.uuid===lastPlayer.uuid) {
+					$head.show();
+					$left.show();
+				} else {
+					$head.hide();
+					$left.hide();
+				}
+			}
+		} else {
+			$(".player-head").show();
+			$(".score-left").show();
+		}
 	};
 	// Ask an Input
 	this.askNewInput = function(callback) {
@@ -68,7 +97,6 @@ function EntryX01(parentLeg, index) {
 			return;
 		}
 		var score = parent.getPlayerScore(lastPlayer);
-		$input.focus();
 
 		// Open Dialog
 		var msg = lastPlayer.getName() + " require " + score;
@@ -111,23 +139,20 @@ function EntryX01(parentLeg, index) {
 	// askHumanPlayer
 	this.askHumanPlayer = function($input, callback) {
 		var entry = this;
-		$input.removeAttr("disabled","disabled").focus();
+		$input.removeAttr("disabled","disabled");
 		// Ask Human
-		$input.blur(function(e) {
-			// TODO Tab
-			//entry.processInput(e, callback);
+		$input.unbind("input").on("input",validatePlayerThrow);
+
+		//$input.unbind("blur").blur(function(e) {
+		//	$input.parent().submit();
+		//});
+		// Enter
+		$input.parent().unbind("submit").submit(function(e) {
+			if (this.checkValidity()) {
+				entry.processInput(entry, callback);
+			}
 			e.preventDefault();
 			return false;
-		});
-		// Enter
-		$input.keypress(function(e) {
-			var k = e.which;
-			if (k===13) { // Enter
-				entry.processInput(e, callback);
-				e.preventDefault();
-				return false;
-			}
-			return true;
 		});
 		// Shortcuts
 		$input.keyup(function(e) {
@@ -138,57 +163,37 @@ function EntryX01(parentLeg, index) {
 				e.preventDefault();
 				return false;
 			} else if (isInteger(fun)) {
-				var val = parseInt(fun,10);
-				entry.processValue(val,callback);
-				e.preventDefault();
-				return false;
+				$input.val(fun);
+				$input.parent().submit();
 			}
 			return true;
 		});
+
+		$input.focus();
 	};
 
 	// Process Input
-	this.processInput = function(e, callback){
+	this.processInput = function(entry, callback){
 		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
-				
 		var value = $input.val();
 		this.processValue(value, callback);
 	};
 
 	// Process value
 	this.processValue = function(value,  callback) {
+		console.log("Process value: " + value);
 		var left = playerLeft[lastPlayer.uuid];
 		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
-		$input.parent().removeClass("error").removeAttr("title").tooltip("destroy");
-
-		var status = validateInputX01(this, value, left, function(nbDart) {
-			entry.nbDart = nbDart;
-			switch(entry.nbDart) {
-				case 0:
-					status = "broken";
-					break;
-				case 1:
-				case 2:
-				case 3:
-					status = "win";
-					break;
-				default:
-					status = null;
-					break;
+		
+		var entry = this;
+		var status = analyseInputX01(this, value, left, function(status, nbDart) {
+			console.log("Satus: " + status +" nbDart: " + nbDart);
+			if (nbDart) {
+				entry.nbDart = nbDart;
 			}
-			// Go ahead
-			entry.handleNewInput(status, val, callback);
+			$input.unbind("blur").unbind("keyup");
+			entry.handleNewInput(status, parseInt(value,10), callback);
 		});
-		if (status==="normal" || status==="win" || status==="broken") {
-			// OK, let's go
-			$input.unbind("keypress").unbind("blur").unbind("keyup");
-			this.handleNewInput(status, parseInt(value, 10), callback);
-		} else if (status !== null){
-			// handle error
-			$input.parent().addClass("error").attr("title",status).tooltip({
-				placement : "bottom"
-			}).tooltip("show");
-		}
 	};
 
 	// Handle new input
@@ -196,9 +201,6 @@ function EntryX01(parentLeg, index) {
 		// Clear Input
 		$("#"+parent.getInputPlayerId(lastPlayer))
 			.attr("disabled","disabled").val("");
-
-		// Destroy tooltip
-		$(".tooltip").remove();
 
 		// update left, status, score
 		var left = playerLeft[lastPlayer.uuid];
@@ -251,35 +253,30 @@ function EntryX01(parentLeg, index) {
 	};
 	// Change a value
 	this.changeEntry = function($cell, player, value) {
+		var val = parseInt(value,10);
 		var left = this.getPreviousLeft(player);
 		var entry = this;
-		var status = validateInputX01(this, value, left, function(nbDart) {
-			entry.nbDart = nbDart;
-			switch(entry.nbDart) {
-				case 0:
-					status = "broken";
-					break;
-				case 1:
-				case 2:
-				case 3:
-					status = "win";
-					break;
-				default:
-					status = null;
-					break;
-			}
-			// Apply
-			var val = parseInt(value,10);
-			entry.applyChange($cell, val, player, status);
-		});
+		var status = validatePlayerValue(value);
 
-		if (status==="normal" || status==="win" || status==="broken") {
-			var val = parseInt(value,10);
-			this.applyChange($cell, val, player, status);
-		} else if (status !==null) {
-			// An error
+		if (status!=="") {
 			$cell.addClass("needEdit");
-		} // else handeled into a callback
+		} else {
+			if (val===left) {
+				getNbDart(left, function(status, nbDart) {
+					if (nbDart) {
+						entry.nbDart = nbDart;
+					}
+					entry.applyChange($cell, val, player, status);
+				});
+			} else {
+				// Process
+				analyseInputX01(this, value, left, function(status, nbDart) {
+					entry.nbDart = nbDart;
+					entry.applyChange($cell, val, player, status);
+				});
+			}
+		}
+
 	};
 	this.applyChange = function($cell, value, player, status) {
 		$cell.removeClass("needEdit").data("score",value);

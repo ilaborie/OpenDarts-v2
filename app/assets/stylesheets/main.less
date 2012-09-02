@@ -33,6 +33,21 @@ ul.game-detail li.set-detail {
 	background-color: @BoardDark;
 	background-image: url('/assets/images/dartboard-1.jpg');
 }
+@media (max-width: 979px) {
+	#body {
+		padding-top: 0px;
+		background-color: @BoardDark;
+		background-image: url('/assets/images/dartboard-1.jpg');
+	}	
+}
+
+// Modal
+/* fix modal position for 480px devices */
+@media (max-width: 678px) {
+    .modal.fade.in {
+        top: 10px;
+  }
+}
 
 #newX01Dialog form {
 	margin-bottom: 0px;
@@ -41,6 +56,7 @@ ul.game-detail li.set-detail {
 	.box-shadow(inset 0px 1px 48px rgba(0, 0, 0, 0.25));
 }
 
+// Page
 #breadcrumb {
 	margin-bottom: 5px;
 }
@@ -79,6 +95,7 @@ div.player-head {
 	padding-right: 1em;
 
 	h4 {
+		padding-bottom: 1px; // for phone & tablet
 		.badge-primary {
 			background-color: @btnPrimaryBackground;
 		}
@@ -92,6 +109,8 @@ div.player-head {
 div.players {
 }
 
+
+// Stats
 div.stats {
 	margin-top: .5em;
 	margin-bottom: .5em;
@@ -127,6 +146,11 @@ div.stats {
 		}
 	}
 }
+@media (max-width: 979px) {
+	div.stats {
+		display: none;
+	}
+}
 
 div.data {
 	.border-radius(4px);
@@ -140,7 +164,6 @@ div.score-left {
 	font-weight: bold;
 	padding-top: .5em;
 	padding-bottom: .5em;
-	margin-bottom: @baseLineHeight;
 
 	background-color: @BoardDark;
 	color: @BoardLight;
@@ -262,6 +285,7 @@ div.score-left {
 	}
 }
 
+
 .normal {
 }
 .win{
@@ -272,8 +296,7 @@ div.score-left {
 }
 
 // Inputs
-.cellInput input.playerInput[type="integer"] {
-	.box-shadow(inset 0px 1px 8px rgba(0, 0, 0, 0.75));
+.cellInput input.playerInput[type="number"] {
 	background-color: @yellow;
 	text-align: center;
 	height: 32px;

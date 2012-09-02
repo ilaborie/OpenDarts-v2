@@ -63,7 +63,7 @@ function LegX01(parentSet) {
 
 		// Update Left
 		$("#"+this.getLeftPlayerId(lastPlayer)).html(score);
-		window.scrollTo(0,document.body.scrollHeight);
+		//window.scrollTo(0,document.body.scrollHeight);
 
 		// Winning
 		if("win"===status) {
@@ -93,7 +93,7 @@ function LegX01(parentSet) {
 			e.updatePreviousLeft(player, score);
 			if (st === "normal") {
 				score -= e.getScoreAsInt(player);
-				if (score<=0) {
+				if (score<=0 || score===1) { // Invalid score
 					$("#"+e.getScoreId(player)).addClass("needEdit");
 				} else {
 					$("#"+e.getScoreId(player)).removeClass("needEdit");
@@ -210,6 +210,10 @@ function LegX01(parentSet) {
 	this.getEntries = function() {
 		return entries;
 	};
+	// Current entry
+	this.getCurrentEntry = function() {
+		return currentEntry;
+	};
 
 	// LegX01 start
 	this.start = function() {
@@ -226,6 +230,8 @@ function LegX01(parentSet) {
 
 	// LegX01 display
 	this.display = function() {
+		var w = $(window).width();
+		var isWideScreen = (w>=980);
 		// Create Leg
 		var $leg = $('<div/>').addClass("leg").attr("id",this.uuid);
 
@@ -270,11 +276,13 @@ function LegX01(parentSet) {
 			$h.append($progress);
 
 			playersheader[p.uuid] = $("<div/>").addClass("player-head").addClass("span6")
-				.attr("id","head-player-"+p.uuid).append($h);
+				.attr("id",this.getHeadPlayerId(p)).append($h);
 
 			// stat
-			var $stat = myself.createStats(p);
-			playersStats[p.uuid] = $stat;
+			if (isWideScreen) {
+				var $stat = myself.createStats(p);
+				playersStats[p.uuid] = $stat;
+			}
 
 			// Score
 			var $score = $("<div/>").addClass("score-left").addClass("span6")
@@ -285,20 +293,31 @@ function LegX01(parentSet) {
 		// Players header
 		var $head = $("<div/>").addClass("row-fluid");
 		$head.append(playersheader[player1.uuid]);
-		$head.append(playersheader[player2.uuid].addClass("pull-right"));
+		$head.append(playersheader[player2.uuid]);
 		$leg.append($head);
 
 		// Players div
 		var $players = $("<div/>").addClass("players").addClass("row-fluid");
-		$players.append(playersStats[player1.uuid]);
+		if (isWideScreen) {
+			$players.append(playersStats[player1.uuid]);
+		}
 
 		// div Table
-		var $divTable = $("<div>").addClass("data").addClass("span6");
+		var $divTable = $("<div>").addClass("data");
+		
+		if (isWideScreen) {
+			$divTable.addClass("span6");
+		} else {
+			$divTable.addClass("span12");
+		}
+
 		var $table = this.createTable(ps);
 		$divTable.append($table);
 		$players.append($divTable);
 
-		$players.append(playersStats[player2.uuid]);
+		if (isWideScreen) {
+			$players.append(playersStats[player2.uuid]);
+		}
 		$leg.append($players);
 
 		// Players scores
@@ -313,7 +332,7 @@ function LegX01(parentSet) {
 
 	// Player stats
 	this.createStats = function(player) {
-		var $stat = $("<div/>").addClass("stats").addClass("hidden-phone").addClass("span3").attr("id","stats-player-"+p.uuid).addClass("wip");
+		var $stat = $("<div/>").addClass("stats").addClass("visible-desktop").addClass("span3").attr("id","stats-player-"+p.uuid).addClass("wip");
 				
 		// Game
 		var gameStats = ["Sets","Legs", "Tons", "180", "60+", "100+","Avg.", "Avg. 3", "Avg. Leg", "Best Leg", "Best out"];
@@ -345,7 +364,7 @@ function LegX01(parentSet) {
 
 			$rowHead.append($("<th/>").addClass("cell").addClass("cellScore").append("Score"));
 			$rowHead.append($("<th/>").addClass("cell").addClass("cellStatus").append(
-				"&nbsp;&nbsp;&nbsp;"+parent.getOption().score+"&nbsp;&nbsp;&nbsp;"));
+				"&nbsp;&nbsp;"+parent.getOption().score+"&nbsp;&nbsp;"));
 		}
 	
 		$head.append($rowHead);
@@ -369,15 +388,19 @@ function LegX01(parentSet) {
 
 			var q = players[k];
 			var $input = $("<input/>",  {
-					type: "integer",
+					type: "number",
 					min: 0,
 					max: 180,
 					id: this.getInputPlayerId(q),
-					"class" : "playerInput"
+					"class" : "input-medium playerInput",
+					required: true
 				}).attr("disabled", "disabled");
+
+			var $form = $("<form/>").append($input);
+			$form.append($("<button/>").attr("type","submit").addClass("hide").attr("id",this.getSubmitPlayer(q)));
 		
 			$rowInput.append($('<td colspan="2"/>').addClass("cell").addClass("cellInput")
-				.addClass("control-group").append($input));
+				.addClass("control-group").append($form));
 		}
 	
 		$body.append($rowInput);
@@ -395,6 +418,12 @@ function LegX01(parentSet) {
 	// Left player id
 	this.getLeftPlayerId = function(player) {
 		return "left"+this.uuid+"-player" + player.uuid;
+	};
+	this.getHeadPlayerId = function(player) {
+		return "head"+this.uuid+"-player" + player.uuid;
+	};
+	this.getSubmitPlayer = function(player) {
+		return "submit"+this.uuid+"-player" + player.uuid;
 	};
 
 	// Players progress
