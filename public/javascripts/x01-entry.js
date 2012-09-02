@@ -139,13 +139,14 @@ function EntryX01(parentLeg, index) {
 	// askHumanPlayer
 	this.askHumanPlayer = function($input, callback) {
 		var entry = this;
+		var player = lastPlayer;
 		$input.removeAttr("disabled","disabled");
 		// Ask Human
 		$input.unbind("input").on("input",validatePlayerThrow);
 
-		//$input.unbind("blur").blur(function(e) {
-		//	$input.parent().submit();
-		//});
+		$input.unbind("blur").blur(function(e) {
+			$("#"+ parent.getSubmitPlayer(player)).click();
+		});
 		// Enter
 		$input.parent().unbind("submit").submit(function(e) {
 			if (this.checkValidity()) {

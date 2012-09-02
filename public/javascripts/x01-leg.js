@@ -396,7 +396,7 @@ function LegX01(parentSet) {
 					required: true
 				}).attr("disabled", "disabled");
 
-			var $form = $("<form/>").append($input);
+			var $form = $("<form/>").attr("action","#game").append($input);
 			$form.append($("<button/>").attr("type","submit").addClass("hide").attr("id",this.getSubmitPlayer(q)));
 		
 			$rowInput.append($('<td colspan="2"/>').addClass("cell").addClass("cellInput")
