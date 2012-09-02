@@ -75,6 +75,75 @@ function LegX01(parentSet) {
 		}
 	};
 
+	this.applyChange=function(entry, player) {
+		var score = parent.getOption().score;
+		var e;
+		var st;
+		var entriesToDestroy = [];
+		var winEntry = null;
+		var previousEntry = null;
+		for (var i=0; i< entries.length; i++) {
+			e = entries[i];
+			st = e.getStatus(player);
+			
+			if (winEntry!==null) {
+				entriesToDestroy.push(e);
+			}
+
+			e.updatePreviousLeft(player, score);
+			if (st === "normal") {
+				score -= e.getScoreAsInt(player);
+				if (score<=0) {
+					$("#"+e.getScoreId(player)).addClass("needEdit");
+				} else {
+					$("#"+e.getScoreId(player)).removeClass("needEdit");
+				}
+
+				e.updateScoreLeft(player, score);
+			} else if (st === "broken") {
+				e.updateScoreLeft(player, score);
+			} else if (st === "win") {
+				winEntry = e;
+				e.updateScoreLeft(player, 0);
+				if (i>0) {
+					previousEntry = entries[i-1];
+				}
+			}
+		}
+
+		// Handle wining entry
+		if (winEntry !== null) {
+			currentEntry = winEntry;
+			var p;
+			var flag = false;
+			for (var k=0; k< players.length; k++) {
+				p = players[k];
+				if (flag) {
+					winEntry.destroyPlayer(p);
+					if (previousEntry!==null) {
+						playersScore[p.uuid] = previousEntry.getLeftAsInt(p);// FIXME display left instead of score
+						$("#"+this.getLeftPlayerId(p)).html(playersScore[p.uuid]);
+					} else {
+						playersScore[p.uuid] = parent.getOption().score;
+						$("#"+this.getLeftPlayerId(p)).html(parent.getOption().score);
+					}
+				} else if (p.uuid === player.uuid) {
+					flag = true;
+				}
+			}
+		}
+
+		// Destroy obsolete entries
+		for (var j=0; j<entriesToDestroy.length; j++) {
+			// Update score
+			entriesToDestroy[j].destroy();
+		}
+
+		// update Leg player score
+		playersScore[player.uuid] = score;
+		$("#"+this.getLeftPlayerId(player)).html(score);
+	};
+
 	// LegX01 displayFinished
 	this.displayFinished = function() {
 		var title = this.getName() +" Finished!";
@@ -275,7 +344,8 @@ function LegX01(parentSet) {
 			}
 
 			$rowHead.append($("<th/>").addClass("cell").addClass("cellScore").append("Score"));
-			$rowHead.append($("<th/>").addClass("cell").addClass("cellStatus").append(parent.getOption().score));
+			$rowHead.append($("<th/>").addClass("cell").addClass("cellStatus").append(
+				"&nbsp;&nbsp;&nbsp;"+parent.getOption().score+"&nbsp;&nbsp;&nbsp;"));
 		}
 	
 		$head.append($rowHead);

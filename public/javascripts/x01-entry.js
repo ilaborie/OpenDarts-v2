@@ -11,6 +11,7 @@ function EntryX01(parentLeg, index) {
 
 	var playerScore = {};
 	var playerLeft = {};
+	var playerPreviousLeft = {};
 	var playerStatus = {}; // normal, win, broken
 	this.nbDart = null;
 	var winner = null;
@@ -18,12 +19,13 @@ function EntryX01(parentLeg, index) {
 	for (var i=0; i<players.length; i++) {
 		var p = players[i];
 		playerLeft[p.uuid] = parent.getPlayerScore(p);
+		playerPreviousLeft[p.uuid] = parent.getPlayerScore(p);
 	}
 
 	// EntryX01 next
 	this.next = function(callback) {
 		// Next player
-		if (lastPlayer === null) {
+		if (!lastPlayer) {
 			// First player
 			lastPlayer = players[0];
 		} else {
@@ -161,7 +163,24 @@ function EntryX01(parentLeg, index) {
 		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
 		$input.parent().removeClass("error").removeAttr("title").tooltip("destroy");
 
-		var status = validateInputX01(this, value, left, callback);
+		var status = validateInputX01(this, value, left, function(nbDart) {
+			entry.nbDart = nbDart;
+			switch(entry.nbDart) {
+				case 0:
+					status = "broken";
+					break;
+				case 1:
+				case 2:
+				case 3:
+					status = "win";
+					break;
+				default:
+					status = null;
+					break;
+			}
+			// Go ahead
+			entry.handleNewInput(status, val, callback);
+		});
 		if (status==="normal" || status==="win" || status==="broken") {
 			// OK, let's go
 			$input.unbind("keypress").unbind("blur").unbind("keyup");
@@ -180,9 +199,8 @@ function EntryX01(parentLeg, index) {
 		$("#"+parent.getInputPlayerId(lastPlayer))
 			.attr("disabled","disabled").val("");
 
-		// Destroy tooltip & modal
+		// Destroy tooltip
 		$(".tooltip").remove();
-		//$(".modal-backdrop").remove();
 
 		// update left, status, score
 		var left = playerLeft[lastPlayer.uuid];
@@ -191,22 +209,121 @@ function EntryX01(parentLeg, index) {
 		}
 
 		playerScore[lastPlayer.uuid] = value;
-		playerLeft[lastPlayer.uuid] = left;
 		playerStatus[lastPlayer.uuid] =status;
+		playerLeft[lastPlayer.uuid] = left;
 
 		if(status === "win") {
 			winner = lastPlayer;
 		}
 
 		// Update Entry display
+		$("#"+this.getLeftId(lastPlayer)).html(this.getLeft(lastPlayer));
 		$("#"+this.getScoreId(lastPlayer)).addClass(status).html(this.getScore(lastPlayer)).addClass(function() {
 			var z =  Math.floor(value/10);
 			return "score"+ z+"x";
 		});
-		$("#"+this.getLeftId(lastPlayer)).html(this.getLeft(lastPlayer));
+		if (!lastPlayer.com) {
+			var entry = this;
+			var player = lastPlayer;
+			$("#"+this.getScoreId(player)).data("score",value).attr("contentEditable", true)
+				.keyup(function(e) {
+					if (e.which==13) { // Enter pressed
+						var $this = $(this);
+						var value = ""+$(this).html();
+						value = value.replace(/<br>/g,"");
+						if ($this.data("score") != value) {
+							entry.changeEntry($this, player, value);
+						}
+						e.preventDefault();
+						return false;
+					}
+					return true;
+				}).blur(function() { // Focus Out
+					var $this = $(this);
+					var value = ""+$(this).html();
+					value = value.replace(/<br>/g,"");
+					if ($this.data("score") != value) {
+						entry.changeEntry($this, player, value);
+					}
+				});
+		}
 
 		// Et Hop!
 		callback();
+	};
+	// Change a value
+	this.changeEntry = function($cell, player, value) {
+		var left = this.getPreviousLeft(player);
+		var entry = this;
+		var status = validateInputX01(this, value, left, function(nbDart) {
+			entry.nbDart = nbDart;
+			switch(entry.nbDart) {
+				case 0:
+					status = "broken";
+					break;
+				case 1:
+				case 2:
+				case 3:
+					status = "win";
+					break;
+				default:
+					status = null;
+					break;
+			}
+			// Apply
+			var val = parseInt(value,10);
+			entry.applyChange($cell, val, player, status);
+		});
+
+		if (status==="normal" || status==="win" || status==="broken") {
+			var val = parseInt(value,10);
+			this.applyChange($cell, val, player, status);
+		} else if (status !==null) {
+			// An error
+			$cell.addClass("needEdit");
+		} // else handeled into a callback
+	};
+	this.applyChange = function($cell, value, player, status) {
+		$cell.removeClass("needEdit").data("score",value);
+		playerScore[player.uuid] = value;
+		playerStatus[player.uuid] = status;
+		$cell.addClass(status).addClass(function() {
+			var z =  Math.floor(value/10);
+			return "score"+ z+"x";
+		});
+
+		// Compute scores
+		parent.applyChange(this, player);
+		if (status==="win") {
+			$cell.html(this.getScore(player));
+			lastPlayer = player;
+			parent.afterEntryNext();
+		}
+	};
+
+	this.destroyPlayer = function(player) {
+		playerScore[player.uuid] = null;
+		playerStatus[player.uuid] = null;
+		playerLeft[player.uuid] = this.getPreviousLeft(player);
+
+		// update display
+		$("#"+this.getLeftId(player)).html(this.getLeft(player));
+		$("#"+this.getScoreId(player)).html(this.getScore(player));
+		if (!player.com) {
+			$("#"+this.getScoreId(player)).data("score",null);
+		}
+	};
+	this.destroy = function() {
+		$("#" + this.uuid).remove();
+	};
+
+	// Update the score
+	this.updateScoreLeft = function(player, score) {
+		playerLeft[player.uuid] = score;
+		$("#"+this.getLeftId(player)).html(this.getLeft(player));
+	};
+	this.updatePreviousLeft = function(player, score) {
+		playerPreviousLeft[player.uuid] = score;
 	};
 
 	// EntryX01 isFinished
@@ -241,6 +358,23 @@ function EntryX01(parentLeg, index) {
 			}
 		}
 		return res;
+	};
+	this.getScoreAsInt = function(player) {
+		var res = playerScore[player.uuid];
+		if ((res===null)||(typeof res!=="number")) {
+			res = 0;
+		}
+		return res;
+	};
+	this.getLeftAsInt = function(player) {
+		var res = playerLeft[player.uuid];
+		if ((res===null)||(typeof res!=="number")) {
+			res = 0;
+		}
+		return res;
+	};
+	this.getPreviousLeft = function(player) {
+		return playerPreviousLeft[player.uuid];
 	};
 	// getEntryScore
 	this.getEntryScore = function(player) {
@@ -279,7 +413,7 @@ function EntryX01(parentLeg, index) {
 
 	// EntryX01 display
 	this.display = function() {
-		var $rowEntry = $("<tr/>");
+		var $rowEntry = $("<tr/>").attr("id", this.uuid);
 
 		var ps = parent.getParent().getParent().getPlayers();
 		for(var j=0; j<ps.length; j++) {

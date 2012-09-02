@@ -210,7 +210,7 @@ var getPlayer = function(prefix) {
 
 
 // Validate Input
-var validateInputX01 = function(entry,input, score, callback) {
+var validateInputX01 = function(entry, input, score, callback) {
 	var status = null;
 	if (isInteger(input)) {
 		var val = parseInt(input, 10);
@@ -222,24 +222,7 @@ var validateInputX01 = function(entry,input, score, callback) {
 			if ((val > score) || (val === (score-1))) {
 				status = "broken";
 			} else if (val === score) {
-				getNbDart(score, function(nbDart) {
-					entry.nbDart = nbDart;
-					switch(entry.nbDart) {
-						case 0:
-							status = "broken";
-							break;
-						case 1:
-						case 2:
-						case 3:
-							status = "win";
-							break;
-						default:
-							status = null;
-							break;
-					}
-					// Go ahead
-					entry.handleNewInput(status, val, callback);
-				});
+				getNbDart(score, callback);
 			} else {
 				status = "normal";
 			}
