@@ -102,12 +102,15 @@ var launchX01 = function(event) {
 
 	// Create the new Game
 	var game = new GameX01(newX01Options);
-	$("#newX01Dialog").modal("hide");
 	
 	// Start
 	game.start();
 	x01.currentGame = game;
-	game.next();
+	
+	$("#newX01Dialog").unbind("hidden").on("hidden", function() {
+		x01.currentGame.next();
+	});
+	$("#newX01Dialog").modal("hide");
 
 	event.preventDefault();
 	return false;

@@ -144,9 +144,10 @@ function EntryX01(parentLeg, index) {
 		// Ask Human
 		$input.unbind("input").on("input",validatePlayerThrow);
 
-		$input.unbind("blur").blur(function(e) {
-			$("#"+ parent.getSubmitPlayer(player)).click();
-		});
+		// FIXME blur kill the editing entry
+		//$input.unbind("blur").blur(function(e) {
+		//	$("#"+ parent.getSubmitPlayer(player)).click();
+		//});
 		// Enter
 		$input.parent().unbind("submit").submit(function(e) {
 			if (this.checkValidity()) {
