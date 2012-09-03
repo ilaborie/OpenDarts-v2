@@ -31,7 +31,10 @@ function GameX01(options) {
 			if(toWin===this.getPlayerWin(p)) {
 				// Winner
 				winner = p;
+				x01.finishedGames.push(this);
+				x01.currentGame = null;
 				this.displayFinished();
+
 				return;
 			}
 			
@@ -179,10 +182,6 @@ function GameX01(options) {
 		var $game = $("#game");
 		// Clean old game
 		$game.empty();
-
-		// Title
-		$(".breadcrumb li h1:first-child").empty().append(this.getName());
-		$(".breadcrumb").removeClass("hide");
 
 		// Create Sets
 		$.each(this.getSets(), function(index, set){

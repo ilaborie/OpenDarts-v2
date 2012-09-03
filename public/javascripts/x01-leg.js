@@ -331,21 +331,31 @@ function LegX01(parentSet) {
 
 	// Player stats
 	this.createStats = function(player) {
-		var $stat = $("<div/>").addClass("stats").addClass("visible-desktop").addClass("span3").attr("id","stats-player-"+p.uuid).addClass("wip");
-				
-		// Game
-		var gameStats = ["Sets","Legs", "Tons", "180", "60+", "100+","Avg.", "Avg. 3", "Avg. Leg", "Best Leg", "Best out"];
-		displayStats($stat, "Game", gameStats);
+		var $stat = $("<div/>").addClass("stats").addClass("visible-desktop").addClass("span3").attr("id",this.getStatsPlayerId(player));
+		var opts = parent.getParent().getOption();
+		displayStats($stat, opts.stats.game);
+		displayStats($stat, opts.stats.set);
+		displayStats($stat, opts.stats.leg);
 
-		// Set
-		var setStats = ["Avg.", "Avg. 3", "Avg. Leg", "Best Leg"];
-		displayStats($stat, "Set", setStats);
-
-		// Leg
-		var legStats = ["Avg.", "Avg. 3"];
-		displayStats($stat, "Leg", legStats);
+		for(var i=0; i<players.length; i++) {
+			var p= players[i];
+			var statQuery = {
+				leg: this.uuid,
+				set: parent.uuid,
+				game: parent.getParent().uuid,
+				player: p.uuid
+			};
+			this.requestStats(statQuery, p);
+		}
 
 		return $stat;
+	};
+
+	this.requestStats = function(statQuery, player) {
+		var leg = this;
+		$.postJSON("/x01/stats", statQuery, function(json) {
+			handleStats(leg.getStatsPlayerId(player), json);
+		});
 	};
 
 	// Create Table
@@ -413,13 +423,15 @@ function LegX01(parentSet) {
 	this.getInputPlayerId = function(player) {
 		return "input"+this.uuid+"-player" + player.uuid;
 	};
-
 	// Left player id
 	this.getLeftPlayerId = function(player) {
 		return "left"+this.uuid+"-player" + player.uuid;
 	};
 	this.getHeadPlayerId = function(player) {
 		return "head"+this.uuid+"-player" + player.uuid;
+	};
+	this.getStatsPlayerId = function(player) {
+		return "stats"+this.uuid+"-player-"+player.uuid;
 	};
 	this.getSubmitPlayer = function(player) {
 		return "submit"+this.uuid+"-player" + player.uuid;

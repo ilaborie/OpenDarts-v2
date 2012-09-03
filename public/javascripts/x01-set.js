@@ -199,9 +199,6 @@ function SetX01(parentGame) {
 	this.display = function () {
 		var $set = $('<div/>').addClass("set").attr("id",this.uuid);
 
-		// Set title
-		$(".breadcrumb li h2:first-child").empty().append(this.getName());
-
 		// Create Legs
 		$.each(this.getLegs(), function (idx, leg){
 			var $leg = leg.display();

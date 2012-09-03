@@ -6,7 +6,9 @@
 GET     /                           controllers.Application.index()
 
 # x01
-POST	/x01/ComputerPlayer			controllers.ComputerPlayer.getThrow()
+POST	/x01/ComputerPlayer			controllers.GameX01.getComputerPlayerThrow()
+POST	/x01/throw					controllers.GameX01.pushThrow()
+POST	/x01/stats					controllers.GameX01.pushThrow()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

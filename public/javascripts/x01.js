@@ -10,7 +10,8 @@ var x01 =  {
 		nbSets: 1,
 		nbLegs: 1
 	},
-	currentGame: null
+	currentGame: null,
+	finishedGames: []
 };
 
 // Input Shortcurt definition
@@ -99,6 +100,7 @@ var launchX01 = function(event) {
 	newX01Options.players = [];
 	newX01Options.players.push(getPlayer("p1"));
 	newX01Options.players.push(getPlayer("p2"));
+	newX01Options.stats = x01.options.stats;
 
 	// Create the new Game
 	var game = new GameX01(newX01Options);
@@ -188,19 +190,6 @@ var getPlayer = function(prefix) {
 		p.comTarget = $("#newX01Dialog input[name="+prefix+"Target]:checked").val();
 	}
 	return p;
-};
-
-// Display one stats
- var displayStats = function($elt, name, tab) {
-	$elt.append($("<h5/>").append(name));
-	var $stats = $("<ul>").addClass("nav-stats").addClass("row-fluid");
-	$.each(tab, function(idx, stat) {
-		var $st = $("<li/>").addClass("stat").addClass("span6")
-			.append($("<label/>").append(stat))
-			.append($("<span/>").append(120));
-		$stats.append($st);
-	});
-	$elt.append($stats);
 };
 
 // Validate Input

@@ -222,9 +222,10 @@ function EntryX01(parentLeg, index) {
 			var z =  Math.floor(value/10);
 			return "score"+ z+"x";
 		});
+		var entry = this;
+		var player = lastPlayer;
 		if (!lastPlayer.com) {
-			var entry = this;
-			var player = lastPlayer;
+			// Enable Editing
 			$("#"+this.getScoreId(player)).data("score",value).attr("contentEditable", true)
 				.keyup(function(e) {
 					if (e.which==13) { // Enter pressed
@@ -247,6 +248,33 @@ function EntryX01(parentLeg, index) {
 					}
 				});
 		}
+		// Push stats
+		var statEntry = {
+			timestamp: new Date().getTime(),
+			entry: this.uuid,
+			leg: parent.uuid,
+			set: parent.getParent().uuid,
+			game: parent.getParent().getParent().uuid,
+			entryIndex: index,
+			player: lastPlayer.uuid,
+			score: value,
+			left: left,
+			status: status
+		};
+		if (status === "win") {
+			statEntry.legNbDarts = this.getNbDartsPlayed();
+		}
+		if (status === "broken") {
+			statEntry.score = 0;
+		}
+		if(typeof this.nbDart === "number") {
+			statEntry.nbDarts = this.nbDart;
+		} else {
+			statEntry.nbDarts = 3;
+		}
+		$.postJSON("/x01/throw", statEntry, function(json) {
+			handleStats(entry.getParent().getStatsPlayerId(player), json);
+		});
 
 		// Et Hop!
 		callback();
