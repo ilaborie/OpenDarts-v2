@@ -182,14 +182,14 @@ function SetX01(parentGame) {
 
 	// SetX01 getName
 	this.getName = function() {
-		var res = "Set #" + (id+1) + " - ";
+		var res = "Set #" + (id+1) + " <small>";
 		$.each(this.getPlayers(),function(index, p){
 			if (index!==0) {
 				res += ", ";
 			}
 			res += p.name;
 		});
-		return res;
+		return res + "</small>";
 	};
 	this.getNameWinner = function() {
 		return "Set #" + (id+1) + ": " + this.getWinner().getName();

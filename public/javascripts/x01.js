@@ -15,15 +15,15 @@ var x01 =  {
 
 // Input Shortcurt definition
 var shortcuts = [];
-shortcuts[112] =  0;
-shortcuts[113] =  26;
-shortcuts[114] =  41;
-shortcuts[115] =  45;
-shortcuts[116] =  60;
-shortcuts[117] =  81;
-shortcuts[118] =  85;
-shortcuts[119] =  100;
-shortcuts[120] =  function(entry, callback) {
+shortcuts[112] =  0;	// F1
+shortcuts[113] =  26;	// F2
+shortcuts[114] =  41;	// F3
+shortcuts[115] =  45;	// F4
+shortcuts[116] =  60;	// F5
+shortcuts[117] =  81;	// F6
+shortcuts[118] =  85;	// F7
+shortcuts[119] =  100;	// F8
+shortcuts[120] =  function(entry, callback) { // F9
 	var leg = entry.getParent();
 	var player = entry.getLastPlayer();
 	var left = leg.getPlayerScore(player);
@@ -36,11 +36,12 @@ shortcuts[120] =  function(entry, callback) {
 		var score = (left - val);
 		$input.val(score);
 	}
-	$input.parent.submit();
+	// Click on submit button
+	$("#"+entry.getParent().getSubmitPlayer(player)).click();
 };
-shortcuts[121] =  function(entry, callback) { processFinish(1,entry, callback); };
-shortcuts[122] =  function(entry, callback) { processFinish(2,entry, callback); };
-shortcuts[123] =  function(entry, callback) { processFinish(3,entry, callback); };
+shortcuts[121] =  function(entry, callback) { processFinish(1,entry, callback); }; // F10
+shortcuts[122] =  function(entry, callback) { processFinish(2,entry, callback); }; // F11
+shortcuts[123] =  function(entry, callback) { processFinish(3,entry, callback); }; // F12
 
 // Finish
 var processFinish = function(nbDart, entry, callback) {

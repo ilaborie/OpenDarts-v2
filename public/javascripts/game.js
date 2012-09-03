@@ -118,12 +118,17 @@ function Player(name, surname) {
 	// Name
 	this.getName = function() {
 		var res;
-		if (this.name && this.surname) {
-			res = this.name + " «"+this.surname+"»";
-		} else if (this.name) {
+		if (this.name) {
 			res = this.name;
 		} else {
 			res = this.id;
+		}
+		return res;
+	};
+	this.getFullName = function() {
+		var res = this.getName();
+		if (this.surname) {
+			res +=  " «"+this.surname+"»";
 		}
 		return res;
 	};

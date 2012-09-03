@@ -176,14 +176,14 @@ function LegX01(parentSet) {
 
 	// LegX01 getName
 	this.getName = function() {
-		var res = "Leg #" + (id+1) + " - ";
+		var res = "Leg #" + (id+1) + " <small>";
 		$.each(this.getPlayers(),function(index, p){
 			if (index!==0) {
 				res += ", ";
 			}
 			res += p.name;
 		});
-		return res;
+		return res + "</small>";
 	};
 	this.getNameWinner = function() {
 		return "Leg #" + (id+1);
@@ -255,12 +255,11 @@ function LegX01(parentSet) {
 		for (var idx=0; idx<players.length; idx++) {
 			p = players[idx];
 			// head
-			var name = p.getName();
 			var $h = $("<h4/>");
 			if (idx===0) {
 				$h.append($('<i class="icon-asterisk"></i>'));
 			}
-			$h.append(name);
+			$h.append(p.getFullName());
 
 			if (parent.getOption().nbSets>1) {
 				$h.append("&nbsp;");

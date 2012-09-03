@@ -141,7 +141,7 @@ function GameX01(options) {
 
 	// GameX01 getName
 	this.getName = function() {
-		var res =  "Game #"+ (id+1) +" - " ;
+		var res =  "Game #"+ (id+1) +" <small>" ;
 		$.each(this.getPlayers(),function(index, p){
 			if (index!==0) {
 				res += ", ";
@@ -149,7 +149,7 @@ function GameX01(options) {
 			res += p.name;
 		});
 
-		return res;
+		return res + "</small>";
 	};
 
 	// GameX01 start
