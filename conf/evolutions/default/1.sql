@@ -2,7 +2,6 @@
 # To stop Ebean DDL generation, remove this comment and start using Evolutions
 
 # --- !Ups
-
 create table stats_entry_x01 (
   id                        bigint not null,
   timestamp                 bigint,
@@ -20,19 +19,14 @@ create table stats_entry_x01 (
   constraint ck_stats_entry_x01_status check (status in ('normal','broken','win')),
   constraint pk_stats_entry_x01 primary key (id))
 ;
-
 create sequence stats_entry_x01_seq;
-
-
 
 
 # --- !Downs
 
 SET REFERENTIAL_INTEGRITY FALSE;
-
 drop table if exists stats_entry_x01;
 
 SET REFERENTIAL_INTEGRITY TRUE;
-
 drop sequence if exists stats_entry_x01_seq;
 
