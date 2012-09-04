@@ -72,8 +72,25 @@ var showNewX01 = function() {
 
 	// Set Options
 	$("#startScore").val(lastOption.score);
-	$("#nbSet").val(lastOption.nbSets);
 	$("#nbLeg").val(lastOption.nbLegs);
+	$("#nbSet").val(lastOption.nbSets);
+
+	if (lastOption.nbLegs>1) {
+		$(".nbSet").show();
+	} else {
+		$(".nbSet").hide();
+		$("#nbSet").val(1);
+	}
+
+	$("#nbLeg").on("input",function(e){
+		var nbLeg  = parseInt($("#nbLeg").val(),10);
+		if(nbLeg>1) {
+			$(".nbSet").show();
+		} else {
+			$(".nbSet").hide();
+			$("#nbSet").val(1);
+		}
+	});
 
 	showPlayerDialog("p1", lastOption.players[0]);
 	showPlayerDialog("p2", lastOption.players[1]);

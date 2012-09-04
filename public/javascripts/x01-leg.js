@@ -271,8 +271,10 @@ function LegX01(parentSet) {
 			}
 
 			// Multi Progress
-			var $progress = this.getPlayerProgress(p);
-			$h.append($progress);
+			if (parent.getOption().nbSets!=1 || parent.getOption().nbLegs!=1) {
+				var $progress = this.getPlayerProgress(p);
+				$h.append($progress);
+			}
 
 			playersheader[p.uuid] = $("<div/>").addClass("player-head").addClass("span6")
 				.attr("id",this.getHeadPlayerId(p)).append($h);
