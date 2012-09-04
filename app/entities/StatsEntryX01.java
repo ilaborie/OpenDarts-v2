@@ -9,6 +9,8 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -266,6 +268,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 
 	/** The id. */
 	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="stats_entry_x01_seq")
 	private Long id;
 
 	/** The timestamp. */
