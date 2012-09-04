@@ -6,11 +6,10 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -54,7 +53,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the int */
 	public static Integer countInGame(int score, String player, String game) {
 		String sql = String.format(
-				"SELECT count(score) as count FROM stats_entry_x01 WHERE player='%s' AND game='%s' AND  score=%s",
+				"SELECT count(score_done) as count FROM stats_entry_x01 WHERE player_id='%s' AND game_id='%s' AND  score_done=%s",
 				escapeSql(player), escapeSql(game), Integer.valueOf(score));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		SqlRow row = query.findUnique();
@@ -70,7 +69,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the int */
 	public static Integer rangeInGame(int from, int to, String player, String game) {
 		String sql = String
-				.format("SELECT count(score) as count FROM stats_entry_x01 WHERE player='%s' AND game='%s' AND  score>%s AND score<%s",
+				.format("SELECT count(score_done) as count FROM stats_entry_x01 WHERE player_id='%s' AND game_id='%s' AND  score_done>%s AND score_done<%s",
 						escapeSql(player), escapeSql(game), Integer.valueOf(from), Integer.valueOf(to));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		SqlRow row = query.findUnique();
@@ -84,7 +83,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the float */
 	public static Float avgDartInGame(String player, String game) {
 		String sql = String
-				.format("SELECT sum(score) as total, sum(nb_darts) as count FROM stats_entry_x01 WHERE player='%s' AND game='%s'",
+				.format("SELECT sum(score_done) as total, sum(nb_darts) as count FROM stats_entry_x01 WHERE player_id='%s' AND game_id='%s'",
 						escapeSql(player), escapeSql(game));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		SqlRow row = query.findUnique();
@@ -98,7 +97,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the float */
 	public static Float avgDartInSet(String player, String set) {
 		String sql = String
-				.format("SELECT sum(score) as total, sum(nb_darts) as count FROM stats_entry_x01 WHERE player='%s' AND set='%s'",
+				.format("SELECT sum(score_done) as total, sum(nb_darts) as count FROM stats_entry_x01 WHERE player_id='%s' AND set_id='%s'",
 						escapeSql(player), escapeSql(set));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		SqlRow row = query.findUnique();
@@ -129,7 +128,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the string */
 	public static Float avgLegInGame(String player, String game) {
 		String sql = String
-				.format("SELECT sum(leg_nb_darts) as total, count(leg_nb_darts) as count FROM stats_entry_x01 WHERE player='%s' AND game='%s' AND leg_nb_darts IS NOT NULL",
+				.format("SELECT sum(leg_nb_darts) as total, count(leg_nb_darts) as count FROM stats_entry_x01 WHERE player_id='%s' AND game_id='%s' AND leg_nb_darts IS NOT NULL",
 						escapeSql(player), escapeSql(game));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		SqlRow row = query.findUnique();
@@ -143,7 +142,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the float */
 	public static Float avgLegInSet(String player, String set) {
 		String sql = String
-				.format("SELECT sum(leg_nb_darts) as total, count(leg_nb_darts) as count FROM stats_entry_x01 WHERE player='%s' AND set='%s' AND leg_nb_darts IS NOT NULL",
+				.format("SELECT sum(leg_nb_darts) as total, count(leg_nb_darts) as count FROM stats_entry_x01 WHERE player_id='%s' AND set_id='%s' AND leg_nb_darts IS NOT NULL",
 						escapeSql(player), escapeSql(set));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		SqlRow row = query.findUnique();
@@ -157,7 +156,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the string */
 	public static Integer bestLegInGame(String player, String game) {
 		String sql = String
-				.format("SELECT min(leg_nb_darts) as best FROM stats_entry_x01 WHERE player='%s' AND game='%s' AND leg_nb_darts IS NOT NULL",
+				.format("SELECT min(leg_nb_darts) as best FROM stats_entry_x01 WHERE player_id='%s' AND game_id='%s' AND leg_nb_darts IS NOT NULL",
 						escapeSql(player), escapeSql(game));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		SqlRow row = query.findUnique();
@@ -174,7 +173,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the string */
 	public static Integer bestLegInSet(String player, String set) {
 		String sql = String
-				.format("SELECT min(leg_nb_darts) as best FROM stats_entry_x01 WHERE player='%s' AND set='%s' AND leg_nb_darts IS NOT NULL",
+				.format("SELECT min(leg_nb_darts) as best FROM stats_entry_x01 WHERE player_id='%s' AND set_id='%s' AND leg_nb_darts IS NOT NULL",
 						escapeSql(player), escapeSql(set));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		SqlRow row = query.findUnique();
@@ -192,7 +191,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the string */
 	public static String bestOutInGame(int min, String player, String game) {
 		String sql = String
-				.format("SELECT score FROM stats_entry_x01 WHERE player='%s' AND game='%s' AND score>%s AND leg_nb_darts IS NOT NULL",
+				.format("SELECT score_done as done FROM stats_entry_x01 WHERE player_id='%s' AND game_id='%s' AND score_done>%s AND leg_nb_darts IS NOT NULL",
 						escapeSql(player), escapeSql(game), Integer.valueOf(min));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		List<SqlRow> rows = query.findList();
@@ -202,7 +201,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 			boolean first = true;
 			Integer score;
 			for (SqlRow row : rows) {
-				score = row.getInteger("score");
+				score = row.getInteger("done");
 				if (score == null) {
 					continue;
 				}
@@ -225,7 +224,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the float */
 	public static Float avgDartInLeg(String player, String leg) {
 		String sql = String
-				.format("SELECT sum(score) as total, sum(nb_darts) as count FROM stats_entry_x01 WHERE player='%s' AND leg='%s'",
+				.format("SELECT sum(score_done) as total, sum(nb_darts) as count FROM stats_entry_x01 WHERE player_id='%s' AND leg_id='%s'",
 						escapeSql(player), escapeSql(leg));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		SqlRow row = query.findUnique();
@@ -245,7 +244,7 @@ public class StatsEntryX01 extends Model implements Serializable {
 		cal.add(Calendar.MINUTE, -1); // 1 min
 		long threshold = cal.getTimeInMillis();
 
-		String sql = "SELECT game, max(timestamp) as lastest  FROM stats_entry_x01 GROUP BY game";
+		String sql = "SELECT game_id as game, max(entry_timestamp) as lastest  FROM stats_entry_x01 GROUP BY game_id";
 		SqlQuery query = Ebean.createSqlQuery(sql);
 
 		List<String> games = Lists.newArrayList();
@@ -268,38 +267,48 @@ public class StatsEntryX01 extends Model implements Serializable {
 
 	/** The id. */
 	@Id
-	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="stats_entry_x01_seq")
+//	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="stats_entry_x01_seq")
 	private Long id;
 
 	/** The timestamp. */
+	@Column(name="entry_timestamp")
 	private long timestamp;
 
 	/** The game. */
+	@Column(name="game_id")
 	private String game;
 
 	/** The set. */
+	@Column(name="set_id")
 	private String set;
 
 	/** The leg. */
+	@Column(name="leg_id")
 	private String leg;
 
 	/** The entry. */
+	@Column(name="entry_id")
 	private String entry;
 
 	/** The entry index. */
+	@Column(name="entry_index")
 	private int entryIndex;
 
 	/** The player. */
+	@Column(name="player_id")
 	private String player;
 
 	/** The score. */
+	@Column(name="score_done")
 	private int score;
 
 	/** The left. */
+	@Column(name="score_left")
 	private int left;
 
 	/** The status. */
 	@Enumerated(EnumType.STRING)
+	@Column(name="throw_status")
 	private Status status;
 
 	/** The nb darts. */
