@@ -8,6 +8,7 @@ object ApplicationBuild extends Build {
   val appVersion = "2.0-SNAPSHOT"
 
   val appDependencies = Seq( // Add your project dependencies here,
+      "postgresql"    %   "postgresql"        % "9.1-901.jdbc4"
       // Not yet compatible: "com.google.guava" % "guava" % "13.0.1"
   )
 
