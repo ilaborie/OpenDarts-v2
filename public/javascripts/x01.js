@@ -151,10 +151,6 @@ var showPlayerDialog = function(prefix, player) {
 		}
 	});
 
-	$("#"+prefix+"Level").change(function() {
-		$("#"+prefix+"LevelDisplay").html($("#"+prefix+"Level").val());
-	});
-
 	// Is computer
 	if (player.com) {
 		$("." + prefix + " .playerComputer").show();
