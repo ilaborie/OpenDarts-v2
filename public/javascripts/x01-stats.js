@@ -1,4 +1,3 @@
-
 // Define stats
 /** Keys
 	count60, count100, count140, count180,
@@ -8,9 +7,7 @@
 	bestOut, OutOver100,
 	totalScore, totalDart,
 */
-
-
-x01.options.stats = {
+x01.stats = {
 	game: {
 		title: "Game",
 		key: "gameStats",
@@ -48,29 +45,33 @@ x01.options.stats = {
 };
 
 // Display one stats
- var displayStats = function($elt, stats) {
-	$elt.append($("<h5/>").append(stats.title));
-	var $stats = $("<ul>").addClass("nav-stats").addClass("row-fluid").addClass(stats.key);
+var displayStats = function(stats) {
+	var $title = $("<h5/>").append(stats.title);
+	var $stats = $("<div/>").addClass("row-fluid").addClass("statsEntries").addClass(stats.key);
 	$.each(stats.contents, function(idx, stat) {
-		var $st = $("<li/>").addClass("stat").addClass("span6")
+		var $st = $("<div/>").addClass("stat").addClass("span6")
 			.append($("<label/>").append(stat.label))
 			.append($("<span/>").append(" - ").addClass(stat.key));
 		$stats.append($st);
 	});
-	$elt.append($stats);
+	return $("<div/>")
+		.append($title)
+		.append($stats);
 };
 
 // Handle player stats
 var handleStats= function(eltId,  json) {
 	// Update Game stats
-	updateStats(eltId, x01.options.stats.game.key, json.gameStats);
-	updateStats(eltId, x01.options.stats.set.key, json.setStats);
-	updateStats(eltId, x01.options.stats.leg.key, json.legStats);
+	updateStats(eltId, x01.stats.game.key, json.gameStats);
+	updateStats(eltId, x01.stats.set.key, json.setStats);
+	updateStats(eltId, x01.stats.leg.key, json.legStats);
 };
 
 var updateStats = function(eltId, parentKey, stats) {
-	$.each(stats, function(idx, st) {
-		$("#"+eltId+" ." + parentKey+ " ." + st.key).html(st.value);
-	});
+	if (stats && stats.length) {
+		$.each(stats, function(idx, st) {
+			$("#"+eltId+" ." + parentKey+ " ." + st.key).html(st.value);
+		});
+	}
 };
 

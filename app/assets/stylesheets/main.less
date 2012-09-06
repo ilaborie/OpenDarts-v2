@@ -29,7 +29,7 @@ ul.game-detail li.set-detail {
 
 // Body
 #body {
-	padding-top: 50px; 
+	padding-top: 44px; 
 	background-color: @BoardDark;
 	background-image: url('/assets/images/dartboard-1.jpg');
 }
@@ -80,9 +80,6 @@ ul.game-detail li.set-detail {
 
 // Set
 div.set {
-	#translucent > .background(@white, .5);
-	.border-radius(4px);
-	padding: 5px;
 }
 
 // Leg
@@ -91,10 +88,11 @@ div.leg{
 
 div.player-head {
 	.whiteBox();
-	padding-left: 1em;
-	padding-right: 1em;
+	padding-left: .5em;
+	padding-right: .5em;
 
 	h4 {
+		margin-top: 0px;
 		padding-bottom: 1px; // for phone & tablet
 		.badge-primary {
 			background-color: @btnPrimaryBackground;
@@ -119,17 +117,11 @@ div.stats {
 
 	h5 {
 		color: @gray;
-		padding-left: 1.5em;
-		text-shadow: 0 1px 0 @white;
+		text-shadow: 0 1px 1px @grayLight;
 	}
-	ul.nav-stats {
-		margin-left: 0;
-		li.nav-header {
-			color: @BoardDark;
-			text-decoration: underline;
-		}
-		li.stat {
-			margin-left: 0;
+	div.statsEntries {
+		div.stat {
+			margin-left: 0px !important;
 			label {
 				text-shadow: 0 1px 0 @white;
 				color: @grayLight;
@@ -154,23 +146,24 @@ div.stats {
 }
 
 div.data {
-	.border-radius(4px);
-	margin-top: .5em;
-	margin-bottom: .5em;
+	overflow: auto;
 }
 
-div.score-left {
-	text-align: center;
-	font-size: 8em;
-	font-weight: bold;
-	padding-top: .5em;
-	padding-bottom: .5em;
+.score-left-container {
+	position: fixed;
+	bottom: 2px;
 
-	background-color: @BoardDark;
-	color: @BoardLight;
-	-webkit-border-radius: 9px;
-	.box-shadow(4px 4px 16px rgba(0, 0, 0, 0.75));
-	text-shadow: 4px 4px 16px fadeout(@BoardLight, 50%);
+	div.score-left {
+		text-align: center;
+		font-size: 7em;
+		font-weight: bold;
+		padding: .35em 0;
+
+		background-color: @BoardDark;
+		color: @BoardLight;
+		-webkit-border-radius: 9px;
+		text-shadow: 4px 4px 8px fadeout(@BoardLight, 50%);
+	}
 }
 
 #computerThrowDialog .modal-body {
@@ -306,7 +299,7 @@ div.score-left {
 	height: 32px;
 	font-size: 24px;
 	font-weight: bold;
-
+	margin-bottom: 0px;
 }
 .cellInput input.playerInput[disabled] {
 	background-color: @inputDisabledBackground;

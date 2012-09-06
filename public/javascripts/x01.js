@@ -14,6 +14,24 @@ var x01 =  {
 	finishedGames: []
 };
 
+// Scaffolding
+var tuningSize = function() {
+	var w = $(window).width();
+	var h = $(window).height();
+
+	// Resize table
+	var diff = $(".score-left-container").height() + 3 * ($(".score-left").height());
+	$(".leg .data").height(h - diff);
+};
+
+var isWideScreen = function () {
+	var w = $(window).width();
+	return (w>=980);
+};
+
+/**
+ * Shortcut
+ */
 // Input Shortcurt definition
 var shortcuts = [];
 shortcuts[112] =  0;	// F1
@@ -183,7 +201,7 @@ var getPlayer = function(prefix) {
 	var isComputer = $("#"+prefix+"IsComputer").is(":checked");
 	if (isComputer) {
 		name = "Ishur #" + $("#"+prefix+"Level").val();
-		surname = "The Computer";
+		surname = "Computer";
 	} else {
 		name = $("#" + prefix + "Name").val();
 		surname = $("#" + prefix + "Surname").val();

@@ -1,4 +1,4 @@
-/**
+		/**
  * LegX01 Object
  */
 function LegX01(parentSet) {
@@ -230,139 +230,59 @@ function LegX01(parentSet) {
 
 	// LegX01 display
 	this.display = function() {
-		var w = $(window).width();
-		var isWideScreen = (w>=980);
-		// Create Leg
-		var $leg = $('<div/>').addClass("leg").attr("id",this.uuid);
-
-		// Set title
-		$(".breadcrumb li h3:first-child").empty().append(this.getName());
-
 		// Players
 		var ps = parent.getParent().getPlayers();
 		if (ps.length!==2) {
 			throw "Expected 2 players !";
 		}
-		var player1 = ps[0];
-		var player2 = ps[1];
+		var p1 = ps[0];
+		var p2 = ps[1];
 		
-		// Players divs
+		// Players Elements
 		var playersheader= [];
 		var playersStats = [];
 		var playersScore = [];
-		var myself = this;
 
 		for (var idx=0; idx<players.length; idx++) {
 			p = players[idx];
-			// head
-			var $h = $("<h4/>");
-			if (idx===0) {
-				$h.append($('<i class="icon-asterisk"></i>'));
-			}
-			$h.append(p.getFullName());
 
-			if (parent.getOption().nbSets>1) {
-				$h.append("&nbsp;");
-				$h.append($("<span>").addClass("badge").addClass("badge-primary").append(parent.getParent().getPlayerWin(p)));
-			}
-			if (parent.getOption().nbLegs>1) {
-				$h.append("&nbsp;");
-				$h.append($("<span>").addClass("badge").addClass("badge-success").append(parent.getPlayerWin(p)));
-			}
-
-			// Multi Progress
-			if (parent.getOption().nbSets!=1 || parent.getOption().nbLegs!=1) {
-				var $progress = this.getPlayerProgress(p);
-				$h.append($progress);
-			}
-
-			playersheader[p.uuid] = $("<div/>").addClass("player-head").addClass("span6")
-				.attr("id",this.getHeadPlayerId(p)).append($h);
-
-			// stat
-			if (isWideScreen) {
-				var $stat = myself.createStats(p);
-				playersStats[p.uuid] = $stat;
-			}
-
-			// Score
-			var $score = $("<div/>").addClass("score-left").addClass("span6")
-				.attr("id",this.getLeftPlayerId(p)).append(this.getPlayerScore(p));
-			playersScore[p.uuid] = $score;
+			playersheader[p.uuid] = this.getPlayerHead(p);
+			playersStats[p.uuid] = this.getPlayerStats(p);
+			playersScore[p.uuid] = this.getPlayerLeft(p);
 		}
 
-		// Players header
-		var $head = $("<div/>").addClass("row-fluid");
-		$head.append(playersheader[player1.uuid]);
-		$head.append(playersheader[player2.uuid]);
-		$leg.append($head);
+		// Col 1
+		var $p1Col = $("<div/>")
+			.append(playersheader[p1.uuid])
+			.append(playersStats[p1.uuid]);
 
-		// Players div
-		var $players = $("<div/>").addClass("players").addClass("row-fluid");
-		if (isWideScreen) {
-			$players.append(playersStats[player1.uuid]);
-		}
+		// Col 2
+		var $p2Col = $("<div/>")
+			.append(playersheader[p2.uuid])
+			.append(playersStats[p2.uuid]);
 
 		// div Table
 		var $divTable = $("<div>").addClass("data");
-		
-		if (isWideScreen) {
-			$divTable.addClass("span6");
-		} else {
-			$divTable.addClass("span12");
-		}
+		$divTable.append(this.createTable(ps));
 
-		var $table = this.createTable(ps);
-		$divTable.append($table);
-		$players.append($divTable);
+		// Score Left
+		var $legLeft = $("<div/>").addClass("container").addClass("score-left-container")
+			.append(playersScore[p1.uuid].addClass("span6"))
+			.append(playersScore[p2.uuid].addClass("span6"));
 
-		if (isWideScreen) {
-			$players.append(playersStats[player2.uuid]);
-		}
-		$leg.append($players);
-
-		// Players scores
-		var $scores = $("<div/>").addClass("row-fluid");
-		$scores.append(playersScore[player1.uuid]);
-		$scores.append(playersScore[player2.uuid]);
-
-		$leg.append($scores);
+		// Assemble Leg
+		var $leg = $('<div/>').addClass("leg").addClass("row-fluid").attr("id",this.uuid)
+			.append($p1Col.addClass("span3"))
+			.append($divTable.addClass("span6"))
+			.append($p2Col.addClass("span3"))
+			.append($legLeft);
 
 		return $leg;
 	};
 
-	// Player stats
-	this.createStats = function(player) {
-		var $stat = $("<div/>").addClass("stats").addClass("visible-desktop").addClass("span3").attr("id",this.getStatsPlayerId(player));
-		var opts = parent.getParent().getOption();
-		displayStats($stat, opts.stats.game);
-		displayStats($stat, opts.stats.set);
-		displayStats($stat, opts.stats.leg);
-
-		for(var i=0; i<players.length; i++) {
-			var p= players[i];
-			var statQuery = {
-				leg: this.uuid,
-				set: parent.uuid,
-				game: parent.getParent().uuid,
-				player: p.uuid
-			};
-			this.requestStats(statQuery, p);
-		}
-
-		return $stat;
-	};
-
-	this.requestStats = function(statQuery, player) {
-		var leg = this;
-		$.postJSON("/x01/stats", statQuery, function(json) {
-			handleStats(leg.getStatsPlayerId(player), json);
-		});
-	};
-
 	// Create Table
 	this.createTable = function(players) {
-		var $res = $("<table/>").addClass("table").addClass("table-striped").addClass("table-bordered").addClass("tableScore");
+		var $res = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed").addClass("table-bordered").addClass("tableScore");
 
 		// Head
 		var $head = $("<thead/>");
@@ -370,12 +290,11 @@ function LegX01(parentSet) {
 
 		for(var i=0; i<players.length; i++) {
 			if (i!==0) {
-				$rowHead.append($("<th/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
+				$rowHead.append($("<td/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
 			}
 
-			$rowHead.append($("<th/>").addClass("cell").addClass("cellScore").append("Score"));
-			$rowHead.append($("<th/>").addClass("cell").addClass("cellStatus").append(
-				"&nbsp;&nbsp;"+parent.getOption().score+"&nbsp;&nbsp;"));
+			$rowHead.append($("<td/>").append("&nbsp;"));
+			$rowHead.append($("<th/>").addClass("cell").addClass("cellStatus").append(parent.getOption().score));
 		}
 	
 		$head.append($rowHead);
@@ -439,22 +358,86 @@ function LegX01(parentSet) {
 		return "submit"+this.uuid+"-player" + player.uuid;
 	};
 
-	// Players progress
-	this.getPlayerProgress = function(player) {
+	// Players Head
+	this.getPlayerHead = function(player) {
 		var nbSets = parent.getOption().nbSets;
 		var nbLegs = parent.getOption().nbLegs;
 
 		var setWin = parent.getParent().getPlayerWin(player);
 		var legWin = parent.getPlayerWin(player);
 
-		var progressSet = ( setWin / nbSets) * 100;
-		var progressLeg = (( legWin / nbLegs) * 100)/nbSets;
+		// Title
+		var $title = $("<h4/>");
+		if (players[0].uuid===player.uuid) {
+			$title.append($("<li/>").addClass("icon-asterisk"));
+		}
+		$title.append(p.getFullName());
 
-		var $progress = $("<div/>").addClass("progress").addClass("progress-striped")
-			.append($("<div/>").addClass("bar").attr("style", "width:" + (progressSet)+"%"))
-			.append($("<div/>").addClass("bar").addClass("bar-success").attr("style", "width:" + progressLeg+"%"));
+		// Leg and Set advance
+		if (parent.getOption().nbSets>1) {
+			$title.append("&nbsp;");
+			$title.append($("<span>").addClass("badge").addClass("badge-primary")
+				.append(parent.getParent().getPlayerWin(p)));
+		}
+		if (parent.getOption().nbLegs>1) {
+			$title.append("&nbsp;");
+			$title.append($("<span>").addClass("badge").addClass("badge-success")
+				.append(parent.getPlayerWin(p)));
+		}
 
-		return $progress;
+		// Set and Leg Progress
+		$progress = $("<div/>");
+		if (parent.getOption().nbSets!=1 || parent.getOption().nbLegs!=1) {
+			var progressSet = ( setWin / nbSets) * 100;
+			var progressLeg = (( legWin / nbLegs) * 100)/nbSets;
+
+			$progress.addClass("progress").addClass("progress-striped")
+				.append($("<div/>").addClass("bar").attr("style", "width:" + (progressSet)+"%"))
+				.append($("<div/>").addClass("bar").addClass("bar-success").attr("style", "width:" + progressLeg+"%"));
+		}
+
+		// Assemble
+		return $("<div/>").addClass("player-head").attr("id",this.getHeadPlayerId(p))
+			.append($title)
+			.append($progress);
+	};
+
+	this.getPlayerLeft = function(player) {
+		return $("<div/>").addClass("score-left")
+				.attr("id",this.getLeftPlayerId(p))
+				.append(this.getPlayerScore(p));
+	};
+
+	// Player stats
+	this.getPlayerStats = function(player) {
+		var $game = displayStats(x01.stats.game);
+		var $set = displayStats(x01.stats.set);
+		var $leg = displayStats(x01.stats.leg);
+
+		// Load stats
+		for(var i=0; i<players.length; i++) {
+			var p= players[i];
+			var statQuery = {
+				leg: this.uuid,
+				set: parent.uuid,
+				game: parent.getParent().uuid,
+				player: p.uuid
+			};
+			this.requestStats(statQuery, p);
+		}
+
+		return $("<div/>").addClass("stats").addClass("visible-desktop").attr("id",this.getStatsPlayerId(player))
+			.append($game)
+			.append($set)
+			.append($leg);
+	};
+
+	// Retrieve stats
+	this.requestStats = function(statQuery, player) {
+		var leg = this;
+		$.postJSON("/x01/stats", statQuery, function(json) {
+			handleStats(leg.getStatsPlayerId(player), json);
+		});
 	};
 
  }

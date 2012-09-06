@@ -78,6 +78,7 @@ function SetX01(parentGame) {
 		// Display new leg
 		var $leg = currentLeg.display();
 		$("#" + this.uuid).append($leg);
+		tuningSize();
 
 		// Go ahead
 		this.next();

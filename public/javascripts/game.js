@@ -97,6 +97,11 @@ var isInteger = function(s) {
   return ((""+s).search(/^-?[0-9]+$/) === 0);
 };
 
+var scollToBottom = function() {
+	var h = $(document).height();
+	$("body").scrollTop(h);
+};
+
 
 // TODO Board & Darts
 

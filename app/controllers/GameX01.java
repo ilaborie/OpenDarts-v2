@@ -17,6 +17,8 @@ import models.x01.Stats;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import com.google.common.base.Strings;
+
 import play.Logger;
 import play.Logger.ALogger;
 import play.mvc.BodyParser;
@@ -118,39 +120,45 @@ public class GameX01 extends Controller {
 		stats.setPlayer(player);
 
 		// Game stats
-		Float gameAvg = StatsEntryX01.avgDartInGame(player, game);
-		stats.setGameStats(Arrays.asList(
-				StatElement.create(StatKey.count60, StatsEntryX01.countInGame(60, player, game)),
-				StatElement.create(StatKey.count100, StatsEntryX01.countInGame(100, player, game)),
-				StatElement.create(StatKey.count140, StatsEntryX01.countInGame(140, player, game)),
-				StatElement.create(StatKey.count180, StatsEntryX01.countInGame(180, player, game)),
-				StatElement.create(StatKey.plus60, StatsEntryX01.rangeInGame(60, 100, player, game)),
-				StatElement.create(StatKey.plus100, StatsEntryX01.rangeInGame(100, 181, player, game)),
-				StatElement.create(StatKey.avgDart, gameAvg != null ? gameAvg : null),
-				StatElement.create(StatKey.avg3Dart, gameAvg != null ? Float.valueOf(gameAvg.floatValue() * 3f)
-						: null),
-				StatElement.create(StatKey.avgLeg, StatsEntryX01.avgLegInGame(player, game)),
-				StatElement.create(StatKey.bestLeg, StatsEntryX01.bestLegInGame(player, game)),
-				StatElement.create(StatKey.bestOut, StatsEntryX01.bestOutInGame(100, player, game))
-				));
+		if (!Strings.isNullOrEmpty(game)) {
+			Float gameAvg = StatsEntryX01.avgDartInGame(player, game);
+			stats.setGameStats(Arrays.asList(
+					StatElement.create(StatKey.count60, StatsEntryX01.countInGame(60, player, game)),
+					StatElement.create(StatKey.count100, StatsEntryX01.countInGame(100, player, game)),
+					StatElement.create(StatKey.count140, StatsEntryX01.countInGame(140, player, game)),
+					StatElement.create(StatKey.count180, StatsEntryX01.countInGame(180, player, game)),
+					StatElement.create(StatKey.plus60, StatsEntryX01.rangeInGame(60, 100, player, game)),
+					StatElement.create(StatKey.plus100, StatsEntryX01.rangeInGame(100, 181, player, game)),
+					StatElement.create(StatKey.avgDart, gameAvg != null ? gameAvg : null),
+					StatElement.create(StatKey.avg3Dart, gameAvg != null ? Float.valueOf(gameAvg.floatValue() * 3f)
+							: null),
+					StatElement.create(StatKey.avgLeg, StatsEntryX01.avgLegInGame(player, game)),
+					StatElement.create(StatKey.bestLeg, StatsEntryX01.bestLegInGame(player, game)),
+					StatElement.create(StatKey.bestOut, StatsEntryX01.bestOutInGame(100, player, game))
+					));
+		}
 
 		// Set stats
-		Float setAvg = StatsEntryX01.avgDartInSet(player, set);
-		stats.setSetStats(Arrays.asList(
-				StatElement.create(StatKey.avgDart, setAvg != null ? setAvg : null),
-				StatElement.create(StatKey.avg3Dart, setAvg != null ? Float.valueOf(setAvg.floatValue() * 3f)
-						: null),
-				StatElement.create(StatKey.avgLeg, StatsEntryX01.avgLegInSet(player, set)),
-				StatElement.create(StatKey.bestLeg, StatsEntryX01.bestLegInSet(player, set)))
-				);
+		if (!Strings.isNullOrEmpty(set)) {
+			Float setAvg = StatsEntryX01.avgDartInSet(player, set);
+			stats.setSetStats(Arrays.asList(
+					StatElement.create(StatKey.avgDart, setAvg != null ? setAvg : null),
+					StatElement.create(StatKey.avg3Dart, setAvg != null ? Float.valueOf(setAvg.floatValue() * 3f)
+							: null),
+					StatElement.create(StatKey.avgLeg, StatsEntryX01.avgLegInSet(player, set)),
+					StatElement.create(StatKey.bestLeg, StatsEntryX01.bestLegInSet(player, set)))
+					);
+		}
 
 		// Leg stats
-		Float legAvg = StatsEntryX01.avgDartInLeg(player, leg);
-		stats.setLegStats(Arrays.asList(
-				StatElement.create(StatKey.avgDart, legAvg != null ? legAvg : null),
-				StatElement.create(StatKey.avg3Dart, legAvg != null ? Float.valueOf(legAvg.floatValue() * 3f)
-						: null)
-				));
+		if (!Strings.isNullOrEmpty(leg)) {
+			Float legAvg = StatsEntryX01.avgDartInLeg(player, leg);
+			stats.setLegStats(Arrays.asList(
+					StatElement.create(StatKey.avgDart, legAvg != null ? legAvg : null),
+					StatElement.create(StatKey.avg3Dart, legAvg != null ? Float.valueOf(legAvg.floatValue() * 3f)
+							: null)
+					));
+		}
 		return stats;
 	}
 }

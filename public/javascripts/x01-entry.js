@@ -24,6 +24,8 @@ function EntryX01(parentLeg, index) {
 
 	// EntryX01 next
 	this.next = function(callback) {
+		scollToBottom();
+		
 		if (this.isFinished()) {
 			callback();
 		}

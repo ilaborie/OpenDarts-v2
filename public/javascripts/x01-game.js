@@ -50,6 +50,7 @@ function GameX01(options) {
 		// Display new set
 		var $set = currentSet.display();
 		$("#game").append($set);
+		tuningSize();
 
 		// go ahead
 		this.next();
@@ -192,5 +193,6 @@ function GameX01(options) {
 			$game.append($set);
 
 		});
+		tuningSize();
 	};
 }
