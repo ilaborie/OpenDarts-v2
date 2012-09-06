@@ -287,16 +287,14 @@ function LegX01(parentSet) {
 		// Head
 		var $head = $("<thead/>");
 		var $rowHead = $("<tr/>");
-
 		for(var i=0; i<players.length; i++) {
 			if (i!==0) {
-				$rowHead.append($("<td/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
+				$rowHead.append($("<th/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
 			}
 
-			$rowHead.append($("<td/>").append("&nbsp;"));
+			$rowHead.append($("<th/>").append($("<small/>").append(players[i].getName())));
 			$rowHead.append($("<th/>").addClass("cell").addClass("cellStatus").append(parent.getOption().score));
 		}
-	
 		$head.append($rowHead);
 		
 		// Body
@@ -327,7 +325,9 @@ function LegX01(parentSet) {
 				}).attr("disabled", "disabled");
 
 			var $form = $("<form/>").attr("action","#game").append($input);
-			$form.append($("<button/>").attr("type","submit").addClass("hide").attr("id",this.getSubmitPlayer(q)));
+			$form.append(
+				$("<button/>").attr("type","submit").addClass("btn").addClass("btn-success").addClass("hide").attr("id",this.getSubmitPlayer(q))
+				.html($("<i/>").addClass("icon-white").addClass("icon-play")));
 		
 			$rowInput.append($('<td colspan="2"/>').addClass("cell").addClass("cellInput")
 				.addClass("control-group").append($form));

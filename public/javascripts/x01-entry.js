@@ -25,7 +25,7 @@ function EntryX01(parentLeg, index) {
 	// EntryX01 next
 	this.next = function(callback) {
 		scollToBottom();
-		
+
 		if (this.isFinished()) {
 			callback();
 		}
@@ -57,24 +57,16 @@ function EntryX01(parentLeg, index) {
 	this.activatePlayer = function() {
 		var w = $(window).width();
 		if (w<768) {
-			var p;
-			var $head;
-			var $left;
-			for (var i=0; i<players.length; i++) {
-				p = players[i];
-				$head = $("#"+parent.getHeadPlayerId(p));
-				$left = $("#"+parent.getLeftPlayerId(p));
-				if (p.uuid===lastPlayer.uuid) {
-					$head.show();
-					$left.show();
-				} else {
-					$head.hide();
-					$left.hide();
+			$(".cellInput input.playerInput").removeClass("input-medium").addClass("input-mini");
+			for(var i=0; i<players.length; i++) {
+					if (players[i].uuid===lastPlayer.uuid) {
+						$("#"+parent.getSubmitPlayer(players[i])).show();
+					} else {
+						$("#"+parent.getSubmitPlayer(players[i])).hide();
+					}
 				}
-			}
 		} else {
-			$(".player-head").show();
-			$(".score-left").show();
+			$("#"+parent.getSubmitPlayer(lastPlayer)).hide();
 		}
 	};
 	// Ask an Input

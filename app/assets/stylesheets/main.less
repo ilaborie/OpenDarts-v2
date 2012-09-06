@@ -51,7 +51,7 @@ ul.game-detail li.set-detail {
 
 #newX01Dialog form {
 	margin-bottom: 0px;
-	
+
 	label.radio {
 		padding-top: 0px !important;
 	}
@@ -105,6 +105,11 @@ div.player-head {
 			.box-shadow(inset 0px 1px 8px rgba(0, 0, 0, 0.75));
 			margin: .5em 1em .5em 1em;
 		}
+	}
+}
+@media (max-width: 979px) {
+	div.player-head {
+		display: none;
 	}
 }
 
@@ -167,6 +172,11 @@ div.data {
 		color: @BoardLight;
 		-webkit-border-radius: 9px;
 		text-shadow: 4px 4px 8px fadeout(@BoardLight, 50%);
+	}
+}
+@media (max-width: 979px) {
+	.score-left-container {
+		display: none;
 	}
 }
 

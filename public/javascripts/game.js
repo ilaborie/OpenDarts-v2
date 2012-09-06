@@ -98,8 +98,10 @@ var isInteger = function(s) {
 };
 
 var scollToBottom = function() {
-	var h = $(document).height();
-	$("body").scrollTop(h);
+	if ($(".score-left-container").is(":visible")) {
+		var h = $(document).height();
+		$("body").scrollTop(h);
+	}
 };
 
 

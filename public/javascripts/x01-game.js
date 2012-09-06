@@ -49,7 +49,7 @@ function GameX01(options) {
 
 		// Display new set
 		var $set = currentSet.display();
-		$("#game").append($set);
+		$("#game").empty().append($set);
 		tuningSize();
 
 		// go ahead
