@@ -145,6 +145,7 @@ function EntryX01(parentLeg, index) {
 		// Enter
 		$input.parent().unbind("submit").submit(function(e) {
 			if (this.checkValidity()) {
+
 				entry.processInput(entry, callback);
 			}
 			e.preventDefault();
@@ -192,6 +193,10 @@ function EntryX01(parentLeg, index) {
 
 	// Handle new input
 	this.handleNewInput = function(status, value, callback) {
+		if (isNaN(value)) {
+			return;
+		}
+
 		// Clear Input
 		$("#"+parent.getInputPlayerId(lastPlayer))
 			.attr("disabled","disabled").val("");

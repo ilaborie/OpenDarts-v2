@@ -225,8 +225,15 @@ var getPlayer = function(prefix) {
 
 // Validate Input
 var analyseInputX01 = function(entry, value, score, callback) {
+	if (!$.isNumeric(value)) {
+		// Skip this input
+		return;
+	}
 	var val = parseInt(value, 10);
-	if ((val > score) || (val === (score-1))) {
+	if (isNaN(val)) {
+		// Skip this input
+		return;
+	} else if ((val > score) || (val === (score-1))) {
 		callback("broken");
 	} else if (val === score) {
 		if ((typeof entry.nbDart === "number") && (entry.nbDart>0)) {
@@ -251,12 +258,16 @@ var validatePlayerValue = function(value) {
 	var status = "";
 	if (value === "") {
 		status = "No score ?";
+	} else if (isNaN(value) || !$.isNumeric(value)) {
+		status = "?";
 	} else if (isInteger(value)) {
 		var val = parseInt(value, 10);
-		if (val<0) {
+		if (isNaN(val)) {
+			status = "?";
+		} else if (val<0) {
 			status = "Try harder ! You can make a positive score.";
 		} else if (val > 180 || val === 172 || val === 173 || val === 175 || val === 176 || val === 178 || val === 179) {
-			status = "Cheater !";
+			status = "Sly !";
 		} else {
 			status = "";
 		}
