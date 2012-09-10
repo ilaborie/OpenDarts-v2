@@ -99,15 +99,18 @@ function LegX01(parentSet) {
 					$("#"+e.getScoreId(player)).removeClass("needEdit");
 				}
 
-				e.updateScoreLeft(player, score);
+				e.updateScoreLeftDisplay(player, score);
 			} else if (st === "broken") {
-				e.updateScoreLeft(player, score);
+				e.updateScoreLeftDisplay(player, score);
 			} else if (st === "win") {
 				winEntry = e;
-				e.updateScoreLeft(player, 0);
+				e.updateScoreLeftDisplay(player, 0);
 				if (i>0) {
 					previousEntry = entries[i-1];
 				}
+			} else {
+				// Not yet played
+				e.updateScoreLeft(player, score);
 			}
 		}
 

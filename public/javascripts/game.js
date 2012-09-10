@@ -2,15 +2,32 @@
 
 // Utilities
 
-$.postJSON = function(url, data, callback) {
+$.postJSON = function(url, data, callback, onError) {
+	var fun = doOnError;
+	if (onError && $.isFunction(onError)) {
+		fun = onError;
+	}
     return jQuery.ajax({
-        'type': 'POST',
-        'url': url,
-        'contentType': 'application/json',
-        'data': JSON.stringify(data),
-        'dataType': 'json',
-        'success': callback
+        type: "POST",
+        url: url,
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        dataType: "json",
+        success: callback,
+        timeout: 3000,
+		tryCount : 0,
+		retryLimit : 3,
+        onError: fun
     });
+};
+
+var doOnError = function(xhr, textStatus, errorThrown) {
+	var msg = "Error: " +textStatus +"\n"+errorThrown;
+	console.log(msg);
+	createNotice({
+		kind: "error",
+		message: msg
+	});
 };
 
 /**

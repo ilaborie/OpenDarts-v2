@@ -31,23 +31,14 @@ function EntryX01(parentLeg, index) {
 		}
 
 		// Next player
-		if (!lastPlayer) {
-			// First player
-			lastPlayer = players[0];
+		if (lastPlayer===null) {
+			lastPlayer = players[0]; // First player
 		} else {
 			$("#"+parent.getInputPlayerId(lastPlayer)).attr("disabled","disabled");
 			$("#"+parent.getInputPlayerId(lastPlayer)).blur();
 
-			// Check
-			if (playerStatus[lastPlayer.uuid]!==null) {
-				// Lookup next player
-				for(var i=0; i<players.length; i++) {
-					if (players[i]===lastPlayer) {
-						lastPlayer = players[i+1];
-						break;
-					}
-				}
-			}
+			// get next player
+			lastPlayer = this.getNextPlayer();
 		}
 		
 		// Call score (handle input, status)
@@ -107,6 +98,18 @@ function EntryX01(parentLeg, index) {
 		}, function(json) {
 			entry.nbDart = json.darts.length;
 			entry.showDart(entry, json, 0, callback);
+		}, function(xhr, textStatus, errorThrown) {
+			if(textStatus==="timeout") {
+				this.tryCount++;
+				if (this.tryCount <= this.retryLimit) {
+					//try again
+					$.ajax(this);
+					return;
+				}
+			}
+			doOnError(xhr, textStatus, errorThrown);
+			$("#computerThrowDialog").modal("hide");
+			entry.next();
 		});
 	};
 
@@ -161,7 +164,8 @@ function EntryX01(parentLeg, index) {
 				return false;
 			} else if (isInteger(fun)) {
 				$input.val(fun);
-				$input.parent().submit();
+				e.target.setCustomValidity(status);
+				$("#"+entry.getParent().getSubmitPlayer(player)).click();
 			}
 			return true;
 		});
@@ -208,7 +212,7 @@ function EntryX01(parentLeg, index) {
 		}
 
 		playerScore[lastPlayer.uuid] = value;
-		playerStatus[lastPlayer.uuid] =status;
+		playerStatus[lastPlayer.uuid] = status;
 		playerLeft[lastPlayer.uuid] = left;
 
 		if(status === "win") {
@@ -228,26 +232,27 @@ function EntryX01(parentLeg, index) {
 			$("#"+this.getScoreId(player)).data("score",value).attr("contentEditable", true)
 				.keyup(function(e) {
 					if (e.which==13) { // Enter pressed
-						var $this = $(this);
-						var value = ""+$(this).html();
-						value = value.replace(/<br>/g,"");
-						if ($this.data("score") != value) {
-							entry.changeEntry($this, player, value);
-						}
+						entry.onEditedValue($(this), player);
 						e.preventDefault();
 						return false;
 					}
 					return true;
-				}).blur(function() { // Focus Out
-					var $this = $(this);
-					var value = ""+$(this).html();
-					value = value.replace(/<br>/g,"");
-					if ($this.data("score") != value) {
-						entry.changeEntry($this, player, value);
-					}
+				}).blur(function(e) { // Focus Out
+					entry.onEditedValue($(this), player);
+					e.preventDefault();
+					return false;
 				});
 		}
 		// Push stats
+		this.pushStats(value, left, status);
+
+		// Et Hop!
+		callback();
+	};
+	// Send entry to server for stats updating
+	this.pushStats = function(value, left, status) {
+		var entry = this;
+		var player = lastPlayer;
 		var statEntry = {
 			timestamp: new Date().getTime(),
 			entry: this.uuid,
@@ -274,9 +279,17 @@ function EntryX01(parentLeg, index) {
 		$.postJSON("/x01/throw", statEntry, function(json) {
 			handleStats(entry.getParent().getStatsPlayerId(player), json);
 		});
-
-		// Et Hop!
-		callback();
+	};
+	this.onEditedValue = function($this, player) {
+		var value = "" + $this.html();
+		if ($this.data("score") != value) {
+			value = value.replace(/<br>/g,"");
+			if (value) {
+				this.changeEntry($this, player, value);
+			} else {
+				$this.addClass("needEdit");
+			}
+		}
 	};
 	// Change a value
 	this.changeEntry = function($cell, player, value) {
@@ -285,6 +298,7 @@ function EntryX01(parentLeg, index) {
 		var entry = this;
 		var status = validatePlayerValue(value);
 
+		$cell.html(val);
 		if (status!=="") {
 			$cell.addClass("needEdit");
 		} else {
@@ -303,16 +317,22 @@ function EntryX01(parentLeg, index) {
 				});
 			}
 		}
-
 	};
+
 	this.applyChange = function($cell, value, player, status) {
-		$cell.removeClass("needEdit").data("score",value);
+		$cell.data("score",value);
 		playerScore[player.uuid] = value;
 		playerStatus[player.uuid] = status;
-		$cell.addClass(status).addClass(function() {
+
+		$cell.removeClass(function(idx, clazz){
+			return clazz;
+		});
+		$cell.addClass("cell").addClass("cellScore").addClass(status).addClass(function() {
 			var z =  Math.floor(value/10);
 			return "score"+ z+"x";
 		});
+
+		// FIXME push stats
 
 		// Compute scores
 		parent.applyChange(this, player);
@@ -334,15 +354,23 @@ function EntryX01(parentLeg, index) {
 		if (!player.com) {
 			$("#"+this.getScoreId(player)).data("score",null);
 		}
+		// FIXME destroy stats
 	};
 	this.destroy = function() {
 		$("#" + this.uuid).remove();
+		// FIXME destroy stats
 	};
 
 	// Update the score
+	this.updateScoreLeftDisplay = function(player, score) {
+		this.updateScoreLeft(player,score);
+		var $left = $("#"+this.getLeftId(player));
+		$left.html(this.getLeft(player));
+	};
 	this.updateScoreLeft = function(player, score) {
 		playerLeft[player.uuid] = score;
-		$("#"+this.getLeftId(player)).html(this.getLeft(player));
+		var $left = $("#"+this.getLeftId(player));
+		$left.html(this.getLeft(player));
 	};
 	this.updatePreviousLeft = function(player, score) {
 		playerPreviousLeft[player.uuid] = score;
@@ -350,7 +378,24 @@ function EntryX01(parentLeg, index) {
 
 	// EntryX01 isFinished
 	this.isFinished = function() {
-		return players[players.length-1] === lastPlayer;
+		return this.getNextPlayer()===null;
+	};
+	this.getNextPlayer = function() {
+		// if evry player has a status & a valid score ()
+		var status;
+		var score;
+		for (var i=0; i<players.length; i++) {
+			p = players[i];
+			score = playerScore[p.uuid];
+			status = playerStatus[p.uuid];
+			if (!(
+				((typeof score ==="number") && !isNaN(score)) &&
+				(status==="win" || status==="normal" || status==="broken"))) {
+				return p;
+			}
+		}
+
+		return null;
 	};
 
 	// EntryX01 getLastPlayer
