@@ -60,21 +60,6 @@ ul.game-detail li.set-detail {
 	.box-shadow(inset 0px 1px 48px rgba(0, 0, 0, 0.25));
 }
 
-// Page
-#breadcrumb {
-	margin-bottom: 5px;
-}
-
-#game {
-}
-
-.breadcrumb {
-	h1, h2, h3 {
-		display: inline;
-		text-shadow: 0 1px 0 @white;
-	}
-}
-
 // Custom mixins
 
 .whiteBox() {
@@ -82,29 +67,21 @@ ul.game-detail li.set-detail {
 	background-color: whiteSmoke;
 }
 
-// Set
-div.set {
-}
-
-// Leg
-div.leg{
-}
-
 div.player-head {
 	.whiteBox();
 	padding-left: .5em;
 	padding-right: .5em;
+	padding-bottom: 1px;
 
 	h4 {
 		margin-top: 0px;
-		padding-bottom: 1px; // for phone & tablet
 		.badge-primary {
 			background-color: @btnPrimaryBackground;
 		}
-		div.progress {
-			.box-shadow(inset 0px 1px 8px rgba(0, 0, 0, 0.75));
-			margin: .5em 1em .5em 1em;
-		}
+	}
+	div.progress {
+		.box-shadow(inset 0px 1px 8px rgba(0, 0, 0, 0.75));
+		margin-bottom: 0px;
 	}
 }
 @media (max-width: 979px) {
