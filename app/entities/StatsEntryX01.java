@@ -36,12 +36,16 @@ public class StatsEntryX01 extends Model implements Serializable {
 	public static Finder<Long, StatsEntryX01> find =
 			new Finder<Long, StatsEntryX01>(Long.class, StatsEntryX01.class);
 
-	/** Creates the entry.
+	/** Creates the or update.
 	 * 
 	 * @param entry the entry
 	 * @return the stats entry x01 */
-	public static StatsEntryX01 create(StatsEntryX01 entry) {
-		entry.save();
+	public static StatsEntryX01 createOrUpdate(StatsEntryX01 entry) {
+		if (entry.getId() != null) {
+			entry.update();
+		} else {
+			entry.save();
+		}
 		return entry;
 	}
 
@@ -52,9 +56,10 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @param game the game
 	 * @return the int */
 	public static Integer countInGame(int score, String player, String game) {
-		String sql = String.format(
-				"SELECT count(score_done) as count FROM stats_entry_x01 WHERE player_id='%s' AND game_id='%s' AND  score_done=%s",
-				escapeSql(player), escapeSql(game), Integer.valueOf(score));
+		String sql = String
+				.format(
+						"SELECT count(score_done) as count FROM stats_entry_x01 WHERE player_id='%s' AND game_id='%s' AND  score_done=%s",
+						escapeSql(player), escapeSql(game), Integer.valueOf(score));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		SqlRow row = query.findUnique();
 		return row.getInteger("count");
@@ -232,11 +237,9 @@ public class StatsEntryX01 extends Model implements Serializable {
 		return avgFloat(row);
 	}
 
-	/**
-	 * Clean games.
-	 *
-	 * @param timestamp the timestamp
-	 */
+	/** Clean games.
+	 * 
+	 * @param timestamp the timestamp */
 	public static void cleanGames(long timestamp) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(timestamp);
@@ -264,51 +267,58 @@ public class StatsEntryX01 extends Model implements Serializable {
 			Ebean.delete(StatsEntryX01.class, findIds);
 		}
 	}
+	
+	/**
+	 * Clean all.
+	 */
+	public static void cleanAll() {
+		Ebean.delete(StatsEntryX01.class,find.findIds());
+	}
 
 	/** The id. */
 	@Id
-//	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="stats_entry_x01_seq")
+	//	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="stats_entry_x01_seq")
 	private Long id;
 
 	/** The timestamp. */
-	@Column(name="entry_timestamp")
+	@Column(name = "entry_timestamp")
 	private long timestamp;
 
 	/** The game. */
-	@Column(name="game_id")
+	@Column(name = "game_id")
 	private String game;
 
 	/** The set. */
-	@Column(name="set_id")
+	@Column(name = "set_id")
 	private String set;
 
 	/** The leg. */
-	@Column(name="leg_id")
+	@Column(name = "leg_id")
 	private String leg;
 
 	/** The entry. */
-	@Column(name="entry_id")
+	@Column(name = "entry_id")
 	private String entry;
 
 	/** The entry index. */
-	@Column(name="entry_index")
+	@Column(name = "entry_index")
 	private int entryIndex;
 
 	/** The player. */
-	@Column(name="player_id")
+	@Column(name = "player_id")
 	private String player;
 
 	/** The score. */
-	@Column(name="score_done")
+	@Column(name = "score_done")
 	private int score;
 
 	/** The left. */
-	@Column(name="score_left")
+	@Column(name = "score_left")
 	private int left;
 
 	/** The status. */
 	@Enumerated(EnumType.STRING)
-	@Column(name="throw_status")
+	@Column(name = "throw_status")
 	private Status status;
 
 	/** The nb darts. */

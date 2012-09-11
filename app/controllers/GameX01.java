@@ -7,13 +7,14 @@ import static play.libs.Json.toJson;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import models.x01.ComputerThrow;
 import models.x01.ComputerThrowRequest;
 import models.x01.StatElement;
 import models.x01.StatKey;
-import models.x01.Stats;
+import models.x01.StatsX01;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -36,10 +37,19 @@ import entities.StatsEntryX01;
 /** The Class ComputerPlayer. */
 public class GameX01 extends Controller {
 
+	/** The logger. */
 	static ALogger logger = Logger.of("x01");
 
 	/** The Constant mapper. */
 	static final ObjectMapper mapper = new ObjectMapper();
+
+	/** The Constant STATS_JSON. */
+	static final Function<StatsX01, Result> STATS_JSON = new Function<StatsX01, Result>() {
+		@Override
+		public Result apply(StatsX01 comThrow) {
+			return ok(toJson(comThrow));
+		}
+	};
 
 	/** Gets the computer player throw.
 	 * 
@@ -71,12 +81,46 @@ public class GameX01 extends Controller {
 		}));
 	}
 
+	/** Load stats entry x01.
+	 * 
+	 * @return the result */
+	public static Result loadStatsEntryX01() {
+		Promise<List<StatsEntryX01>> promise = Akka.future(new Callable<List<StatsEntryX01>>() {
+			@Override
+			public List<StatsEntryX01> call() throws Exception {
+				return StatsEntryX01.find.all();
+			}
+		});
+
+		// Result
+		return async(promise.map(new Function<List<StatsEntryX01>, Result>() {
+			@Override
+			public Result apply(List<StatsEntryX01> list) {
+				return ok(toJson(list));
+			}
+		}));
+	}
+
+	/** Clear stats entry x01.
+	 * 
+	 * @return the result */
+	public static Result clearStatsEntryX01() {
+		if (logger.isInfoEnabled()) {
+			logger.info("Drop all entries");
+		}
+		StatsEntryX01.cleanAll();
+		return ok();
+	}
+
+	/** Push throw.
+	 * 
+	 * @return the result */
 	@BodyParser.Of(Json.class)
 	public static Result pushThrow() {
 		JsonNode json = request().body().asJson();
 		try {
 			StatsEntryX01 entry = mapper.readValue(json, StatsEntryX01.class);
-			entry = StatsEntryX01.create(entry);
+			entry = StatsEntryX01.createOrUpdate(entry);
 			if (logger.isTraceEnabled()) {
 				logger.trace("New entry: " + entry.getId());
 			}
@@ -89,19 +133,40 @@ public class GameX01 extends Controller {
 			String game = entry.getGame();
 			String set = entry.getSet();
 			String leg = entry.getLeg();
-			Promise<Stats> stats = loadStats(player, game, set, leg, entry.getTimestamp());
+			Promise<StatsX01> stats = loadStats(player, game, set, leg, entry);
 
 			// Result
-			return async(stats.map(new Function<Stats, Result>() {
-				@Override
-				public Result apply(Stats comThrow) {
-					return ok(toJson(comThrow));
-				}
-			}));
+			return async(stats.map(STATS_JSON));
 		} catch (IOException e) {
 			Logger.error("Oops!", e);
 			return badRequest(json);
 		}
+	}
+
+	/**
+	 * Destroy stats.
+	 *
+	 * @return the result
+	 */
+	public static Result destroyStats() {
+		JsonNode json = request().body().asJson();
+		try {
+			StatsEntryX01 entry = mapper.readValue(json, StatsEntryX01.class);
+			String player = entry.getPlayer();
+			String game = entry.getGame();
+			String set = entry.getSet();
+			String leg = entry.getLeg();
+			
+			StatsEntryX01.find.byId(entry.getId()).delete();
+			
+			Promise<StatsX01> stats = loadStats(player, game, set, leg, entry);
+			// Result
+			return async(stats.map(STATS_JSON));
+		} catch (IOException e) {
+			Logger.error("Oops!", e);
+			return badRequest(json);
+		}
+
 	}
 
 	/** Gets the stats.
@@ -119,30 +184,36 @@ public class GameX01 extends Controller {
 			String leg = entry.getLeg();
 
 			// Load stats
-			Promise<Stats> stats = loadStats(player, game, set, leg, entry.getTimestamp());
+			Promise<StatsX01> stats = loadStats(player, game, set, leg, entry);
 
 			// Result
-			return async(stats.map(new Function<Stats, Result>() {
-				@Override
-				public Result apply(Stats comThrow) {
-					return ok(toJson(comThrow));
-				}
-			}));
+			return async(stats.map(STATS_JSON));
 		} catch (IOException e) {
 			Logger.error("Oops!", e);
 			return badRequest(json);
 		}
 	}
 
-	private static Promise<Stats> loadStats(final String player, final String game, final String set, final String leg, final long timestamp) {
-		return Akka.future(new Callable<Stats>() {
+	/** Load stats.
+	 * 
+	 * @param player the player
+	 * @param game the game
+	 * @param set the set
+	 * @param leg the leg
+	 * @param entry the entry
+	 * @return the promise */
+	private static Promise<StatsX01> loadStats(final String player, final String game, final String set,
+			final String leg,
+			final StatsEntryX01 entry) {
+		return Akka.future(new Callable<StatsX01>() {
 			@Override
-			public Stats call() throws Exception {
-				Stats stats = new Stats();
+			public StatsX01 call() throws Exception {
+				StatsX01 stats = new StatsX01();
 
 				stats.setPlayer(player);
-				stats.setTimestamp(timestamp);
-				
+				stats.setTimestamp(entry.getTimestamp());
+				stats.setId(entry.getId());
+
 				// Game stats
 				if (!Strings.isNullOrEmpty(game)) {
 					Float gameAvg = StatsEntryX01.avgDartInGame(player, game);

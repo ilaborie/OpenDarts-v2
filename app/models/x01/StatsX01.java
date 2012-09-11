@@ -3,10 +3,13 @@ package models.x01;
 import java.util.List;
 
 /** The Class Stats. */
-public class Stats {
+public class StatsX01 {
 
 	/** The timestamp. */
 	private long timestamp;
+	
+	/** The id. */
+	private Long id;
 
 	/** The player. */
 	private String player;
@@ -92,6 +95,24 @@ public class Stats {
 	 */
 	public void setPlayer(String player) {
 		this.player = player;
+	}
+
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
+	public Long getId() {
+		return this.id;
+	}
+
+	/**
+	 * Sets the id.
+	 *
+	 * @param id the new id
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }

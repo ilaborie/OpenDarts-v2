@@ -13,6 +13,7 @@ function EntryX01(parentLeg, index) {
 	var playerLeft = {};
 	var playerPreviousLeft = {};
 	var playerStatus = {}; // normal, win, broken
+	var playerStatEntry = {};
 	this.nbDart = null;
 	var winner = null;
 
@@ -244,23 +245,23 @@ function EntryX01(parentLeg, index) {
 				});
 		}
 		// Push stats
-		this.pushStats(value, left, status);
+		this.pushStats(player, value, left, status, null);
 
 		// Et Hop!
 		callback();
 	};
 	// Send entry to server for stats updating
-	this.pushStats = function(value, left, status) {
+	this.pushStats = function(player, value, left, status, id) {
 		var entry = this;
-		var player = lastPlayer;
 		var statEntry = {
+			id: id,
 			timestamp: new Date().getTime(),
 			entry: this.uuid,
 			leg: parent.uuid,
 			set: parent.getParent().uuid,
 			game: parent.getParent().getParent().uuid,
 			entryIndex: index,
-			player: lastPlayer.uuid,
+			player: player.uuid,
 			score: value,
 			left: left,
 			status: status
@@ -277,8 +278,14 @@ function EntryX01(parentLeg, index) {
 			statEntry.nbDarts = 3;
 		}
 		$.postJSON("/x01/throw", statEntry, function(json) {
+			if (json.id) {
+				entry.updateStatEntry(player, json.id);
+			}
 			handleStats(entry.getParent().getStatsPlayerId(player), json);
 		});
+	};
+	this.updateStatEntry = function(player, id) {
+		playerStatEntry[player.uuid] = id;
 	};
 	this.onEditedValue = function($this, player) {
 		var value = "" + $this.html();
@@ -332,10 +339,14 @@ function EntryX01(parentLeg, index) {
 			return "score"+ z+"x";
 		});
 
-		// FIXME push stats
-
 		// Compute scores
 		parent.applyChange(this, player);
+		
+		// Push stats
+		var left = playerLeft[player.uuid];
+		this.pushStats(player, value, left, status, playerStatEntry[player.uuid]);
+		
+		// Handle winning throw
 		if (status==="win") {
 			$cell.html(this.getScore(player));
 			lastPlayer = player;
@@ -354,11 +365,36 @@ function EntryX01(parentLeg, index) {
 		if (!player.com) {
 			$("#"+this.getScoreId(player)).data("score",null);
 		}
-		// FIXME destroy stats
+		// Destroy stats
+		this.deletePlayerStats(player);
 	};
 	this.destroy = function() {
 		$("#" + this.uuid).remove();
-		// FIXME destroy stats
+
+		// Destroy stats
+		var player;
+		for (var i=0; i<players.length; i++) {
+			player = players[i];
+			if (playerStatEntry[player.uuid]) {
+				this.deletePlayerStats(player);
+			}
+		}
+	};
+	this.deletePlayerStats = function(player) {
+		var statEntry =  {
+			id: playerStatEntry[player.uuid],
+			timestamp: new Date().getTime(),
+			entry: this.uuid,
+			leg: parent.uuid,
+			set: parent.getParent().uuid,
+			game: parent.getParent().getParent().uuid,
+			entryIndex: index,
+			player: player.uuid
+		};
+		var entry = this;
+		$.deleteJSON("/x01/stats", statEntry, function(json) {
+			handleStats(entry.getParent().getStatsPlayerId(player), json);
+		});
 	};
 
 	// Update the score
