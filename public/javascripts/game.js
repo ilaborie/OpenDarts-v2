@@ -69,7 +69,7 @@ var createNotice = function(notice) {
  */
 var openModalDialog = function(title, message, buttons) {
 	$("#modalDialog .modal-header h3").html(title);
-	$("#modalDialog .modal-body p").html(message);
+	$("#modalDialog .modal-body p").empty().append(message);
 
 	var $buttonsBar = $("#modalDialog .modal-footer");
 	$buttonsBar.empty();

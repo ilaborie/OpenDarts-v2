@@ -11,6 +11,7 @@ function GameX01(options) {
 
 	// Status
 	var winner = null;
+	var stats = {};
 
 	if (x01.currentGame) {
 		id = x01.currentGame.getId() +1;
@@ -56,15 +57,63 @@ function GameX01(options) {
 		this.next();
 	};
 
-
 	// GameX01 displayFinished
 	this.displayFinished = function() {
 		var title = this.getName() +" Finished!";
-		var msg = "<h4>Winner: " + this.getWinner().getName() + "</h4>";
-		msg += '<ul class="nav nav-list game-detail">' + this.getGameScore() + '</ul>';
+		var $msg = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
+		var $head = $("<thead/>").append("<tr/>");
+		var $body = $("<tbody/>");
+		var player;
+		var clazz;
+		for (var i=0; i< options.players.length; i++) {
+			player = options.players[i];
+			clazz = "textRight";
+			if (i%2===1) {
+				clazz = "textLeft";
+				$head.append(
+					$("<td/>").addClass("textCenter").append(
+						this.getPlayerWin(players[i-1]) + " - "  + this.getPlayerWin(player)
+				));
+			}
+			if (winner.uuid === player.uuid) {
+				$head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
+			} else {
+				$head.append($("<td/>").addClass(clazz).append(player.getName()));
+			}
+		}
+		var $row;
+		for(var key in stats) {
+			$row = $("<tr/>");
+			for (var k=0; k<options.players.length; k++) {
+				player  = options.players[k];
+				clazz = "textRight";
+				if (k%2===1) {
+					clazz = "textLeft";
+					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.game, key)));
+				}
+				$row.append($("<td/>").addClass(clazz).append(stats[key][player.uuid]));
+			}
+			$body.append($row);
+		}
+		$msg.append($head).append($body);
 
 		// Notifiy
-		openModalDialog(title, msg);
+		openModalDialog(title, $msg);
+	};
+	// Update stats
+	this.updateStats = function(player, json) {
+		// Update values
+		var st;
+		for (var i=0; i<json.gameStats.length;i++) {
+			st = json.gameStats[i];
+			if (!stats[st.key]) {
+				stats[st.key] = {};
+			}
+			stats[st.key][player.uuid] = st.value;
+		}
+
+		// Update Parent
+		parent.updateStats(player, json);
 	};
 
 	// Get set score

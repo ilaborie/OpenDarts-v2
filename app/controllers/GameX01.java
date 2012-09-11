@@ -129,11 +129,7 @@ public class GameX01 extends Controller {
 				StatsEntryX01.cleanGames(entry.getTimestamp());
 			}
 
-			String player = entry.getPlayer();
-			String game = entry.getGame();
-			String set = entry.getSet();
-			String leg = entry.getLeg();
-			Promise<StatsX01> stats = loadStats(player, game, set, leg, entry);
+			Promise<StatsX01> stats = loadStats(entry);
 
 			// Result
 			return async(stats.map(STATS_JSON));
@@ -152,14 +148,9 @@ public class GameX01 extends Controller {
 		JsonNode json = request().body().asJson();
 		try {
 			StatsEntryX01 entry = mapper.readValue(json, StatsEntryX01.class);
-			String player = entry.getPlayer();
-			String game = entry.getGame();
-			String set = entry.getSet();
-			String leg = entry.getLeg();
-			
 			StatsEntryX01.find.byId(entry.getId()).delete();
 			
-			Promise<StatsX01> stats = loadStats(player, game, set, leg, entry);
+			Promise<StatsX01> stats = loadStats(entry);
 			// Result
 			return async(stats.map(STATS_JSON));
 		} catch (IOException e) {
@@ -178,13 +169,8 @@ public class GameX01 extends Controller {
 		try {
 			StatsEntryX01 entry = mapper.readValue(json, StatsEntryX01.class);
 
-			String player = entry.getPlayer();
-			String game = entry.getGame();
-			String set = entry.getSet();
-			String leg = entry.getLeg();
-
 			// Load stats
-			Promise<StatsX01> stats = loadStats(player, game, set, leg, entry);
+			Promise<StatsX01> stats = loadStats(entry);
 
 			// Result
 			return async(stats.map(STATS_JSON));
@@ -202,14 +188,17 @@ public class GameX01 extends Controller {
 	 * @param leg the leg
 	 * @param entry the entry
 	 * @return the promise */
-	private static Promise<StatsX01> loadStats(final String player, final String game, final String set,
-			final String leg,
+	private static Promise<StatsX01> loadStats(
 			final StatsEntryX01 entry) {
 		return Akka.future(new Callable<StatsX01>() {
 			@Override
 			public StatsX01 call() throws Exception {
+				String player = entry.getPlayer();
+				String game = entry.getGame();
+				String set = entry.getSet();
+				String leg = entry.getLeg();
+				
 				StatsX01 stats = new StatsX01();
-
 				stats.setPlayer(player);
 				stats.setTimestamp(entry.getTimestamp());
 				stats.setId(entry.getId());

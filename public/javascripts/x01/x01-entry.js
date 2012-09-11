@@ -14,6 +14,7 @@ function EntryX01(parentLeg, index) {
 	var playerPreviousLeft = {};
 	var playerStatus = {}; // normal, win, broken
 	var playerStatEntry = {};
+	var stats = {};
 	this.nbDart = null;
 	var winner = null;
 
@@ -89,29 +90,31 @@ function EntryX01(parentLeg, index) {
 		$("#computerThrowDialog .done").empty();
 		$("#computerThrowDialog .wished").empty();
 		$("#computerThrowDialog h3").html(msg);
-		$("#computerThrowDialog").modal("show");
-
-		// Call to server
-		$.postJSON("/x01/ComputerPlayer", {
-			left: score,
-			lvl: lastPlayer.comLevel,
-			type: lastPlayer.comTarget
-		}, function(json) {
-			entry.nbDart = json.darts.length;
-			entry.showDart(entry, json, 0, callback);
-		}, function(xhr, textStatus, errorThrown) {
-			if(textStatus==="timeout") {
-				this.tryCount++;
-				if (this.tryCount <= this.retryLimit) {
-					//try again
-					$.ajax(this);
-					return;
+		$("#computerThrowDialog").off("shown").on("shown", function() {
+			// Call to server
+			$.postJSON("/x01/ComputerPlayer", {
+				left: score,
+				lvl: lastPlayer.comLevel,
+				type: lastPlayer.comTarget
+			}, function(json) {
+				entry.nbDart = json.darts.length;
+				entry.showDart(entry, json, 0, callback);
+			}, function(xhr, textStatus, errorThrown) {
+				if(textStatus==="timeout") {
+					this.tryCount++;
+					if (this.tryCount <= this.retryLimit) {
+						//try again
+						$("#computerThrowDialog .done").empty();
+						$("#computerThrowDialog .wished").empty();
+						$.ajax(this);
+						return;
+					}
 				}
-			}
-			doOnError(xhr, textStatus, errorThrown);
-			$("#computerThrowDialog").modal("hide");
-			entry.next();
-		});
+				doOnError(xhr, textStatus, errorThrown);
+				$("#computerThrowDialog").modal("hide");
+				entry.next();
+			});
+		}).modal("show");
 	};
 
 	// Show Computer darts
@@ -149,7 +152,6 @@ function EntryX01(parentLeg, index) {
 		// Enter
 		$input.parent().unbind("submit").submit(function(e) {
 			if (this.checkValidity()) {
-
 				entry.processInput(entry, callback);
 			}
 			e.preventDefault();
@@ -187,11 +189,13 @@ function EntryX01(parentLeg, index) {
 		var $input = $("#"+parent.getInputPlayerId(lastPlayer));
 		
 		var entry = this;
+		var player = lastPlayer;
 		var status = analyseInputX01(this, value, left, function(status, nbDart) {
+			$input.unbind("blur").unbind("keyup");
+			console.log("# " + entry.index +" Player: " + player.getName() + " value:" +value+ " status:" + status + " nbDarts:"+nbDart);
 			if (nbDart) {
 				entry.nbDart = nbDart;
 			}
-			$input.unbind("blur").unbind("keyup");
 			entry.handleNewInput(status, parseInt(value,10), callback);
 		});
 	};
@@ -245,13 +249,10 @@ function EntryX01(parentLeg, index) {
 				});
 		}
 		// Push stats
-		this.pushStats(player, value, left, status, null);
-
-		// Et Hop!
-		callback();
+		this.pushStats(player, value, left, status, null, callback);
 	};
 	// Send entry to server for stats updating
-	this.pushStats = function(player, value, left, status, id) {
+	this.pushStats = function(player, value, left, status, id, callback) {
 		var entry = this;
 		var statEntry = {
 			id: id,
@@ -278,15 +279,26 @@ function EntryX01(parentLeg, index) {
 			statEntry.nbDarts = 3;
 		}
 		$.postJSON("/x01/throw", statEntry, function(json) {
-			if (json.id) {
-				entry.updateStatEntry(player, json.id);
+			entry.updateStats(player, json);
+			if (callback!==null && callback!="undefined") {
+				// Et Hop !
+				callback();
 			}
-			handleStats(entry.getParent().getStatsPlayerId(player), json);
 		});
 	};
-	this.updateStatEntry = function(player, id) {
-		playerStatEntry[player.uuid] = id;
+	// Update stats
+	this.updateStats = function(player, json) {
+		if (json.id) {
+			playerStatEntry[player.uuid] = json.id;
+		}
+
+		// Update Parent
+		parent.updateStats(player, json);
+
+		// Display stats
+		handleStats(parent.getStatsPlayerId(player), json);
 	};
+
 	this.onEditedValue = function($this, player) {
 		var value = "" + $this.html();
 		if ($this.data("score") != value) {
@@ -393,7 +405,7 @@ function EntryX01(parentLeg, index) {
 		};
 		var entry = this;
 		$.deleteJSON("/x01/stats", statEntry, function(json) {
-			handleStats(entry.getParent().getStatsPlayerId(player), json);
+			entry.updateStats(player, json);
 		});
 	};
 
@@ -424,9 +436,13 @@ function EntryX01(parentLeg, index) {
 			p = players[i];
 			score = playerScore[p.uuid];
 			status = playerStatus[p.uuid];
+			if (status==="win") {
+				return null;
+			}
+
 			if (!(
 				((typeof score ==="number") && !isNaN(score)) &&
-				(status==="win" || status==="normal" || status==="broken"))) {
+				(status==="normal" || status==="broken"))) {
 				return p;
 			}
 		}

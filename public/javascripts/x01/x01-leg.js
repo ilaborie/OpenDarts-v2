@@ -11,6 +11,7 @@ function LegX01(parentSet) {
 	var winner = null;
 	var playersScore = {};
 	var entries = [];
+	var stats = {};
 
 	var currentEntry = null;
 
@@ -58,7 +59,7 @@ function LegX01(parentSet) {
 		var status = currentEntry.getStatus(lastPlayer);
 		
 		// Update player score
-		var score = currentEntry.getLeft(lastPlayer);
+		var score = currentEntry.getLeftAsInt(lastPlayer);
 		playersScore[lastPlayer.uuid] = score;
 
 		// Update Left
@@ -150,21 +151,77 @@ function LegX01(parentSet) {
 	// LegX01 displayFinished
 	this.displayFinished = function() {
 		var title = this.getName() +" Finished!";
-		var msg = '<h4>Winner: <strong>' + this.getWinner().getName()+'</strong>';
-		msg += ' with <span class="badge badge-inverse">' + this.getLegScore() +'</span> darts</h4>';
+		var $msg = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
+		var $head = $("<thead/>").append("<tr/>");
+		var $body = $("<tbody/>");
+		var player;
+		var clazz;
+		for (var i=0; i< players.length; i++) {
+			player = players[i];
+			clazz = "textRight";
+			if (i%2===1) {
+				clazz = "textLeft";
+				$head.append(
+					$("<td/>").addClass("textCenter").append(
+						this.getPlayerWin(players[i-1]) + " - "  + this.getPlayerWin(player)
+				));
+			}
+			if (winner.uuid === player.uuid) {
+				$head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
+			} else {
+				$head.append($("<td/>").addClass(clazz).append(player.getName()));
+			}
+		}
+		var $row;
+		for(var key in stats) {
+			clazz = "textRight";
+			$row = $("<tr/>");
+			for (var k=0; k<players.length; k++) {
+				player  = players[k];
+				if (k%2===1) {
+					clazz = "textLeft";
+					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.set, key)));
+				}
+				$row.append($("<td/>").addClass(clazz).append(stats[key][player.uuid]));
+			}
+			$body.append($row);
+		}
+		$msg.append($head).append($body);
 
 		// Notifiy
 		var set = parent;
-		openModalDialog(title, msg, {
+		openModalDialog(title, $msg, {
 			text: '<i class="icon-white icon-step-forward"></i> Next Leg',
 			"class" : "btn-primary",
 			click: function() { $("#modalDialog").modal("hide"); set.startNewLeg(); }
 		});
 	};
+	// Update stats
+	this.updateStats = function(player, json) {
+		// Update values
+		var st;
+		for (var i=0; i<json.legStats.length;i++) {
+			st = json.legStats[i];
+			if (!stats[st.key]) {
+				stats[st.key] = {};
+			}
+			stats[st.key][player.uuid] = st.value;
+		}
+
+		// Update Parent
+		parent.updateStats(player, json);
+	};
 
 	// get leg score
 	this.getLegScore = function() {
 		return currentEntry.getNbDartsPlayed();
+	};
+	this.getPlayerWin = function(player) {
+		if (winner.uuid===player.uuid) {
+			return '<span class="badge">' + this.getLegScore() + '</span>';
+		} else {
+			return this.getPlayerScore(player);
+		}
 	};
 
 	// LegX01 getPlayers

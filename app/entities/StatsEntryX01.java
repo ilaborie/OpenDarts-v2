@@ -196,8 +196,8 @@ public class StatsEntryX01 extends Model implements Serializable {
 	 * @return the string */
 	public static String bestOutInGame(int min, String player, String game) {
 		String sql = String
-				.format("SELECT score_done as done FROM stats_entry_x01 WHERE player_id='%s' AND game_id='%s' AND score_done>%s AND leg_nb_darts IS NOT NULL",
-						escapeSql(player), escapeSql(game), Integer.valueOf(min));
+				.format("SELECT score_done as done FROM stats_entry_x01 WHERE player_id='%s' AND game_id='%s' AND throw_status='win'",
+						escapeSql(player), escapeSql(game));
 		SqlQuery query = Ebean.createSqlQuery(sql);
 		List<SqlRow> rows = query.findList();
 		String result = "-";

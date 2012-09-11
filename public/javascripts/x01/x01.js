@@ -279,70 +279,65 @@ var validatePlayerValue = function(value) {
 
 // get NbDarts to finish
 var getNbDart = function(score, func) {
+	console.log("getNbDart for " + score);
 	var $defaultButton = null;
 
-	var $btn;
+	var callback = function(event) {
+		$("#nbDartDialog").modal("hide");
+		func(event.data.status, event.data.nbDart);
+	};
+
 	var btns = ["#btnThreeDarts", "#btnTwoDarts", "#btnOneDart"];
+	var $btn;
+	for (var i=0; i<btns.length; i++) {
+		$btn = $(btns[i]);
+		$btn.off("click").on("click", {
+			status: "win",
+			nbDart: (3-i)
+		}, callback);
 
-	$btn = $(btns[0]);
-	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func("win",3); });
-	if (couldFinish(score,3)) {
-		$btn.removeAttr("disabled");
-		$defaultButton = $btn;
-	} else {
-		$btn.attr("disabled", "disabled");
-	}
-
-	$btn = $(btns[1]);
-	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func("win",2); });
-	if (couldFinish(score,2)) {
-		$btn.removeAttr("disabled");
-		$defaultButton = $btn;
-	} else {
-		$btn.attr("disabled", "disabled");
-	}
-
-	$btn = $(btns[2]);
-	$btn.unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func("win", 1); });
-	if (couldFinish(score,1)) {
-		$btn.removeAttr("disabled");
-		$defaultButton = $btn;
-	} else {
-		$btn.attr("disabled", "disabled");
-	}
-
-	// Broken
-	$("#btnBroken").unbind("click").click(function() { $("#nbDartDialog").modal("hide"); func("broken"); });
-
-	// Handle shortcuts
-	$("#nbDartDialog .btn").keydown(function(e) {
-		var key = e.which;
-		switch(key) {
-			case 48:
-			case 96:
-				$("#btnBroken").click();
-				break;
-			case 49:
-			case 97:
-				if (couldFinish(score,1)) $("#btnOneDart").click();
-				break;
-			case 50:
-			case 98:
-				if (couldFinish(score,2)) $("#btnTwoDarts").click();
-				break;
-			case 51:
-			case 99:
-				if (couldFinish(score,3)) $("#btnThreeDarts").click();
-				break;
-			default:
-				return true;
+		if (couldFinish(score,3-i)) {
+			$btn.removeAttr("disabled");
+			$defaultButton = $btn;
+		} else {
+			$btn.attr("disabled", "disabled");
 		}
-		e.preventDefault();
-		return false;
-	});
+	}
+	// Broken
+	$("#btnBroken").off("click").on("click",{
+		status: "broken"
+	}, callback);
+
 	// Open Dialog
-	$("#nbDartDialog").on("shown", function() {
+	$("#nbDartDialog").off("shown").on("shown", function() {
 		$defaultButton.focus();
+
+		// Handle shortcuts
+		$("#nbDartDialog .btn").off("keypress").on("keypress",function(e) {
+			var key = e.which;
+			switch(key) {
+				case 48:
+				case 96:
+					$("#btnBroken").click();
+					break;
+				case 49:
+				case 97:
+					if (couldFinish(score,1)) $("#btnOneDart").click();
+					break;
+				case 50:
+				case 98:
+					if (couldFinish(score,2)) $("#btnTwoDarts").click();
+					break;
+				case 51:
+				case 99:
+					if (couldFinish(score,3)) $("#btnThreeDarts").click();
+					break;
+				default:
+					return true;
+			}
+			e.preventDefault();
+			return false;
+		});
 	}).modal("show");
 };
 

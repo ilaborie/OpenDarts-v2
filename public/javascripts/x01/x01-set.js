@@ -12,6 +12,7 @@ function SetX01(parentGame) {
 
 	// Status
 	var winner = null;
+	var stats = {};
 
 	// Configuration
 	var previousSet = parentGame.getCurrentSet();
@@ -57,16 +58,65 @@ function SetX01(parentGame) {
 	// SetX01 displayFinished
 	this.displayFinished = function() {
 		var title = this.getName() +" Finished!";
-		var msg = "<h4>Winner: " + this.getWinner().getName() + "</h4>";
-		msg += '<ul class="nav nav-list set-detail">' + this.getSetScore() + '</ul>';
+		var $msg = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
+		var $head = $("<thead/>").append("<tr/>");
+		var $body = $("<tbody/>");
+		var player;
+		var clazz;
+		for (var i=0; i< players.length; i++) {
+			player = players[i];
+			clazz = "textRight";
+			if (i%2===1) {
+				clazz = "textLeft";
+				$head.append(
+					$("<td/>").addClass("textCenter").append(
+						this.getPlayerWin(players[i-1]) + " - "  + this.getPlayerWin(player)
+				));
+			}
+			if (winner.uuid === player.uuid) {
+				$head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
+			} else {
+				$head.append($("<td/>").addClass(clazz).append(player.getName()));
+			}
+		}
+		var $row;
+		for(var key in stats) {
+			$row = $("<tr/>");
+			for (var k=0; k<players.length; k++) {
+				player  = players[k];
+				clazz = "textRight";
+				if (k%2===1) {
+					clazz = "textLeft";
+					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.set, key)));
+				}
+				$row.append($("<td/>").addClass(clazz).append(stats[key][player.uuid]));
+			}
+			$body.append($row);
+		}
+		$msg.append($head).append($body);
 
 		// Notifiy
 		var game = parent;
-		openModalDialog(title, msg, {
+		openModalDialog(title, $msg, {
 			text: '<i class="icon-white icon-step-forward"></i> Next Set',
 			"class" : "btn-primary",
 			click: function() { $("#modalDialog").modal("hide"); game.startNewSet(); }
 		});
+	};
+	// Update stats
+	this.updateStats = function(player, json) {
+		// Update values
+		var st;
+		for (var i=0; i<json.setStats.length;i++) {
+			st = json.setStats[i];
+			if (!stats[st.key]) {
+				stats[st.key] = {};
+			}
+			stats[st.key][player.uuid] = st.value;
+		}
+
+		// Update Parent
+		parent.updateStats(player, json);
 	};
 
 	// Next Leg

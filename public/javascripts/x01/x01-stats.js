@@ -21,7 +21,8 @@ x01.stats = {
 			{ label: "Avg.", key: "avgDart"},
 			{ label: "Avg.3", key: "avg3Dart"},
 			{ label: "Avg Leg", key: "avgLeg"},
-			{ label: "Best Leg", key: "bestLeg"}
+			{ label: "Best Leg", key: "bestLeg"},
+			{ label: "Best Out", key: "bestOut"}
 		]
 	},
 	set: {
@@ -42,6 +43,15 @@ x01.stats = {
 			{ label: "Avg.3", key: "avg3Dart"}
 		]
 	}
+};
+
+var getStatLabel = function(obj, key) {
+	for (var i=0; i< obj.contents.length; i++) {
+		if (obj.contents[i].key === key) {
+			return obj.contents[i].label;
+		}
+	}
+	return " ??? ";
 };
 
 // Display one stats
