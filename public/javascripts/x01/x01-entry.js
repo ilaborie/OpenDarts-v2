@@ -249,14 +249,15 @@ function EntryX01(parentLeg, index) {
 				});
 		}
 		// Push stats
-		this.pushStats(player, value, left, status, null, callback);
+		var ts = new Date().getTime();
+		playerStatEntry[player.uuid] = ts;
+		this.pushStats(player, value, left, status, ts,  callback);
 	};
 	// Send entry to server for stats updating
-	this.pushStats = function(player, value, left, status, id, callback) {
+	this.pushStats = function(player, value, left, status, ts,  callback) {
 		var entry = this;
 		var statEntry = {
-			id: id,
-			timestamp: new Date().getTime(),
+			timestamp: ts,
 			entry: this.uuid,
 			leg: parent.uuid,
 			set: parent.getParent().uuid,
@@ -278,18 +279,20 @@ function EntryX01(parentLeg, index) {
 		} else {
 			statEntry.nbDarts = 3;
 		}
-		$.postJSON("/x01/throw", statEntry, function(json) {
-			entry.updateStats(player, json);
-			if (callback!==null && callback!="undefined") {
-				// Et Hop !
-				callback();
-			}
+
+		x01Stats.indexedDB.addStatsEntryX01(statEntry,function() {
+			x01Stats.indexedDB.getPlayerStats(statEntry.game, statEntry.set, statEntry.leg, player, function(json) {
+				entry.updateStats(player, json);
+				if (callback!==null && $.isFunction(callback)) {
+					callback();
+				}
+			});
 		});
 	};
 	// Update stats
 	this.updateStats = function(player, json) {
-		if (json.id) {
-			playerStatEntry[player.uuid] = json.id;
+		if (json.timestamp) {
+			playerStatEntry[player.uuid] = json.timestamp;
 		}
 
 		// Update Parent
@@ -356,7 +359,10 @@ function EntryX01(parentLeg, index) {
 		
 		// Push stats
 		var left = playerLeft[player.uuid];
-		this.pushStats(player, value, left, status, playerStatEntry[player.uuid]);
+		var entry = this;
+		x01Stats.indexedDB.deleteStatsEntryX01(playerStatEntry[player.uuid], function() {
+			entry.pushStats(player, value, left, status, playerStatEntry[player.uuid]);
+		});
 		
 		// Handle winning throw
 		if (status==="win") {
@@ -393,19 +399,11 @@ function EntryX01(parentLeg, index) {
 		}
 	};
 	this.deletePlayerStats = function(player) {
-		var statEntry =  {
-			id: playerStatEntry[player.uuid],
-			timestamp: new Date().getTime(),
-			entry: this.uuid,
-			leg: parent.uuid,
-			set: parent.getParent().uuid,
-			game: parent.getParent().getParent().uuid,
-			entryIndex: index,
-			player: player.uuid
-		};
 		var entry = this;
-		$.deleteJSON("/x01/stats", statEntry, function(json) {
-			entry.updateStats(player, json);
+		x01Stats.indexedDB.deleteStatsEntryX01(playerStatEntry[player.uuid], function() {
+			x01Stats.indexedDB.getPlayerStats(parent.getParent().getParent().uuid, parent.getParent().uuid, parent.uuid, player, function(json) {
+				entry.updateStats(player, json);
+			});
 		});
 	};
 

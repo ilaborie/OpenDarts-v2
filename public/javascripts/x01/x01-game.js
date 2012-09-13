@@ -103,17 +103,12 @@ function GameX01(options) {
 	// Update stats
 	this.updateStats = function(player, json) {
 		// Update values
-		var st;
-		for (var i=0; i<json.gameStats.length;i++) {
-			st = json.gameStats[i];
-			if (!stats[st.key]) {
-				stats[st.key] = {};
+		for (var key in json.gameStats) {
+			if (!stats[key]) {
+				stats[key] = {};
 			}
-			stats[st.key][player.uuid] = st.value;
+			stats[key][player.uuid] = json.gameStats[key];
 		}
-
-		// Update Parent
-		parent.updateStats(player, json);
 	};
 
 	// Get set score

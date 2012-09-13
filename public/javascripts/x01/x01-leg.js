@@ -199,13 +199,11 @@ function LegX01(parentSet) {
 	// Update stats
 	this.updateStats = function(player, json) {
 		// Update values
-		var st;
-		for (var i=0; i<json.legStats.length;i++) {
-			st = json.legStats[i];
-			if (!stats[st.key]) {
-				stats[st.key] = {};
+		for (var key in json.legStats) {
+			if (!stats[key]) {
+				stats[key] = {};
 			}
-			stats[st.key][player.uuid] = st.value;
+			stats[key][player.uuid] = json.legStats[key];
 		}
 
 		// Update Parent
@@ -495,9 +493,8 @@ function LegX01(parentSet) {
 	// Retrieve stats
 	this.requestStats = function(statQuery, player) {
 		var leg = this;
-		$.postJSON("/x01/stats", statQuery, function(json) {
+		x01Stats.indexedDB.getPlayerStats(statQuery.game, statQuery.set, statQuery.leg, player, function(json) {
 			handleStats(leg.getStatsPlayerId(player), json);
 		});
 	};
-
  }

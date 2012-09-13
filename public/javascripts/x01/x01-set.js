@@ -106,13 +106,11 @@ function SetX01(parentGame) {
 	// Update stats
 	this.updateStats = function(player, json) {
 		// Update values
-		var st;
-		for (var i=0; i<json.setStats.length;i++) {
-			st = json.setStats[i];
-			if (!stats[st.key]) {
-				stats[st.key] = {};
+		for (var key in json.setStats) {
+			if (!stats[key]) {
+				stats[key] = {};
 			}
-			stats[st.key][player.uuid] = st.value;
+			stats[key][player.uuid] = json.setStats[key];
 		}
 
 		// Update Parent
