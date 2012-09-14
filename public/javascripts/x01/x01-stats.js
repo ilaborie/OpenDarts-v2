@@ -19,11 +19,11 @@ x01.stats = {
 			{ label: "60+", key: "plus60"},
 			{ label: "100+", key: "plus100"},
 			{ label: "140+", key: "plus140"},
+			{ label: "Best Out", key: "bestOut"},
 			{ label: "Avg.", key: "avgDart"},
 			{ label: "Avg.3", key: "avg3Dart"},
 			{ label: "Avg Leg", key: "avgLeg"},
-			{ label: "Best Leg", key: "bestLeg"},
-			{ label: "Best Out", key: "bestOut"}
+			{ label: "Best Leg", key: "bestLeg"}
 		]
 	},
 	set: {
@@ -307,17 +307,9 @@ var getStatLabel = function(obj, key) {
 
 // Display one stats
 var displayStats = function(stats) {
-	var $title = $("<h5/>").append(stats.title);
-	var $stats = $("<div/>").addClass("row-fluid").addClass("statsEntries").addClass(stats.key);
-	$.each(stats.contents, function(idx, stat) {
-		var $st = $("<div/>").addClass("stat").addClass("span6")
-			.append($("<label/>").append(stat.label))
-			.append($("<span/>").append(" - ").addClass(stat.key));
-		$stats.append($st);
+	return tmpl("StatsDiv", {
+		stats: stats
 	});
-	return $("<div/>")
-		.append($title)
-		.append($stats);
 };
 
 // Handle player stats

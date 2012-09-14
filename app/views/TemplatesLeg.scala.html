@@ -1,0 +1,141 @@
+<!-- 
+	leg: current leg
+	stats: leg stats
+	players: players (game ordered)
+	firstPlayer: the leg first player
+	winner: the leg winner
+-->
+<script id="LegStats" type="text/html">
+	<% 	var player; %>
+	<%	var clazz; %>
+	<table class="table table-striped table-condensed">
+		<thead>
+			<tr>
+	<%	for (var i=0; i< players.length; i++) { %>
+	<%		player = players[i]; %>
+	<%		clazz = "textRight"; %>
+	<%		if (i%2===1) { %>
+	<%			clazz = "textLeft"; %>
+				<td class="textCenter"><%=leg.getPlayerWin(players[i-1])%> - <%=leg.getPlayerWin(player)%></td>
+	<%		}  %>
+	<%		if (winner.uuid === player.uuid) { %>
+				<td class="<%=clazz%>"><strong>
+	<%			if (firstPlayer.uuid=== player.uuid) {%>
+					<i class="icon-asterisk"></i>
+	<%			} %>
+					<%=player.getName()%>
+				</strong></td>
+	<%		} else { %>
+				<td class="<%=clazz%>">
+	<%			if (firstPlayer.uuid=== player.uuid) { %>
+					<i class="icon-asterisk"></i>
+	<%			} %>
+					<%=player.getName()%>
+				</td>
+	<%		} %>
+	<%	} %>
+			</tr>
+		</thead>
+		<tbody>
+	<%	for(var key in stats) { %>
+	<%		clazz = "textRight"; %> 
+			<tr>
+	<%		for (var k=0; k<players.length; k++) { %>
+	<%			player  = players[k]; %>
+	<%			if (k%2===1) { %>
+	<%				clazz = "textLeft"; %>
+				<td class="textCenter"><%=getStatLabel(x01.stats.leg, key)%></td>
+	<%			} %>
+				<td class="<%=clazz%>"><%=stats[key][player.uuid]%></td>
+	<%		} %>
+	<%	} %>
+		</tbody>
+	</table>
+</script>
+
+<!-- 
+	leg: current leg
+	players: players (game ordered)
+	firstPlayer: the leg first player
+	score: the initial score
+	showInput: true/false
+-->
+<script id="LegTable" type="text/html">
+	<% 	var player; %>
+	<%	var entry; %>
+	<table id="<%=leg.uuid%>" class="table table-striped table-condensed table-bordered tableScore">
+		<thead>
+			<tr>
+	<%	for(var i=0; i<players.length; i++) { %>
+	<%		player = players[i]; %>
+	<%		if (i!==0) { %>
+				<th class="cell cellDartsHide">&nbsp;</th>
+	<%		} %>
+				<th><small>
+	<% 		if (firstPlayer.uuid === player.uuid) { %>
+					<i class="icon-asterisk icon-white"></i>
+	<% 		} %>
+					<%= player.getName() %>
+				</small></th>
+				<th class="cell cellStatus"><%=score%></th>
+	<%	} %>
+			</tr>
+		</thead>
+		<tbody>
+	<%	for (var j=0; j<leg.getEntries().length; j++) { %>
+	<%		entry = leg.getEntries()[j]; %>
+			<%=entry.display()%>
+	<%	} %>
+	<%	if (showInput) { %>
+			<tr class="tableRowInput">
+	<%		for(var k=0; k<players.length; k++) { %>
+	<%			player = players[k]; %>
+	<%			if (k%2===1) { %>
+				<td class="cell cellDartsHide">&nbsp;</td>
+	<%			} %>
+				<td colspan="2" class="cell cellInput control-group">
+					<form action="#game">
+						<input id="<%=leg.getInputPlayerId(player)%>" class="input-medium playerInput" 
+							type="number" min="0" max="180" required  disabled/>
+						<button id="<%=leg.getSubmitPlayer(player)%>" type="submit" class="btn btn-success hide">
+							<i class="icon-white icon-play"></i>
+						</button>
+					</form>
+				</td>
+	<%		} %>
+			</tr>
+	<% 	} %>
+		</tbody>
+	</table>
+</script>
+<!--
+	leg: current leg
+	player: the player
+	firstPlayer: the leg first player
+	nbSets: number of sets
+	nbLegs: number of legs
+	setWin: the number of winning set
+	legWin: the number of winning leg
+-->
+<script id="LegHeadPlayer" type="text/html">
+	<div id="<%=leg.getHeadPlayerId(player)%>" class="player-head">
+		<h4>
+	<%	if (firstPlayer.uuid===player.uuid) { %>
+			<i class="icon-asterisk"></i>
+	<% } %>
+			<%=player.getFullName()%>
+	<% 	if (nbSets>1) { %>
+			<span class="badge badge-primary"><%=setWin%></span>
+	<%	} %>
+	<% 	if (nbLegs>1) { %>
+			<span class="badge badge-success"><%=legWin%></span>
+	<%	} %>
+		</h4>
+	<%	if (nbSets!=1 || nbLegs!=1) { %>
+		<div class="progress progress-striped">
+			<div class="bar" style="width: <%=(setWin/nbSets)*100%>%"></div>
+			<div class="bar bar-success" style="width: <%=((legWin/nbLegs)*100)/nbSets%>%"></div>
+		</div>
+	<% 	} %>
+	</div>
+</script>

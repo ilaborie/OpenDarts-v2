@@ -58,46 +58,18 @@ function SetX01(parentGame) {
 	// SetX01 displayFinished
 	this.displayFinished = function() {
 		var title = this.getName() +" Finished!";
-		var $msg = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
-		var $head = $("<thead/>").append("<tr/>");
-		var $body = $("<tbody/>");
-		var player;
-		var clazz;
-		for (var i=0; i< parent.getPlayers().length; i++) {
-			player = parent.getPlayers()[i];
-			clazz = "textRight";
-			if (i%2===1) {
-				clazz = "textLeft";
-				$head.append(
-					$("<td/>").addClass("textCenter").append(
-						this.getPlayerWin(parent.getPlayers()[i-1]) + " - "  + this.getPlayerWin(player)
-				));
-			}
-			if (winner.uuid === player.uuid) {
-				$head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
-			} else {
-				$head.append($("<td/>").addClass(clazz).append(player.getName()));
-			}
-		}
-		var $row;
-		for(var key in stats) {
-			$row = $("<tr/>");
-			for (var k=0; k<parent.getPlayers().length; k++) {
-				player  = parent.getPlayers()[k];
-				clazz = "textRight";
-				if (k%2===1) {
-					clazz = "textLeft";
-					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.set, key)));
-				}
-				$row.append($("<td/>").addClass(clazz).append(stats[key][player.uuid]));
-			}
-			$body.append($row);
-		}
-		$msg.append($head).append($body);
+		
+		var msg = tmpl("SetStats", {
+			set: this,
+			stats: stats,
+			players: parent.getPlayers(),
+			firstPlayer: players[0],
+			winner: winner
+		});
 
 		// Notifiy
 		var game = parent;
-		openModalDialog(title, $msg, {
+		openModalDialog(title, msg, {
 			text: '<i class="icon-white icon-step-forward"></i> Next Set',
 			"class" : "btn-primary",
 			click: function() { $("#modalDialog").modal("hide"); game.startNewSet(); }
@@ -132,20 +104,6 @@ function SetX01(parentGame) {
 		this.next();
 	};
 
-	// Get set score
-	this.getSetScore = function () {
-		var msg = '';
-		for (var j=0; j< finishedlegs.length; j++) {
-			var leg = finishedlegs[j];
-			msg += '<li class="nav-header">';
-			msg += leg.getNameWinner();
-			msg += "</li>";
-			msg += "<li>";
-			msg += leg.getWinner().getName() + " with "+ leg.getLegScore() +" darts";
-			msg += "</li>";
-		}
-		return msg;
-	};
 	this.getPlayerSetScore = function(player) {
 		var msg = "";
 		var started = false;

@@ -1,0 +1,15 @@
+<!--
+	entry: current entry
+	ps: players (ordred by game)
+-->
+<script id="EntryToRow" type="text/html">
+    <tr id="<%=entry.uuid%>">
+    <%  for(var j=0; j<ps.length; j++) {
+            if (j!==0) { %>
+        <td class="cell cellDarts"><%=entry.getName()%></td>
+    <%      } %>
+        <td class="cell cellScore" id="<%=entry.getScoreId(ps[j])%>"><%=entry.getScore(ps[j])%></td>
+        <td class="cell cellStatus" id="<%=entry.getLeftId(ps[j])%>"><%=entry.getLeft(ps[j])%></td>
+    <% } %>
+    </tr>
+</script>

@@ -1,0 +1,53 @@
+<!-- 
+	game: current game
+	stats: game stats
+	players: players (game ordered)
+	winner: the game winner
+-->
+<script id="GameStats" type="text/html">
+	<% 	var player; %>
+	<%	var clazz; %>
+	<table class="table table-striped table-condensed">
+		<thead>
+			<tr>
+	<%	for (var i=0; i< players.length; i++) { %>
+	<%		player = players[i]; %>
+	<%		clazz = "textRight"; %>
+	<%		if (i%2===1) { %>
+	<%			clazz = "textLeft"; %>
+				<td class="textCenter"><%=game.getPlayerWin(players[i-1])%> - <%=game.getPlayerWin(player)%></td>
+	<%		}  %>
+	<%		if (winner.uuid === player.uuid) { %>
+				<td class="<%=clazz%>"><strong>
+	<%			if (i===0) {%>
+					<i class="icon-asterisk"></i>
+	<%			} %>
+					<%=player.getName()%>
+				</strong></td>
+	<%		} else { %>
+				<td class="<%=clazz%>">
+	<%			if (i===0) { %>
+					<i class="icon-asterisk"></i>
+	<%			} %>
+					<%=player.getName()%>
+				</td>
+	<%		} %>
+	<%	} %>
+			</tr>
+		</thead>
+		<tbody>
+	<%	for(var key in stats) { %>
+	<%		clazz = "textRight"; %> 
+			<tr>
+	<%		for (var k=0; k<players.length; k++) { %>
+	<%			player  = players[k]; %>
+	<%			if (k%2===1) { %>
+	<%				clazz = "textLeft"; %>
+				<td class="textCenter"><%=getStatLabel(x01.stats.game, key)%></td>
+	<%			} %>
+				<td class="<%=clazz%>"><%=stats[key][player.uuid]%></td>
+	<%		} %>
+	<%	} %>
+		</tbody>
+	</table>
+</script>

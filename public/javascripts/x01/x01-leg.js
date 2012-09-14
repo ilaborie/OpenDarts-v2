@@ -151,46 +151,18 @@ function LegX01(parentSet) {
 	// LegX01 displayFinished
 	this.displayFinished = function() {
 		var title = this.getName() +" Finished!";
-		var $msg = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
-		var $head = $("<thead/>").append("<tr/>");
-		var $body = $("<tbody/>");
-		var player;
-		var clazz;
-		for (var i=0; i< parent.getParent().getPlayers().length; i++) {
-			player = parent.getParent().getPlayers()[i];
-			clazz = "textRight";
-			if (i%2===1) {
-				clazz = "textLeft";
-				$head.append(
-					$("<td/>").addClass("textCenter").append(
-						this.getPlayerWin(parent.getParent().getPlayers()[i-1]) + " - "  + this.getPlayerWin(player)
-				));
-			}
-			if (winner.uuid === player.uuid) {
-				$head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
-			} else {
-				$head.append($("<td/>").addClass(clazz).append(player.getName()));
-			}
-		}
-		var $row;
-		for(var key in stats) {
-			clazz = "textRight";
-			$row = $("<tr/>");
-			for (var k=0; k<parent.getParent().getPlayers().length; k++) {
-				player  = parent.getParent().getPlayers()[k];
-				if (k%2===1) {
-					clazz = "textLeft";
-					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.set, key)));
-				}
-				$row.append($("<td/>").addClass(clazz).append(stats[key][player.uuid]));
-			}
-			$body.append($row);
-		}
-		$msg.append($head).append($body);
+		
+		var msg = tmpl("LegStats", {
+			leg: this,
+			stats: stats,
+			players: parent.getParent().getPlayers(),
+			firstPlayer: players[0],
+			winner: winner
+		});
 
 		// Notifiy
 		var set = parent;
-		openModalDialog(title, $msg, {
+		openModalDialog(title, msg, {
 			text: '<i class="icon-white icon-step-forward"></i> Next Leg',
 			"class" : "btn-primary",
 			click: function() { $("#modalDialog").modal("hide"); set.startNewLeg(); }
@@ -339,63 +311,14 @@ function LegX01(parentSet) {
 	};
 
 	// Create Table
-	this.createTable = function(players) {
-		var $res = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed").addClass("table-bordered").addClass("tableScore");
-
-		// Head
-		var $head = $("<thead/>");
-		var $rowHead = $("<tr/>");
-		for(var i=0; i<players.length; i++) {
-			if (i!==0) {
-				$rowHead.append($("<th/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
-			}
-
-			$rowHead.append($("<th/>").append($("<small/>").append(players[i].getName())));
-			$rowHead.append($("<th/>").addClass("cell").addClass("cellStatus").append(parent.getOption().score));
-		}
-		$head.append($rowHead);
-		
-		// Body
-		var entry = null;
-		var $body = $("<tbody/>");
-		for (var j=0; j<entries.length; j++) {
-			entry = entries[j];
-
-			var $rowEntry = entry.display();
-			$body.append($rowEntry);
-		}
-		
-		// Foot
-		var $rowInput = $("<tr/>").addClass("tableRowInput");
-		for(var k=0; k<players.length; k++) {
-			if (k!==0) {
-				$rowInput.append($("<td/>").addClass("cell").addClass("cellDartsHide").append("&nbsp;"));
-			}
-
-			var q = players[k];
-			var $input = $("<input/>",  {
-					type: "number",
-					min: 0,
-					max: 180,
-					id: this.getInputPlayerId(q),
-					"class" : "input-medium playerInput",
-					required: true
-				}).attr("disabled", "disabled");
-
-			var $form = $("<form/>").attr("action","#game").append($input);
-			$form.append(
-				$("<button/>").attr("type","submit").addClass("btn").addClass("btn-success").addClass("hide").attr("id",this.getSubmitPlayer(q))
-				.html($("<i/>").addClass("icon-white").addClass("icon-play")));
-		
-			$rowInput.append($('<td colspan="2"/>').addClass("cell").addClass("cellInput")
-				.addClass("control-group").append($form));
-		}
-	
-		$body.append($rowInput);
-
-		// Final Table
-		$res.append($head).append($body);
-		return $res;
+	this.createTable = function(allPlayers) {
+		return tmpl("LegTable", {
+			leg: this,
+			players: parent.getParent().getPlayers(),
+			firstPlayer: players[0],
+			score: parent.getOption().score,
+			showInput: true
+		});
 	};
 
 	// Input player id
@@ -418,46 +341,15 @@ function LegX01(parentSet) {
 
 	// Players Head
 	this.getPlayerHead = function(player) {
-		var nbSets = parent.getOption().nbSets;
-		var nbLegs = parent.getOption().nbLegs;
-
-		var setWin = parent.getParent().getPlayerWin(player);
-		var legWin = parent.getPlayerWin(player);
-
-		// Title
-		var $title = $("<h4/>");
-		if (players[0].uuid===player.uuid) {
-			$title.append($("<li/>").addClass("icon-asterisk"));
-		}
-		$title.append(p.getFullName());
-
-		// Leg and Set advance
-		if (parent.getOption().nbSets>1) {
-			$title.append("&nbsp;");
-			$title.append($("<span>").addClass("badge").addClass("badge-primary")
-				.append(parent.getParent().getPlayerWin(p)));
-		}
-		if (parent.getOption().nbLegs>1) {
-			$title.append("&nbsp;");
-			$title.append($("<span>").addClass("badge").addClass("badge-success")
-				.append(parent.getPlayerWin(p)));
-		}
-
-		// Set and Leg Progress
-		$progress = $("<div/>");
-		if (parent.getOption().nbSets!=1 || parent.getOption().nbLegs!=1) {
-			var progressSet = ( setWin / nbSets) * 100;
-			var progressLeg = (( legWin / nbLegs) * 100)/nbSets;
-
-			$progress.addClass("progress").addClass("progress-striped")
-				.append($("<div/>").addClass("bar").attr("style", "width:" + (progressSet)+"%"))
-				.append($("<div/>").addClass("bar").addClass("bar-success").attr("style", "width:" + progressLeg+"%"));
-		}
-
-		// Assemble
-		return $("<div/>").addClass("player-head").attr("id",this.getHeadPlayerId(p))
-			.append($title)
-			.append($progress);
+		return tmpl("LegHeadPlayer", {
+			leg: this,
+			player: player,
+			firstPlayer: players[0],
+			nbSets: parent.getOption().nbSets,
+			nbLegs: parent.getOption().nbLegs,
+			setWin: parent.getParent().getPlayerWin(player),
+			legWin: parent.getPlayerWin(player)
+		});
 	};
 
 	this.getPlayerLeft = function(player) {
