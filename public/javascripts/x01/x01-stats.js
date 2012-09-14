@@ -18,6 +18,7 @@ x01.stats = {
 			{ label: "180", key: "count180"},
 			{ label: "60+", key: "plus60"},
 			{ label: "100+", key: "plus100"},
+			{ label: "140+", key: "plus140"},
 			{ label: "Avg.", key: "avgDart"},
 			{ label: "Avg.3", key: "avg3Dart"},
 			{ label: "Avg Leg", key: "avgLeg"},
@@ -258,30 +259,30 @@ x01Stats.indexedDB.getPlayerStats = function(game, set, leg, player, callback)	{
 				plus60++;
 			} else if (score>100 && score<140) {
 				plus100++;
-			} else if (score>100 && score<140) {
+			} else if (score>140) {
 				plus140++;
 			}
 
 			// Win
 			if (result.value.status==="win") {
 				winLeg++;
-				leg = result.value.legNbDarts;
+				var legNbDarts = result.value.legNbDarts;
 				// count
 				countLeg += result.value.legNbDarts;
 				// best out
-				if (bestOut == "undefined" || ((typeof bestOut === "number") && (score > bestOut))) {
+				if ( (typeof bestOut === "undefined") || ((typeof bestOut === "number") && (score > bestOut))) {
 					bestOut = score;
 				}
 				// best Leg
-				if ( ((bestLeg == "undefined") && (typeof leg === "number")) || ((typeof bestLeg === "number") && (leg < bestLeg))) {
-					bestLeg = leg;
+				if ( ((typeof bestLeg === "undefined") && (typeof legNbDarts === "number")) || ((typeof bestLeg === "number") && (legNbDarts < bestLeg))) {
+					bestLeg = legNbDarts;
 				}
 
 				if (set === result.value.set) {
 					setWinLeg++;
 					setCountLeg+= result.value.legNbDarts;
-					if ( ((setBestLeg == "undefined") && (typeof leg === "number")) || ((typeof setBestLeg === "number") && (leg < setBestLeg))) {
-						setBestLeg = leg;
+					if ( (( typeof setBestLeg === "undefined") && (typeof legNbDarts === "number")) || ((typeof setBestLeg === "number") && (legNbDarts < setBestLeg))) {
+						setBestLeg = legNbDarts;
 					}
 				}
 			}

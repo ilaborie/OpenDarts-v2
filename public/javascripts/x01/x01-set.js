@@ -63,14 +63,14 @@ function SetX01(parentGame) {
 		var $body = $("<tbody/>");
 		var player;
 		var clazz;
-		for (var i=0; i< players.length; i++) {
-			player = players[i];
+		for (var i=0; i< parent.getPlayers().length; i++) {
+			player = parent.getPlayers()[i];
 			clazz = "textRight";
 			if (i%2===1) {
 				clazz = "textLeft";
 				$head.append(
 					$("<td/>").addClass("textCenter").append(
-						this.getPlayerWin(players[i-1]) + " - "  + this.getPlayerWin(player)
+						this.getPlayerWin(parent.getPlayers()[i-1]) + " - "  + this.getPlayerWin(player)
 				));
 			}
 			if (winner.uuid === player.uuid) {
@@ -82,8 +82,8 @@ function SetX01(parentGame) {
 		var $row;
 		for(var key in stats) {
 			$row = $("<tr/>");
-			for (var k=0; k<players.length; k++) {
-				player  = players[k];
+			for (var k=0; k<parent.getPlayers().length; k++) {
+				player  = parent.getPlayers()[k];
 				clazz = "textRight";
 				if (k%2===1) {
 					clazz = "textLeft";

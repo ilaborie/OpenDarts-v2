@@ -156,14 +156,14 @@ function LegX01(parentSet) {
 		var $body = $("<tbody/>");
 		var player;
 		var clazz;
-		for (var i=0; i< players.length; i++) {
-			player = players[i];
+		for (var i=0; i< parent.getParent().getPlayers().length; i++) {
+			player = parent.getParent().getPlayers()[i];
 			clazz = "textRight";
 			if (i%2===1) {
 				clazz = "textLeft";
 				$head.append(
 					$("<td/>").addClass("textCenter").append(
-						this.getPlayerWin(players[i-1]) + " - "  + this.getPlayerWin(player)
+						this.getPlayerWin(parent.getParent().getPlayers()[i-1]) + " - "  + this.getPlayerWin(player)
 				));
 			}
 			if (winner.uuid === player.uuid) {
@@ -176,8 +176,8 @@ function LegX01(parentSet) {
 		for(var key in stats) {
 			clazz = "textRight";
 			$row = $("<tr/>");
-			for (var k=0; k<players.length; k++) {
-				player  = players[k];
+			for (var k=0; k<parent.getParent().getPlayers().length; k++) {
+				player  = parent.getParent().getPlayers()[k];
 				if (k%2===1) {
 					clazz = "textLeft";
 					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.set, key)));

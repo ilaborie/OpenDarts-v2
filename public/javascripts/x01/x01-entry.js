@@ -258,7 +258,6 @@ function EntryX01(parentLeg, index) {
 		var entry = this;
 		var statEntry = {
 			timestamp: ts,
-			entry: this.uuid,
 			leg: parent.uuid,
 			set: parent.getParent().uuid,
 			game: parent.getParent().getParent().uuid,
