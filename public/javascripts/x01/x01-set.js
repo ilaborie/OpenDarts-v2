@@ -45,6 +45,7 @@ function SetX01(parentGame) {
 			var toWin = parent.getOption().nbLegs;
 			var p =currentLeg.getWinner();
 			if(toWin===this.getPlayerWin(p)) {
+				currentLeg = null;
 				// Winner
 				winner = p;
 				parent.next();
@@ -177,7 +178,9 @@ function SetX01(parentGame) {
 		for (var i=0; i<finishedlegs.length; i++) {
 			res.push(finishedlegs[i]);
 		}
-		res.push(currentLeg);
+		if (currentLeg!==null) {
+			res.push(currentLeg);
+		}
 		return res;
 	};
 
