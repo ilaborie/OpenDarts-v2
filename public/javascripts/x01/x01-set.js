@@ -59,13 +59,7 @@ function SetX01(parentGame) {
 	this.displayFinished = function() {
 		var title = this.getName() +" Finished!";
 		
-		var msg = tmpl("SetStats", {
-			set: this,
-			stats: stats,
-			players: parent.getPlayers(),
-			firstPlayer: players[0],
-			winner: winner
-		});
+		var msg = this.getTableStats();
 
 		// Notifiy
 		var game = parent;
@@ -73,6 +67,16 @@ function SetX01(parentGame) {
 			text: '<i class="icon-white icon-step-forward"></i> Next Set',
 			"class" : "btn-primary",
 			click: function() { $("#modalDialog").modal("hide"); game.startNewSet(); }
+		});
+	};
+	// stats table
+	this.getTableStats = function() {
+		return tmpl("SetStats", {
+			set: this,
+			stats: stats,
+			players: parent.getPlayers(),
+			firstPlayer: players[0],
+			winner: winner
 		});
 	};
 	// Update stats

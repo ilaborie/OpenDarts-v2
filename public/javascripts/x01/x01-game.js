@@ -32,6 +32,7 @@ function GameX01(options) {
 			if(toWin===this.getPlayerWin(p)) {
 				// Winner
 				winner = p;
+				currentSet = null;
 				x01.finishedGames.push(this);
 				x01.currentGame = null;
 				this.displayFinished();
@@ -59,16 +60,34 @@ function GameX01(options) {
 
 	// GameX01 displayFinished
 	this.displayFinished = function() {
+		$("#game").empty();
 		var title = this.getName() +" Finished!";
 		
-		var msg = tmpl("GameStats", {
+		var msg = this.getTableStats();
+		// Notifiy
+		var game = this;
+		openModalDialog(title, msg, {
+			text: '<i class="icon-stop"></i> End',
+			click: function() {
+				$("#modalDialog").modal("hide");
+				game.displayHistory();
+			}
+		});
+	};
+	this.displayHistory = function() {
+		$("#history").empty().append(tmpl("GameHistory",{
+			game: this
+		}));
+		//  Activation
+		$("#history ul li:first-child").children("a").click();
+	};
+	this.getTableStats = function() {
+		return tmpl("GameStats", {
 			game: this,
 			stats: stats,
 			players: options.players,
 			winner: winner
 		});
-		// Notifiy
-		openModalDialog(title, msg);
 	};
 	// Update stats
 	this.updateStats = function(player, json) {
@@ -79,31 +98,6 @@ function GameX01(options) {
 			}
 			stats[key][player.uuid] = json.gameStats[key];
 		}
-	};
-
-	// Get set score
-	this.getGameScore = function () {
-		var msg = "";
-		var toWin = option.nbSets;
-		// display detail
-		for (var j=0; j< finishedSets.length; j++) {
-			var set = finishedSets[j];
-			msg += '<li class="nav-header">';
-			msg += set.getNameWinner();
-			msg +="</li>";
-
-			for(var i=0; i<option.players.length; i++) {
-				var p = option.players[i];
-				var win = set.getPlayerWin(p);
-
-				msg +="<li>";
-				msg += p.getName() + ": " + win;
-				msg += "&nbsp;&nbsp;";
-				msg += set.getPlayerSetScore(p);
-				msg +="</li>";
-			}
-		}
-		return msg;
 	};
 
 	// GameX01 getPlayers
@@ -143,7 +137,9 @@ function GameX01(options) {
 		for (var i=0; i<finishedSets.length; i++) {
 			res.push(finishedSets[i]);
 		}
-		res.push(currentSet);
+		if (currentSet!==null) {
+			res.push(currentSet);
+		}
 		return res;
 	};
 

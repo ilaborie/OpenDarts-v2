@@ -78,7 +78,7 @@ x01Stats.indexedDB.open = function() {
 					keyPath: "timestamp"
 				});
 				e.target.transaction.oncomplete = function() {
-					console.log("StatsEntryX01 created!");
+					// nop
 				};
 			};
 		} else {
@@ -99,7 +99,7 @@ x01Stats.indexedDB.clear = function()	{
 	var request = store.clear();
 
 	request.onsuccess = function(e) {
-		console.log("StatsEntryX01 cleared !");
+		// nop
 	};
 
 	request.onerror = x01Stats.indexedDB.onerror;
@@ -114,7 +114,7 @@ x01Stats.indexedDB.addStatsEntryX01 = function(statEntry, callback) {
 	var request = store.put(statEntry);
 
 	trans.oncomplete = function(e) {
-		console.log("StatsEntryX01 added");
+		// nop
 		callback();
 	};
 
@@ -142,7 +142,6 @@ x01Stats.indexedDB.open();
 
 // Game Stats
 x01Stats.indexedDB.getPlayerStats = function(game, set, leg, player, callback)	{
-	console.log("Stats for " + player.getName());
 	var db = x01Stats.indexedDB.db;
 	var trans = db.transaction(["StatsEntryX01"], "readonly");
 	var store = trans.objectStore("StatsEntryX01");

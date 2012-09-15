@@ -152,13 +152,7 @@ function LegX01(parentSet) {
 	this.displayFinished = function() {
 		var title = this.getName() +" Finished!";
 		
-		var msg = tmpl("LegStats", {
-			leg: this,
-			stats: stats,
-			players: parent.getParent().getPlayers(),
-			firstPlayer: players[0],
-			winner: winner
-		});
+		var msg = this.getTableStats();
 
 		// Notifiy
 		var set = parent;
@@ -166,6 +160,16 @@ function LegX01(parentSet) {
 			text: '<i class="icon-white icon-step-forward"></i> Next Leg',
 			"class" : "btn-primary",
 			click: function() { $("#modalDialog").modal("hide"); set.startNewLeg(); }
+		});
+	};
+	// Table stats
+	this.getTableStats = function() {
+		return tmpl("LegStats", {
+			leg: this,
+			stats: stats,
+			players: parent.getParent().getPlayers(),
+			firstPlayer: players[0],
+			winner: winner
 		});
 	};
 	// Update stats
@@ -293,7 +297,7 @@ function LegX01(parentSet) {
 
 		// div Table
 		var $divTable = $("<div>").addClass("data");
-		$divTable.append(this.createTable(ps));
+		$divTable.append(this.getTableScore(ps, true));
 
 		// Score Left
 		var $legLeft = $("<div/>").addClass("container").addClass("score-left-container")
@@ -311,13 +315,13 @@ function LegX01(parentSet) {
 	};
 
 	// Create Table
-	this.createTable = function(allPlayers) {
+	this.getTableScore = function(allPlayers, input) {
 		return tmpl("LegTable", {
 			leg: this,
 			players: parent.getParent().getPlayers(),
 			firstPlayer: players[0],
 			score: parent.getOption().score,
-			showInput: true
+			showInput: input
 		});
 	};
 

@@ -1,15 +1,24 @@
 <!--
 	entry: current entry
-	ps: players (ordred by game)
+	players: players (ordred by game)
 -->
 <script id="EntryToRow" type="text/html">
+    <% var clazz; %>
+    <% var player; %>
     <tr id="<%=entry.uuid%>">
-    <%  for(var j=0; j<ps.length; j++) {
-            if (j!==0) { %>
+    <%  for(var j=0; j<players.length; j++) { %>
+    <%      player = players[j]; %>
+    <%      if (j!==0) { %>
         <td class="cell cellDarts"><%=entry.getName()%></td>
     <%      } %>
-        <td class="cell cellScore" id="<%=entry.getScoreId(ps[j])%>"><%=entry.getScore(ps[j])%></td>
-        <td class="cell cellStatus" id="<%=entry.getLeftId(ps[j])%>"><%=entry.getLeft(ps[j])%></td>
+
+    <%      clazz =""; %>
+    <%      if(typeof entry.getScoreAsInt(player) === "number") { %>
+    <%          var z =  Math.floor(entry.getScoreAsInt(player)/10); %>
+    <%          clazz = "score"+ z+"x"; %>
+    <%      } %>
+        <td class="cell cellScore <%=entry.getStatus(player)%> <%=clazz%>" id="<%=entry.getScoreId(player)%>"><%=entry.getScore(player)%></td>
+        <td class="cell cellStatus" id="<%=entry.getLeftId(player)%>"><%=entry.getLeft(player)%></td>
     <% } %>
     </tr>
 </script>

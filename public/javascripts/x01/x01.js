@@ -279,7 +279,7 @@ var validatePlayerValue = function(value) {
 
 // get NbDarts to finish
 var getNbDart = function(score, func) {
-	console.log("getNbDart for " + score);
+	//console.log("getNbDart for " + score);
 	var $defaultButton = null;
 
 	var callback = function(event) {

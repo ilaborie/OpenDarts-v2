@@ -51,3 +51,47 @@
 		</tbody>
 	</table>
 </script>
+<!-- 
+	game: the current game
+-->
+<script id="GameHistory" type="text/html">
+	<%	var set; %>
+	<%	var leg; %>
+	<div class="hGames ">
+		<%=game.getTableStats()%>
+	</div>
+
+	<div class="tabbable tabs-left">
+		<ul class="nav nav-tabs">
+	<%	for (var i=0; i<game.getSets().length; i++) { %>
+	<%		set = game.getSets()[i]; %>
+			<li class=""><a href="#<%=set.uuid%>" data-toggle="tab"><%=set.getName()%></a></li>
+	<%	} %>
+		</ul>
+		<div class="tab-content">
+	<%	for(var j=0; j<game.getSets().length; j++) { %>
+	<%		set = game.getSets()[j]; %>
+            <div class="tab-pane" id="<%=set.uuid%>">
+                <div class="row-fluid ">
+                    <div class="span8">
+                    	<h2><%=set.getName()%></h2>
+                    </div>
+                    <div class="span4">
+                    	<%=set.getTableStats()%>
+                    </div>
+                </div>
+	<%		for(var k=0; k<set.getLegs().length; k++) { %>
+	<%			leg = set.getLegs()[k]; %>
+				<h3><%=leg.getName()%></h3>
+				<div class="row-fluid">
+					<div class="span8">
+						<%=leg.getTableScore(game.getPlayers(), false)%>
+					</div>
+					<div class="span4">
+                    	<%=leg.getTableStats()%>
+					</div>
+				</div>
+	<%		} %>
+            </div>
+	<%	} %>
+</script>

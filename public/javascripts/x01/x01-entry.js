@@ -192,7 +192,7 @@ function EntryX01(parentLeg, index) {
 		var player = lastPlayer;
 		var status = analyseInputX01(this, value, left, function(status, nbDart) {
 			$input.unbind("blur").unbind("keyup");
-			console.log("# " + entry.index +" Player: " + player.getName() + " value:" +value+ " status:" + status + " nbDarts:"+nbDart);
+			//console.log("# " + entry.index +" Player: " + player.getName() + " value:" +value+ " status:" + status + " nbDarts:"+nbDart);
 			if (nbDart) {
 				entry.nbDart = nbDart;
 			}
@@ -531,7 +531,7 @@ function EntryX01(parentLeg, index) {
 	this.display = function() {
 		return tmpl("EntryToRow",  {
 			entry: this,
-			ps: parent.getParent().getParent().getPlayers()
+			players: parent.getParent().getParent().getPlayers()
 		});
 	};
 	// Score Id
