@@ -129,7 +129,7 @@ function EntryX01(parentLeg, index) {
 
 			setTimeout(function() {
 				entry.showDart(entry, json, idx+1, callback);
-			},800);
+			},1000);
 		} else {
 			$("#computerThrowDialog").unbind("hidden").on("hidden",function() {
 				entry.handleNewInput(json.status, json.score, callback);

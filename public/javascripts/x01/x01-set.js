@@ -92,6 +92,42 @@ function SetX01(parentGame) {
 
 		// Update Parent
 		parent.updateStats(player, json);
+
+		// Display best
+		var bestSpan = [];
+		var currentSpan;
+		var bestValue = null;
+		var currentValue;
+		var comp;
+		var p;
+		for (var stk in stats) {
+			bestSpan = [];
+			bestValue = null;
+
+			for (var i=0; i<players.length; i++) {
+				p = players[i];
+				currentValue = +stats[stk][p.uuid]; // as Number
+				currentSpan = $("#"+currentLeg.getStatsPlayerId(p)+" ."+x01.stats.set.key+" ." + stk);
+				
+				// clear stats
+				currentSpan.removeClass("best");
+
+				// compare
+				comp = x01.stats.set.contents[stk].sorter(currentValue, bestValue);
+				if (comp >= 0) {
+					if (comp>0) {
+						bestSpan = [];
+						bestValue = currentValue;
+					}
+					bestSpan.push(currentSpan);
+				}
+			}
+			if (bestSpan.length>0) {
+				for (var j=0; j<bestSpan.length; j++) {
+					bestSpan[j].addClass("best");
+				}
+			}
+		}
 	};
 
 	// Next Leg

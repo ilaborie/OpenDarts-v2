@@ -80,6 +80,7 @@ function GameX01(options) {
 		}));
 		//  Activation
 		$("#history ul li:first-child").children("a").click();
+		$("#history").show();
 	};
 	this.getTableStats = function() {
 		return tmpl("GameStats", {
@@ -97,6 +98,41 @@ function GameX01(options) {
 				stats[key] = {};
 			}
 			stats[key][player.uuid] = json.gameStats[key];
+		}
+		// Display best
+		var bestSpan = [];
+		var currentSpan;
+		var bestValue = null;
+		var currentValue;
+		var comp;
+		var p;
+		for (var stk in stats) {
+			bestSpan = [];
+			bestValue = null;
+
+			for (var i=0; i< options.players.length; i++) {
+				p = options.players[i];
+				currentValue = +stats[stk][p.uuid]; // as Number
+				currentSpan = $("#"+currentSet.getCurrentLeg().getStatsPlayerId(p)+" ."+x01.stats.game.key+" ." + stk);
+				
+				// clear stats
+				currentSpan.removeClass("best");
+
+				// compare
+				comp = x01.stats.game.contents[stk].sorter(currentValue, bestValue);
+				if (comp >= 0) {
+					if (comp>0) {
+						bestSpan = [];
+						bestValue = currentValue;
+					}
+					bestSpan.push(currentSpan);
+				}
+			}
+			if (bestSpan.length>0) {
+				for (var j=0; j<bestSpan.length; j++) {
+					bestSpan[j].addClass("best");
+				}
+			}
 		}
 	};
 
@@ -174,6 +210,7 @@ function GameX01(options) {
 			}
 		}
 		$(".hero-unit").hide();
+		$("#history").hide();
 
 		// Create set
 		currentSet = new SetX01(this);

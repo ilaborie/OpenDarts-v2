@@ -7,42 +7,60 @@
 	bestOut, OutOver100,
 	totalScore, totalDart,
 */
+var normalSorter = function(a, b) {
+	var result;
+	if ((a===null || isNaN(a)) && (b===null || isNaN(b))) {
+		result = NaN;
+	} else if (b===null || isNaN(b)) {
+		result = 1;
+	} else if (a===null || isNaN(a)) {
+		result = -1;
+	} else {
+		result =  (a - b);
+	}
+	return result;
+};
+var reverseSorter = function(a, b) {
+	return normalSorter(b,a);
+};
+
+
 x01.stats = {
 	game: {
 		title: "Game",
 		key: "gameStats",
-		contents: [
-			{ label: "60", key: "count60"},
-			{ label: "100", key: "count100"},
-			{ label: "140", key: "count140"},
-			{ label: "180", key: "count180"},
-			{ label: "60+", key: "plus60"},
-			{ label: "100+", key: "plus100"},
-			{ label: "140+", key: "plus140"},
-			{ label: "Best Out", key: "bestOut"},
-			{ label: "Avg.", key: "avgDart"},
-			{ label: "Avg.3", key: "avg3Dart"},
-			{ label: "Avg Leg", key: "avgLeg"},
-			{ label: "Best Leg", key: "bestLeg"}
-		]
+		contents: {
+			count60: { label: "60", sorter: normalSorter},
+			count100: { label: "100", sorter: normalSorter},
+			count140: { label: "140", sorter: normalSorter},
+			count180: { label: "180", sorter: normalSorter},
+			plus60: { label: "60+", sorter: normalSorter},
+			plus100: { label: "100+", sorter: normalSorter},
+			plus140: { label: "140+", sorter: normalSorter},
+			bestOut: { label: "Best Out", sorter: reverseSorter},
+			avgDart: { label: "Avg.", sorter: normalSorter},
+			avg3Dart: { label: "Avg.3", sorter: normalSorter},
+			avgLeg: { label: "Avg Leg", sorter: reverseSorter},
+			bestLeg: { label: "Best Leg", sorter: reverseSorter}
+		}
 	},
 	set: {
 		title: "Set",
 		key: "setStats",
-		contents: [
-			{ label: "Avg.", key: "avgDart"},
-			{ label: "Avg.3", key: "avg3Dart"},
-			{ label: "Avg Leg", key: "avgLeg"},
-			{ label: "Best Leg", key: "bestLeg"}
-		]
+		contents: {
+			avgDart: { label: "Avg.", sorter: normalSorter},
+			avg3Dart: { label: "Avg.3", sorter: normalSorter},
+			avgLeg: { label: "Avg Leg", sorter: reverseSorter},
+			bestLeg: { label: "Best Leg", sorter: reverseSorter}
+		}
 	},
 	leg: {
 		title: "Leg",
 		key: "letStats",
-		contents: [
-			{ label: "Avg.", key: "avgDart"},
-			{ label: "Avg.3", key: "avg3Dart"}
-		]
+		contents: {
+			avgDart: { label: "Avg.", sorter: normalSorter},
+			avg3Dart: { label: "Avg.3", sorter: normalSorter}
+		}
 	}
 };
 
@@ -296,9 +314,9 @@ x01Stats.indexedDB.getPlayerStats = function(game, set, leg, player, callback)	{
 ////////////////////////////////////////
 
 var getStatLabel = function(obj, key) {
-	for (var i=0; i< obj.contents.length; i++) {
-		if (obj.contents[i].key === key) {
-			return obj.contents[i].label;
+	for (var skey in obj.contents) {
+		if (skey === key) {
+			return obj.contents[skey].label;
 		}
 	}
 	return " ??? ";

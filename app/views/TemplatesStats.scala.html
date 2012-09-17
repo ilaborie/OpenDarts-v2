@@ -5,12 +5,11 @@
     <div>
         <h5><%=stats.title%></h5>
         <div class="row-fluid statsEntries <%=stats.key%>">
-    <%  for(var i=0; i<stats.contents.length; i++) {%>
+    <%  for(var key in stats.contents) {%>
             <div class="stat span6">
-                <label><%=stats.contents[i].label%></label><span class="<%=stats.contents[i].key%>"> - </span>
+                <label><%=stats.contents[key].label%></label><span class="<%=key%>"> - </span>
             </div>
     <%  } %>
-
         </div>
     </div>
 </script>
