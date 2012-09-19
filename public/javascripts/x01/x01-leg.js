@@ -483,7 +483,7 @@ function LegX01(parentSet) {
 	// Retrieve stats
 	this.requestStats = function(statQuery, player) {
 		var leg = this;
-		x01Stats.indexedDB.getPlayerStats(statQuery.game, statQuery.set, statQuery.leg, player, function(json) {
+		x01Stats.db.getPlayerStats(statQuery.game, statQuery.set, statQuery.leg, player, function(json) {
 			handleStats(leg.getStatsPlayerId(player), json);
 		});
 	};

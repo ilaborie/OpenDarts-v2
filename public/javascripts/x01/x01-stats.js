@@ -77,107 +77,33 @@ x01.stats = {
 
 //////////////////
 // Database
-var x01Stats = {};
-window.indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB;
-
-if ('webkitIndexedDB' in window) {
-  window.IDBTransaction = window.webkitIDBTransaction;
-  window.IDBKeyRange = window.webkitIDBKeyRange;
-}
-x01Stats.indexedDB = {};
-x01Stats.indexedDB.db = null;
-x01Stats.indexedDB.onerror = function(e) {
-  console.log(e);
-};
-
-x01Stats.indexedDB.open = function() {
-	var request = indexedDB.open("StatsEntryX01");
-
-	request.onsuccess = function(e) {
-		var v = "1.0";
-		x01Stats.indexedDB.db = e.target.result;
-		var db = x01Stats.indexedDB.db;
-		if (v!= db.version) {
-			var setVrequest = db.setVersion(v);
-			// onsuccess is the only place we can create Object Stores
-			setVrequest.onfailure = x01Stats.indexedDB.onerror;
-			setVrequest.onsuccess = function(e) {
-				var store = db.createObjectStore("StatsEntryX01", {
-					keyPath: "timestamp"
-				});
-				e.target.transaction.oncomplete = function() {
-					// nop
-				};
-			};
-		} else {
-			x01Stats.indexedDB.clear();
+var x01Stats = {
+	db: {
+		open: function() {},
+		clear: function()	{
+			// Clear
+			sessionStorage.clear();
+		},
+		addStatsEntryX01: function(statEntry, callback) {
+			// Add
+			var key = "x01Stats-" + statEntry.timestamp;
+			sessionStorage.setItem(key, JSON.stringify(statEntry));
+			callback();
+		},
+		deleteStatsEntryX01: function(id, callback) {
+			// Delete
+			var key = "x01Stats-" + id;
+			sessionStorage.removeItem(key);
+			callback();
 		}
-	};
-
-	request.onfailure = x01Stats.indexedDB.onerror;
+	}
 };
 
-// Clear
-x01Stats.indexedDB.clear = function()	{
-	var db = x01Stats.indexedDB.db;
-	var trans = db.transaction(["StatsEntryX01"], "readwrite");
-	var store = trans.objectStore("StatsEntryX01");
-
-	// Get everything in the store;
-	var request = store.clear();
-
-	request.onsuccess = function(e) {
-		// nop
-	};
-
-	request.onerror = x01Stats.indexedDB.onerror;
-};
-
-// Add
-x01Stats.indexedDB.addStatsEntryX01 = function(statEntry, callback) {
-	var db = x01Stats.indexedDB.db;
-	var trans = db.transaction(["StatsEntryX01"], "readwrite");
-	var store = trans.objectStore("StatsEntryX01");
-
-	var request = store.put(statEntry);
-
-	trans.oncomplete = function(e) {
-		// nop
-		callback();
-	};
-
-	request.onerror = x01Stats.indexedDB.onerror;
-};
-
-// Delete
-x01Stats.indexedDB.deleteStatsEntryX01 = function(id, callback) {
-	var db = x01Stats.indexedDB.db;
-	var trans = db.transaction(["StatsEntryX01"], "readwrite");
-	var store = trans.objectStore("StatsEntryX01");
-
-	var request = store.delete(id);
-
-	trans.oncomplete  = function(e) {
-		callback();
-	};
-
-	request.onerror = function(e) {
-		x01Stats.indexedDB.onerror(e);
-	};
-};
 // Open
-x01Stats.indexedDB.open();
+x01Stats.db.open();
 
 // Game Stats
-x01Stats.indexedDB.getPlayerStats = function(game, set, leg, player, callback)	{
-	var db = x01Stats.indexedDB.db;
-	var trans = db.transaction(["StatsEntryX01"], "readonly");
-	var store = trans.objectStore("StatsEntryX01");
-
-	// Get everything in the store
-	var keyRange = IDBKeyRange.lowerBound(0);
-	var cursorRequest = store.openCursor(keyRange);
-
+x01Stats.db.getPlayerStats = function(game, set, leg, player, callback)	{
 	var count60 = 0;
 	var count100 = 0;
 	var count140 = 0;
@@ -208,117 +134,119 @@ x01Stats.indexedDB.getPlayerStats = function(game, set, leg, player, callback)	{
 	var legTotalScore = 0;
 	var legTotalDart = 0;
 
-	cursorRequest.onsuccess = function(e) {
-		var result = e.target.result;
-		if(!!result == false) {
-			avgDart = (totalScore/totalDart);
-			avg3Dart = (avgDart * 3);
-			avgLeg = (countLeg / winLeg);
 
-			var gameStats =  {
-				count60: count60,
-				count100: count100,
-				count140: count140,
-				count180: count180,
-				plus60: plus60,
-				plus100: plus100,
-				plus140: plus140,
-				avgDart: isNaN(avgDart)?"-":avgDart.toFixed(1),
-				avg3Dart: isNaN(avgDart)?"-":avg3Dart.toFixed(1),
-				avgLeg: isNaN(avgLeg)?"-":avgLeg.toFixed(1),
-				bestLeg: (typeof bestLeg==="number")?bestLeg:"-",
-				bestOut: (typeof bestOut==="number")?bestOut:"-"
-			};
+	for (var i=0; i< sessionStorage.length; i++) {
+		var key = sessionStorage.key(i);
+		if (key!==null) { // FIXME && startWith("x01Stats-")
+			try {
+				var entry = JSON.parse(sessionStorage.getItem(key));
+				if ((game === entry.game) && (player.uuid === entry.player)) {
+					var score = entry.score;
+					var nbDarts = entry.nbDarts;
 
-			var setAvgDart = (setTotalScore/setTotalDart);
-			var setAvg3Dart = (setAvgDart * 3);
-			var setAvgLeg = (setCountLeg/setWinLeg);
+					totalScore +=  score;
+					totalDart += nbDarts;
 
-			var setStats =  {
-				avgDart: isNaN(setAvgDart)?"-":setAvgDart.toFixed(1),
-				avg3Dart: isNaN(setAvgDart)?"-":setAvg3Dart.toFixed(1),
-				avgLeg: isNaN(setAvgLeg)?"-":setAvgLeg.toFixed(1),
-				bestLeg: (typeof setBestLeg==="number")?setBestLeg:"-"
-			};
+					if (set === entry.set) {
+						setTotalScore += score;
+						setTotalDart += nbDarts;
+					}
 
-			var legAvgDart = (legTotalScore/legTotalDart);
-			var legAvg3Dart = (legAvgDart * 3);
+					if (leg === entry.leg) {
+						legTotalScore += score;
+						legTotalDart += nbDarts;
+					}
 
-			var legStats =  {
-				avgDart: isNaN(legAvgDart)?"-":legAvgDart.toFixed(1),
-				avg3Dart: isNaN(legAvgDart)?"-":legAvg3Dart.toFixed(1)
-			};
+					// Counts
+					switch(score) {
+						case 60 : count60++; break;
+						case 100 : count100++; break;
+						case 140 : count140++; break;
+						case 180 : count180++; break;
+					}
 
-			return callback({
-				gameStats: gameStats,
-				setStats: setStats,
-				legStats: legStats
-			});
-		}
-		// Check if valid Game/Player
-		if ((game === result.value.game) && (player.uuid === result.value.player)) {
-			var score = result.value.score;
-			var nbDarts = result.value.nbDarts;
+					// Range
+					if (score>60 && score<100) {
+						plus60++;
+					} else if (score>100 && score<140) {
+						plus100++;
+					} else if (score>140) {
+						plus140++;
+					}
 
-			totalScore +=  score;
-			totalDart += nbDarts;
+					// Win
+					if (entry.status==="win") {
+						winLeg++;
+						var legNbDarts = entry.legNbDarts;
+						// count
+						countLeg += entry.legNbDarts;
+						// best out
+						if ( (typeof bestOut === "undefined") || ((typeof bestOut === "number") && (score > bestOut))) {
+							bestOut = score;
+						}
+						// best Leg
+						if ( ((typeof bestLeg === "undefined") && (typeof legNbDarts === "number")) || ((typeof bestLeg === "number") && (legNbDarts < bestLeg))) {
+							bestLeg = legNbDarts;
+						}
 
-			if (set === result.value.set) {
-				setTotalScore += score;
-				setTotalDart += nbDarts;
-			}
-
-			if (leg === result.value.leg) {
-				legTotalScore += score;
-				legTotalDart += nbDarts;
-			}
-
-			// Counts
-			switch(score) {
-				case 60 : count60++; break;
-				case 100 : count100++; break;
-				case 140 : count140++; break;
-				case 180 : count180++; break;
-			}
-
-			// Range
-			if (score>60 && score<100) {
-				plus60++;
-			} else if (score>100 && score<140) {
-				plus100++;
-			} else if (score>140) {
-				plus140++;
-			}
-
-			// Win
-			if (result.value.status==="win") {
-				winLeg++;
-				var legNbDarts = result.value.legNbDarts;
-				// count
-				countLeg += result.value.legNbDarts;
-				// best out
-				if ( (typeof bestOut === "undefined") || ((typeof bestOut === "number") && (score > bestOut))) {
-					bestOut = score;
-				}
-				// best Leg
-				if ( ((typeof bestLeg === "undefined") && (typeof legNbDarts === "number")) || ((typeof bestLeg === "number") && (legNbDarts < bestLeg))) {
-					bestLeg = legNbDarts;
-				}
-
-				if (set === result.value.set) {
-					setWinLeg++;
-					setCountLeg+= result.value.legNbDarts;
-					if ( (( typeof setBestLeg === "undefined") && (typeof legNbDarts === "number")) || ((typeof setBestLeg === "number") && (legNbDarts < setBestLeg))) {
-						setBestLeg = legNbDarts;
+						if (set === entry.set) {
+							setWinLeg++;
+							setCountLeg+= entry.legNbDarts;
+							if ( (( typeof setBestLeg === "undefined") && (typeof legNbDarts === "number")) || ((typeof setBestLeg === "number") && (legNbDarts < setBestLeg))) {
+								setBestLeg = legNbDarts;
+							}
+						}
 					}
 				}
+			} catch (e) {
+				console.log(e);
 			}
 		}
+	}
 
-		result.continue();
+	avgDart = (totalScore/totalDart);
+	avg3Dart = (avgDart * 3);
+	avgLeg = (countLeg / winLeg);
+
+	var gameStats =  {
+		count60: count60,
+		count100: count100,
+		count140: count140,
+		count180: count180,
+		plus60: plus60,
+		plus100: plus100,
+		plus140: plus140,
+		avgDart: isNaN(avgDart)?"-":avgDart.toFixed(1),
+		avg3Dart: isNaN(avgDart)?"-":avg3Dart.toFixed(1),
+		avgLeg: isNaN(avgLeg)?"-":avgLeg.toFixed(1),
+		bestLeg: (typeof bestLeg==="number")?bestLeg:"-",
+		bestOut: (typeof bestOut==="number")?bestOut:"-"
 	};
 
-	cursorRequest.onerror = x01Stats.indexedDB.onerror;
+	var setAvgDart = (setTotalScore/setTotalDart);
+	var setAvg3Dart = (setAvgDart * 3);
+	var setAvgLeg = (setCountLeg/setWinLeg);
+
+	var setStats =  {
+		avgDart: isNaN(setAvgDart)?"-":setAvgDart.toFixed(1),
+		avg3Dart: isNaN(setAvgDart)?"-":setAvg3Dart.toFixed(1),
+		avgLeg: isNaN(setAvgLeg)?"-":setAvgLeg.toFixed(1),
+		bestLeg: (typeof setBestLeg==="number")?setBestLeg:"-"
+	};
+
+	var legAvgDart = (legTotalScore/legTotalDart);
+	var legAvg3Dart = (legAvgDart * 3);
+
+	var legStats =  {
+		avgDart: isNaN(legAvgDart)?"-":legAvgDart.toFixed(1),
+		avg3Dart: isNaN(legAvgDart)?"-":legAvg3Dart.toFixed(1)
+	};
+
+	return callback({
+		gameStats: gameStats,
+		setStats: setStats,
+		legStats: legStats
+	});
 };
 
 ////////////////////////////////////////

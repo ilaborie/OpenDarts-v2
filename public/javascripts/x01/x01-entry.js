@@ -279,8 +279,8 @@ function EntryX01(parentLeg, index) {
 			statEntry.nbDarts = 3;
 		}
 
-		x01Stats.indexedDB.addStatsEntryX01(statEntry,function() {
-			x01Stats.indexedDB.getPlayerStats(statEntry.game, statEntry.set, statEntry.leg, player, function(json) {
+		x01Stats.db.addStatsEntryX01(statEntry,function() {
+			x01Stats.db.getPlayerStats(statEntry.game, statEntry.set, statEntry.leg, player, function(json) {
 				entry.updateStats(player, json);
 				if (callback!==null && $.isFunction(callback)) {
 					callback();
@@ -359,7 +359,7 @@ function EntryX01(parentLeg, index) {
 		// Push stats
 		var left = playerLeft[player.uuid];
 		var entry = this;
-		x01Stats.indexedDB.deleteStatsEntryX01(playerStatEntry[player.uuid], function() {
+		x01Stats.db.deleteStatsEntryX01(playerStatEntry[player.uuid], function() {
 			entry.pushStats(player, value, left, status, playerStatEntry[player.uuid]);
 		});
 		
@@ -399,8 +399,8 @@ function EntryX01(parentLeg, index) {
 	};
 	this.deletePlayerStats = function(player) {
 		var entry = this;
-		x01Stats.indexedDB.deleteStatsEntryX01(playerStatEntry[player.uuid], function() {
-			x01Stats.indexedDB.getPlayerStats(parent.getParent().getParent().uuid, parent.getParent().uuid, parent.uuid, player, function(json) {
+		x01Stats.db.deleteStatsEntryX01(playerStatEntry[player.uuid], function() {
+			x01Stats.db.getPlayerStats(parent.getParent().getParent().uuid, parent.getParent().uuid, parent.uuid, player, function(json) {
 				entry.updateStats(player, json);
 			});
 		});
