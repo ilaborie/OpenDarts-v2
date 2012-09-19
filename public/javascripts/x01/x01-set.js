@@ -72,13 +72,71 @@ function SetX01(parentGame) {
 	};
 	// stats table
 	this.getTableStats = function() {
-		return tmpl("SetStats", {
-			set: this,
-			stats: stats,
-			players: parent.getPlayers(),
-			firstPlayer: players[0],
-			winner: winner
-		});
+		var $table = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
+		var $head = $("<thead/>").append("<tr/>");
+		var $body = $("<tbody/>");
+		var player;
+		var clazz;
+		for (var i=0; i< parent.getPlayers().length; i++) {
+			player = parent.getPlayers()[i];
+			clazz = "textRight";
+			if (i%2===1) {
+				clazz = "textLeft";
+				$head.append(
+					$("<td/>").addClass("textCenter").append(
+						this.getPlayerWin(parent.getPlayers()[i-1]) + " - "  + this.getPlayerWin(player)
+				));
+			}
+			if (winner.uuid === player.uuid) {
+				$head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
+			} else {
+				$head.append($("<td/>").addClass(clazz).append(player.getName()));
+			}
+		}
+		var $row;
+
+		var currentValue = null;
+		var bestValue = null;
+		var $currentCell = null;
+		var $bestCells = [];
+		var comp;
+		for(var key in stats) {
+			clazz = "textRight";
+			$row = $("<tr/>");
+			$bestCells = [];
+			bestValue = null;
+			for (var k=0; k<parent.getPlayers().length; k++) {
+				player  = parent.getPlayers()[k];
+				if (k%2===1) {
+					clazz = "textLeft";
+					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.set, key)));
+				}
+				$currentCell = $("<td/>").addClass(clazz);
+				currentValue = stats[key][player.uuid];
+
+				// compare
+				comp = x01.stats.set.contents[key].sorter(currentValue, bestValue);
+				if (comp >= 0) {
+					if (comp>0) {
+						$bestCells = [];
+						bestValue = currentValue;
+					}
+					$bestCells.push($currentCell);
+				}
+
+				$row.append($currentCell.append(currentValue));
+			}
+			// Display best
+			if ($bestCells.length>0) {
+				for (var j=0; j<$bestCells.length; j++) {
+					$bestCells[j].addClass("best");
+				}
+			}
+
+			$body.append($row);
+		}
+		$table.append($head).append($body);
+		return $("<p/>").append($table).html();
 	};
 	// Update stats
 	this.updateStats = function(player, json) {
