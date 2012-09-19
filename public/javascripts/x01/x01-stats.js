@@ -47,7 +47,7 @@ x01.stats = {
 			plus60: { label: "60+", sorter: normalSorter},
 			plus100: { label: "100+", sorter: normalSorter},
 			plus140: { label: "140+", sorter: normalSorter},
-			bestOut: { label: "Best Out", sorter: reverseSorter},
+			bestOut: { label: "Best Out", sorter: normalSorter},
 			avgDart: { label: "Avg.", sorter: normalSorter},
 			avg3Dart: { label: "Avg.3", sorter: normalSorter},
 			avgLeg: { label: "Avg Leg", sorter: reverseSorter},
