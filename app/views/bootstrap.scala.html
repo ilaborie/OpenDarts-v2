@@ -4,6 +4,7 @@
 
 <html>
 <head>
+    <meta charset="utf-8">
     <title>@title</title>
     <!-- Meta -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +18,11 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main"+minified+".css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap"+minified+".css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-responsive"+minified+".css")">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
     <!-- Template x01 -->
     @TemplatesStats()
@@ -72,10 +78,10 @@
                     </label>
                     &nbsp;&nbsp;
                     <label class="humanPlayer" for="p2Name">Name</label>
-                    <input type="text" require id="p1Name" class="input-small humanPlayer" placeholder="First player name" value="" required />
+                    <input type="text" id="p1Name" class="input-small humanPlayer" placeholder="First player name" value="" required="required" />
                     <span class="humanPlayer">&nbsp;</span>
                     <label class="humanPlayer" for="p1Surname">Surname</label>
-                    <input type="text" require id="p1Surname" class="input-small humanPlayer" placeholder="First player surname" value="" />
+                    <input type="text" id="p1Surname" class="input-small humanPlayer" placeholder="First player surname" value="" />
                     &nbsp;&nbsp;
                     <label class="playerComputer">Target</label>
                     <label class="radio inline playerComputer">
@@ -95,10 +101,10 @@
                     </label>
                     &nbsp;&nbsp;
                     <label class="humanPlayer" for="p2Name">Name</label>
-                    <input type="text" require id="p2Name" class="input-small humanPlayer" placeholder="First player name" value="" required />
+                    <input type="text" id="p2Name" class="input-small humanPlayer" placeholder="First player name" value="" required="required" />
                     <span class="humanPlayer">&nbsp;</span>
                     <label class="humanPlayer" for="p2Surname">Surname</label>
-                    <input type="text" require id="p2Surname" class="input-small humanPlayer" placeholder="First player surname" value="" />
+                    <input type="text" id="p2Surname" class="input-small humanPlayer" placeholder="First player surname" value="" />
                     &nbsp;&nbsp;
                     <label class="playerComputer">Target</label>
                     <label class="radio inline playerComputer">
