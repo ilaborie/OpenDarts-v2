@@ -204,7 +204,7 @@ function LegX01(parentSet) {
 					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.leg, key)));
 				}
 				$currentCell = $("<td/>").addClass(clazz);
-				currentValue = stats[key][player.uuid];
+				currentValue = +stats[key][player.uuid];
 
 				// compare
 				comp = x01.stats.leg.contents[key].sorter(currentValue, bestValue);
@@ -216,7 +216,7 @@ function LegX01(parentSet) {
 					$bestCells.push($currentCell);
 				}
 
-				$row.append($currentCell.append(currentValue));
+				$row.append($currentCell.append(getStatsDisplayValue(currentValue)));
 			}
 			// Display best
 			if ($bestCells.length>0) {

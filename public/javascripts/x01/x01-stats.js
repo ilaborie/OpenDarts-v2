@@ -21,7 +21,17 @@ var normalSorter = function(a, b) {
 	return result;
 };
 var reverseSorter = function(a, b) {
-	return normalSorter(b,a);
+	var result;
+	if ((a===null || isNaN(a)) && (b===null || isNaN(b))) {
+		result = NaN;
+	} else if (b===null || isNaN(b)) {
+		result = 1;
+	} else if (a===null || isNaN(a)) {
+		result = -1;
+	} else {
+		result =  (b - a);
+	}
+	return result;
 };
 
 
@@ -322,6 +332,14 @@ var getStatLabel = function(obj, key) {
 	return " ??? ";
 };
 
+var getStatsDisplayValue = function(value) {
+	if (isNaN(value)) {
+		return " - ";
+	} else {
+		return value;
+	}
+};
+
 // Display one stats
 var displayStats = function(stats) {
 	return tmpl("StatsDiv", {
@@ -340,7 +358,7 @@ var handleStats= function(eltId,  json) {
 var updateStats = function(eltId, parentKey, stats) {
 	if (stats) {
 		for(var key in stats) {
-			$("#"+eltId+" ." + parentKey+ " ." + key).html(stats[key]);
+			$("#"+eltId+" ." + parentKey+ " ." + key).html(getStatsDisplayValue(stats[key]));
 		}
 	}
 };
