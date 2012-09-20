@@ -9,6 +9,7 @@ function EntryX01(parentLeg, index) {
 	var players = parent.getPlayers();
 	var lastPlayer = null;
 
+	var started = false;
 	var playerScore = {};
 	var playerLeft = {};
 	var playerPreviousLeft = {};
@@ -24,8 +25,13 @@ function EntryX01(parentLeg, index) {
 		playerPreviousLeft[p.uuid] = parent.getPlayerScore(p);
 	}
 
+	this.isStarted = function() {
+		return started;
+	};
+
 	// EntryX01 next
 	this.next = function(callback) {
+		started = true;
 		scollToBottom();
 
 		if (this.isFinished()) {
