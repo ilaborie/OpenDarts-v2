@@ -274,6 +274,7 @@ function GameX01(options) {
 		}
 		$(".hero-unit").hide();
 		$("#history").hide();
+		x01Stats.db.clear();
 
 		// Create set
 		currentSet = new SetX01(this);
