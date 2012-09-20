@@ -17,6 +17,10 @@ function GameX01(options) {
 		id = x01.currentGame.getId() +1;
 	} // else 0
 
+	this.isStarted = function() {
+		return currentSet.isStarted();
+	};
+
 	// GameX01 next
 	this.next= function() {
 		if (!currentSet.isFinished()) {

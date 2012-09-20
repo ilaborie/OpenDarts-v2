@@ -1,6 +1,12 @@
 // Define some default objets
 
 // Utilities
+if (typeof String.prototype.startsWith != "function") {
+	// see below for better implementation!
+	String.prototype.startsWith = function (str) {
+		return this.indexOf(str) === 0;
+	};
+}
 
 $.postJSON = function(url, data, callback, onError) {
 	var fun = doOnError;

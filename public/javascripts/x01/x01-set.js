@@ -32,9 +32,27 @@ function SetX01(parentGame) {
 		players.push(previousSet.getPlayers()[0]);
 	}
 
+	this.isStarted = function() {
+		return currentLeg.isStarted();
+	};
+
 	// SetX01 next
 	this.next= function() {
 		if (!currentLeg.isFinished()) {
+			if (!currentLeg.isStarted()) {
+				// Request Stats
+				for (var i=0; i< players.length; i++) {
+					var pl = players[i];
+					var statQuery = {
+						leg: currentLeg.uuid,
+						set: this.uuid,
+						game: parent.uuid,
+						player: pl.uuid
+					};
+					currentLeg.requestStats(statQuery, pl);
+				}
+			}
+
 			// Continue leg
 			currentLeg.next();
 		} else {
