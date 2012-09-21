@@ -199,8 +199,16 @@ var launchX01 = function(event) {
 
 	// Players
 	newX01Options.players = [];
-	newX01Options.players.push(getPlayer("p1"));
-	newX01Options.players.push(getPlayer("p2"));
+
+	var p1 = getPlayer("p1");
+	newX01Options.players.push(p1);
+
+	var p2 = getPlayer("p2");
+	if (p1.uuid === p2.uuid) {
+		p2 = players.getPlayerByNameSurname(p1.name, " " + p1.surname);
+	}
+	newX01Options.players.push(p2);
+	
 	newX01Options.stats = x01.options.stats;
 
 	// QuickLaunch
