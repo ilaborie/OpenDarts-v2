@@ -162,6 +162,8 @@ var players = {
 			comLevel: player.comLevel,
 			comTarget: player.comTarget
 		});
+		// Store to DB
+		localStorage.setItem("players", JSON.stringify(players.db));
 	},
 	update: function(player) {
 		var p;
@@ -175,6 +177,8 @@ var players = {
 				p.comTarget = player.comTarget;
 			}
 		}
+		// Store to DB
+		localStorage.setItem("players", JSON.stringify(players.db));
 	},
 	getPlayer: function(playerId) {
 		var p;
@@ -212,6 +216,11 @@ var players = {
 		return player;
 	}
 };
+// Load to DB
+var playersDB = localStorage.getItem("players");
+if (playersDB !== null) {
+	players.db = JSON.parse(playersDB);
+}
 
 function Player(name, surname) {
 	this.uuid = createUuid();

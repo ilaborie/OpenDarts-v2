@@ -241,6 +241,9 @@ var showPlayerDialog = function(prefix, player) {
 		if ($(this).is(":checked")) {
 			$("." + prefix + " .playerComputer").show();
 			$("." + prefix + " .humanPlayer").hide();
+			if ($("#" + prefix + "Name").val()==="") {
+				$("#" + prefix + "Name").val("HAL");
+			}
 		} else {
 			$("." + prefix + " .playerComputer").hide();
 			$("." + prefix + " .humanPlayer").show();
