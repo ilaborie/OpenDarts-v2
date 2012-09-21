@@ -2,16 +2,57 @@
  * Handel x01 Games
  */
 
+
+var Philou = players.getPlayerByNameSurname("Philou", "The Failure");
+
+var HAL = players.getPlayerByNameSurname("HAL",null);
+HAL.com = true;
+HAL.comLevel = 7;
+
 // Status
 var x01 =  {
 	options :  {
 		score: 501,
-		players: [getPlayer("Philou"), getPlayer("HAL")],
+		players: [Philou, HAL],
 		nbSets: 1,
 		nbLegs: 1
 	},
 	currentGame: null,
-	finishedGames: []
+	finishedGames: [],
+	hasLast: function() {
+		return (localStorage.getItem("x01LastOptions")!==null);
+	},
+	getLast: function() {
+		var opt = localStorage.getItem("x01LastOptions");
+		if (opt!==null) {
+			var o = JSON.parse(opt);
+			var option = {
+				score: o.score,
+				players: [],
+				nbSets: o.nbSets,
+				nbLegs: o.nbLegs
+			};
+			for (var i=0; i <o.players.length; i++) {
+				option.players.push(players.getPlayer(o.players[i]));
+			}
+			return option;
+		} else {
+			return null;
+		}
+	},
+	setLast: function(option) {
+		var opt = {
+			score: option.score,
+			players: [],
+			nbSets: option.nbSets,
+			nbLegs: option.nbLegs
+		};
+		for (var i=0; i< option.players.length; i++) {
+			opt.players.push(option.players[i].uuid);
+		}
+
+		localStorage.setItem("x01LastOptions", JSON.stringify(opt));
+	}
 };
 
 // Scaffolding
@@ -85,7 +126,10 @@ var showNewX01 = function() {
 	if (x01.currentGame) {
 		lastOption = x01.currentGame.getOption();
 	} else {
-		lastOption = x01.options;
+		lastOption = x01.getLast();
+		if (lastOption === null) {
+			lastOption = x01.options;
+		}
 	}
 
 	// Set Options
@@ -123,6 +167,28 @@ var showNewX01 = function() {
 	$("#newX01Dialog").modal("show");
 };
 
+// Quick Launch
+var quickLaunch = function(event) {
+	var options = x01.getLast();
+	
+	// Start
+	var game = new GameX01(options);
+	game.start();
+	x01.currentGame = game;
+	x01.currentGame.next();
+
+	event.preventDefault();
+	return false;
+};
+
+var checkQuickLaunch= function() {
+	if (x01.hasLast()) {
+		$("#btnQuick").show();
+		$("#btnQuick").unbind("click").click(quickLaunch);
+	}
+};
+checkQuickLaunch();
+
 // Launch x01
 var launchX01 = function(event) {
 	// new option
@@ -137,9 +203,13 @@ var launchX01 = function(event) {
 	newX01Options.players.push(getPlayer("p2"));
 	newX01Options.stats = x01.options.stats;
 
+	// QuickLaunch
+	x01.setLast(newX01Options);
+	
 	// Create the new Game
 	var game = new GameX01(newX01Options);
-	
+	checkQuickLaunch();
+
 	// Start
 	game.start();
 	x01.currentGame = game;
@@ -212,13 +282,16 @@ var getPlayer = function(prefix) {
 	}
 	
 	// Create player
-	var p = new Player(name, surname);
-
+	var p;
 	// Computer field
 	if (isComputer) {
+		p = players.getPlayerByNameSurname(name, surname);
 		p.com = true;
 		p.comLevel = $("#"+prefix+"Level").val();
 		p.comTarget = $("#newX01Dialog input[name="+prefix+"Target]:checked").val();
+		players.update(p);
+	} else {
+		p = players.getPlayerByNameSurname(name, surname);
 	}
 	return p;
 };
