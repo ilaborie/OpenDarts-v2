@@ -156,6 +156,49 @@ function SetX01(parentGame) {
 		$table.append($head).append($body);
 		return $("<p/>").append($table).html();
 	};
+	this.getLegsDetail = function() {
+		var $table = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
+		var $head = $("<thead/>").append("<tr/>");
+		var $body = $("<tbody/>");
+		var player;
+		var clazz;
+		for (var i=0; i< parent.getPlayers().length; i++) {
+			player = parent.getPlayers()[i];
+			clazz = "textRight";
+			if (i%2===1) {
+				clazz = "textLeft";
+				$head.append(
+					$("<td/>").addClass("textCenter").append(
+						this.getPlayerWin(parent.getPlayers()[i-1]) + " - "  + this.getPlayerWin(player)
+				));
+			}
+			if (winner.uuid === player.uuid) {
+				$head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
+			} else {
+				$head.append($("<td/>").addClass(clazz).append(player.getName()));
+			}
+		}
+		var $row;
+		var leg;
+		for (var j=0; j<this.getLegs().length; j++) {
+			leg = this.getLegs()[j];
+			clazz = "textRight";
+			$row = $("<tr/>");
+			for (var k=0; k<parent.getPlayers().length; k++) {
+				player = parent.getPlayers()[k];
+				if (k%2===1) {
+					clazz = "textLeft";
+					$row.append(
+						$("<td/>").addClass("textCenter").append(leg.getName()));
+				}
+				$row.append($("<td/>").addClass(clazz).append(leg.getPlayerWin(player)));
+			}
+			$body.append($row);
+		}
+
+		$table.append($head).append($body);
+		return $table;
+	};
 	// Update stats
 	this.updateStats = function(player, json) {
 		// Update values
