@@ -169,6 +169,12 @@ function SetX01(parentGame) {
 		// Update Parent
 		parent.updateStats(player, json);
 
+		var leg = currentLeg;
+		if (leg===null) {
+			var len = finishedlegs.length;
+			leg = finishedlegs[len-1];
+		}
+
 		// Display best
 		var bestSpan = [];
 		var currentSpan;
@@ -183,7 +189,7 @@ function SetX01(parentGame) {
 			for (var i=0; i<players.length; i++) {
 				p = players[i];
 				currentValue = +stats[stk][p.uuid]; // as Number
-				currentSpan = $("#"+currentLeg.getStatsPlayerId(p)+" ."+x01.stats.set.key+" ." + stk);
+				currentSpan = $("#"+leg.getStatsPlayerId(p)+" ."+x01.stats.set.key+" ." + stk);
 				
 				// clear stats
 				currentSpan.removeClass("best");
@@ -281,7 +287,12 @@ function SetX01(parentGame) {
 
 	// SetX01 getCurrentLeg
 	this.getCurrentLeg = function() {
-		return currentLeg;
+		var leg = currentLeg;
+		if (leg===null) {
+			var len = finishedlegs.length;
+			leg = finishedlegs[len-1];
+		}
+		return leg;
 	};
 
 	// SetX01 getLegs

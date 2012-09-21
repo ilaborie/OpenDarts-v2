@@ -79,9 +79,99 @@ function GameX01(options) {
 		});
 	};
 	this.displayHistory = function() {
-		$("#history").empty().append(tmpl("GameHistory",{
-			game: this
-		}));
+		var $list = $("<ul/>").addClass("nav").addClass("nav-tabs");
+		// Add Game
+		var $gameNav = $("<a/>", {
+				"href": "#" + this.uuid,
+				"data-toggle": "tab",
+				"class": "navGame"
+			}).append('<i class="icon-chevron-right"></i>')
+				.append($("<span/>").addClass("badge badge-inverse").append("Game"))
+				.append(" ")
+				.append(this.getName());
+		$list.append($("<li/>")
+			.append($gameNav));
+
+		// Add Sets
+		var set;
+		var leg;
+		var $setNav;
+		var $legNav;
+		for (var i=0; i<this.getSets().length; i++) {
+			set = this.getSets()[i];
+			$setNav = $("<a/>", {
+					"href": "#" + set.uuid,
+					"data-toggle": "tab",
+					"class": "navSet"
+				}).append('<i class="icon-chevron-right"></i>')
+					.append($("<span/>").addClass("badge badge-primary").append("Set"))
+					.append(" ")
+					.append(set.getName());
+			$list.append($("<li/>")
+				.append($setNav));
+			
+			// And Legs
+			for (var j=0; j<set.getLegs().length; j++) {
+				leg = set.getLegs()[j];
+				$legNav = $("<a/>", {
+					"href": "#" + leg.uuid,
+					"data-toggle": "tab",
+					"class": "navLeg"
+				}).append('<i class="icon-chevron-right"></i>')
+					.append($("<span/>").addClass("badge badge-success").append("Leg"))
+					.append(" ")
+					.append(leg.getName());
+				$list.append($("<li/>")
+					.append($legNav));
+			}
+		}
+
+		var $content = $("<div/>").addClass("tab-content");
+		
+		// Add Game
+		var $gameDetail = $("<h1/>").append(this.getName());
+		var $gameStats = this.getTableStats();
+
+		var $gameContent = $("<div/>").addClass("tab-pane").attr("id", this.uuid);
+		$gameContent.append($("<div/>").addClass("row-fluid")
+			.append($("<div/>").addClass("span8").append($gameDetail))
+			.append($("<div/>").addClass("span4").append($gameStats)));
+		$content.append($gameContent);
+
+		var $setDetail;
+		var $setContent;
+		var $legDetail;
+		var $legContent;
+		for (var k=0; k< this.getSets().length; k++) {
+			set = this.getSets()[k];
+			// Add Set
+			$setDetail = $("<h2/>").append(set.getName());
+
+			$setContent = $("<div/>").addClass("tab-pane").attr("id", set.uuid);
+			$setContent.append($("<div/>").addClass("row-fluid")
+				.append($("<div/>").addClass("span8").append($setDetail))
+				.append($("<div/>").addClass("span4").append(set.getTableStats())));
+			$content.append($setContent);
+		
+			for (var l = 0; l < set.getLegs().length; l++) {
+				leg = set.getLegs()[l];
+				// And Leg
+				$legDetail = $("<h3/>").append(leg.getName()).append(leg.getTableScore(this.getPlayers(), false));
+
+				$legContent = $("<div/>").addClass("tab-pane").attr("id", leg.uuid);
+				$legContent.append($("<div/>").addClass("row-fluid")
+					.append($("<div/>").addClass("span8").append($legDetail))
+					.append($("<div/>").addClass("span4").append(leg.getTableStats())));
+				$content.append($legContent);
+			}
+		}
+
+		var $history = $("<div>").addClass("tabtable tabs-left")
+			.append($list)
+			.append($content);
+
+		$("#history").empty().append($history);
+
 		//  Activation
 		$("#history ul li:first-child").children("a").click();
 		$("#history").show();
@@ -162,6 +252,14 @@ function GameX01(options) {
 			}
 			stats[key][player.uuid] = json.gameStats[key];
 		}
+
+		var set = currentSet;
+		if (set===null) {
+			var len = finishedlegs.length;
+			set = finishedlegs[len-1];
+		}
+		var leg = set.getCurrentLeg();
+
 		// Display best
 		var bestSpan = [];
 		var currentSpan;
@@ -176,7 +274,7 @@ function GameX01(options) {
 			for (var i=0; i< options.players.length; i++) {
 				p = options.players[i];
 				currentValue = +stats[stk][p.uuid]; // as Number
-				currentSpan = $("#"+currentSet.getCurrentLeg().getStatsPlayerId(p)+" ."+x01.stats.game.key+" ." + stk);
+				currentSpan = $("#"+leg.getStatsPlayerId(p)+" ."+x01.stats.game.key+" ." + stk);
 				
 				// clear stats
 				currentSpan.removeClass("best");
