@@ -16,6 +16,16 @@
 	text-shadow: 0px 0px 2px #777;
 }
 
+// History
+.icon-chevron-right {
+	float: right;
+	margin-top: 2px;
+	margin-right: -6px;
+}
+a:hover .icon-chevron-right {
+	opacity: 1;
+}
+
 ul.game-detail li.nav-header {
 	font-size: 18px;
 }
@@ -25,6 +35,22 @@ ul.game-detail li.set-detail {
 
 .nav-header strong {
 	font-size: 16px;
+}
+
+#history {
+	h1, h2, h3 {
+		margin-left: 1em;
+		margin-right: 1em;
+	}
+	.hGames {
+		.whiteBox();
+	}
+	ul {
+		.whiteBox();
+	}
+	.tab-pane .row-fluid > div {
+		.whiteBox();
+	}
 }
 
 // Body
@@ -78,24 +104,6 @@ ul.game-detail li.set-detail {
 }
 
 // Divs
-#history {
-	h1 {
-		.whiteBox();
-	}
-	.hGames {
-		.whiteBox();
-	}
-	ul {
-		.whiteBox();
-	}
-	.tab-pane .row-fluid > div {
-		.whiteBox();
-	}
-	.tab-pane h3 {
-		.whiteBox();	
-	}
-}
-
 
 div.admin {
 	.whiteBox();

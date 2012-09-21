@@ -32,9 +32,27 @@ function SetX01(parentGame) {
 		players.push(previousSet.getPlayers()[0]);
 	}
 
+	this.isStarted = function() {
+		return currentLeg.isStarted();
+	};
+
 	// SetX01 next
 	this.next= function() {
 		if (!currentLeg.isFinished()) {
+			if (!currentLeg.isStarted()) {
+				// Request Stats
+				for (var i=0; i< players.length; i++) {
+					var pl = players[i];
+					var statQuery = {
+						leg: currentLeg.uuid,
+						set: this.uuid,
+						game: parent.uuid,
+						player: pl.uuid
+					};
+					currentLeg.requestStats(statQuery, pl);
+				}
+			}
+
 			// Continue leg
 			currentLeg.next();
 		} else {
@@ -138,6 +156,49 @@ function SetX01(parentGame) {
 		$table.append($head).append($body);
 		return $("<p/>").append($table).html();
 	};
+	this.getLegsDetail = function() {
+		var $table = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
+		var $head = $("<thead/>").append("<tr/>");
+		var $body = $("<tbody/>");
+		var player;
+		var clazz;
+		for (var i=0; i< parent.getPlayers().length; i++) {
+			player = parent.getPlayers()[i];
+			clazz = "textRight";
+			if (i%2===1) {
+				clazz = "textLeft";
+				$head.append(
+					$("<td/>").addClass("textCenter").append(
+						this.getPlayerWin(parent.getPlayers()[i-1]) + " - "  + this.getPlayerWin(player)
+				));
+			}
+			if (winner.uuid === player.uuid) {
+				$head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
+			} else {
+				$head.append($("<td/>").addClass(clazz).append(player.getName()));
+			}
+		}
+		var $row;
+		var leg;
+		for (var j=0; j<this.getLegs().length; j++) {
+			leg = this.getLegs()[j];
+			clazz = "textRight";
+			$row = $("<tr/>");
+			for (var k=0; k<parent.getPlayers().length; k++) {
+				player = parent.getPlayers()[k];
+				if (k%2===1) {
+					clazz = "textLeft";
+					$row.append(
+						$("<td/>").addClass("textCenter").append(leg.getName()));
+				}
+				$row.append($("<td/>").addClass(clazz).append(leg.getPlayerWin(player)));
+			}
+			$body.append($row);
+		}
+
+		$table.append($head).append($body);
+		return $table;
+	};
 	// Update stats
 	this.updateStats = function(player, json) {
 		// Update values
@@ -150,6 +211,12 @@ function SetX01(parentGame) {
 
 		// Update Parent
 		parent.updateStats(player, json);
+
+		var leg = currentLeg;
+		if (leg===null) {
+			var len = finishedlegs.length;
+			leg = finishedlegs[len-1];
+		}
 
 		// Display best
 		var bestSpan = [];
@@ -165,7 +232,7 @@ function SetX01(parentGame) {
 			for (var i=0; i<players.length; i++) {
 				p = players[i];
 				currentValue = +stats[stk][p.uuid]; // as Number
-				currentSpan = $("#"+currentLeg.getStatsPlayerId(p)+" ."+x01.stats.set.key+" ." + stk);
+				currentSpan = $("#"+leg.getStatsPlayerId(p)+" ."+x01.stats.set.key+" ." + stk);
 				
 				// clear stats
 				currentSpan.removeClass("best");
@@ -263,7 +330,12 @@ function SetX01(parentGame) {
 
 	// SetX01 getCurrentLeg
 	this.getCurrentLeg = function() {
-		return currentLeg;
+		var leg = currentLeg;
+		if (leg===null) {
+			var len = finishedlegs.length;
+			leg = finishedlegs[len-1];
+		}
+		return leg;
 	};
 
 	// SetX01 getLegs

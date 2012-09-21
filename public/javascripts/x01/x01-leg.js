@@ -32,6 +32,10 @@ function LegX01(parentSet) {
 		players.push(previousLeg.getPlayers()[0]);
 	}
 
+	this.isStarted = function() {
+		return currentEntry.isStarted();
+	};
+
 	// LegX01 next
 	this.next= function() {
 		if (!currentEntry.isFinished()) {
@@ -462,18 +466,6 @@ function LegX01(parentSet) {
 		var $set = displayStats(x01.stats.set);
 		var $leg = displayStats(x01.stats.leg);
 
-		// Load stats
-		for(var i=0; i<players.length; i++) {
-			var p= players[i];
-			var statQuery = {
-				leg: this.uuid,
-				set: parent.uuid,
-				game: parent.getParent().uuid,
-				player: p.uuid
-			};
-			this.requestStats(statQuery, p);
-		}
-
 		return $("<div/>").addClass("stats").addClass("visible-desktop").attr("id",this.getStatsPlayerId(player))
 			.append($game)
 			.append($set)
@@ -484,6 +476,7 @@ function LegX01(parentSet) {
 	this.requestStats = function(statQuery, player) {
 		var leg = this;
 		x01Stats.db.getPlayerStats(statQuery.game, statQuery.set, statQuery.leg, player, function(json) {
+			leg.getParent().updateStats(player, json);
 			handleStats(leg.getStatsPlayerId(player), json);
 		});
 	};

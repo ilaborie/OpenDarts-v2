@@ -134,10 +134,9 @@ x01Stats.db.getPlayerStats = function(game, set, leg, player, callback)	{
 	var legTotalScore = 0;
 	var legTotalDart = 0;
 
-
 	for (var i=0; i< sessionStorage.length; i++) {
 		var key = sessionStorage.key(i);
-		if (key!==null) { // FIXME && startWith("x01Stats-")
+		if (key!==null && key.startsWith("x01Stats-")) {
 			try {
 				var entry = JSON.parse(sessionStorage.getItem(key));
 				if ((game === entry.game) && (player.uuid === entry.player)) {
