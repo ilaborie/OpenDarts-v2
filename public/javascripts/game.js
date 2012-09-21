@@ -1,5 +1,4 @@
 // Define some default objets
-
 // Utilities
 if (typeof String.prototype.startsWith != "function") {
 	// see below for better implementation!
@@ -152,8 +151,67 @@ var scollToBottom = function() {
 
 
 // Player
-var players = {};
-
+var players = {
+	db: [],
+	addPlayer: function(player) {
+		players.db.push({
+			uuid: player.uuid,
+			name: player.name,
+			surname: player.surname,
+			com: player.com,
+			comLevel: player.comLevel,
+			comTarget: player.comTarget
+		});
+	},
+	update: function(player) {
+		var p;
+		for (var i=0; i<players.db.length; i++) {
+			p = players.db[i];
+			if (p.uuid === player.uuid) {
+				p.name = player.name;
+				p.surname = player.surname;
+				p.com = player.com;
+				p.comLevel = player.comLevel;
+				p.comTarget = player.comTarget;
+			}
+		}
+	},
+	getPlayer: function(playerId) {
+		var p;
+		var player;
+		for (var i=0; i<players.db.length; i++) {
+			p = players.db[i];
+			if (p.uuid === playerId) {
+				player = new Player(p.name, p.surname);
+				player.uuid = p.uuid;
+				player.com = p.com;
+				player.comLevel = p.comLevel;
+				player.comTarget = p.comTarget;
+				return player;
+			}
+		}
+		player = new Player("Mr. X", null);
+		this.addPlayer(player);
+		return player;
+	},
+	getPlayerByNameSurname : function(name, surname) {
+		var player;
+		for (var i=0; i<players.db.length; i++) {
+			p = players.db[i];
+			if ((p.name === name) && (p.surname===surname)) {
+				player = new Player(p.name, p.surname);
+				player.uuid = p.uuid;
+				player.com = p.com;
+				player.comLevel = p.comLevel;
+				player.comTarget = p.comTarget;
+				return player;
+			}
+		}
+		player = new Player(name, surname);
+		this.addPlayer(player);
+		return player;
+	}
+};
 
 function Player(name, surname) {
 	this.uuid = createUuid();
@@ -182,26 +240,3 @@ function Player(name, surname) {
 		return res;
 	};
 }
-
-var Philou = new Player("Philou", "The Failure");
-
-var HAL = new Player("HAL",null);
-HAL.com = true;
-HAL.comLevel = 7;
-//HAL.comTarget = 19;
-
-players.Philou = Philou;
-players.HAL = HAL;
-
-// Get a Player
-var getPlayer = function(playerId) {
-	var res = players[playerId];
-	if (!res) {
-		// Create a default player
-		res = {
-			id: playerId,
-			name: "Mr. X"
-		};
-	}
-	return res;
-};
