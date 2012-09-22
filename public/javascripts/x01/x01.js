@@ -158,8 +158,21 @@ var showNewX01 = function() {
 		}
 	});
 
-	showPlayerDialog("p1", lastOption.players[0]);
-	showPlayerDialog("p2", lastOption.players[1]);
+	// Display Players
+	$("#newX01Dialog .players tbody").empty();
+	var player;
+	var len = lastOption.players.length;
+	for (var i=0; i< len; i++) {
+		player = lastOption.players[i];
+		showPlayerDialog(i, player);
+	}
+	$("#btnX01AddPlayer").unbind("click").click(function() {
+		selectPlayer(function(player) {
+			var nbPlayer = $("#newX01Dialog .players tbody tr").size();
+			showPlayerDialog(nbPlayer-1, player);
+			// FIXME handle up/down btn
+		});
+	});
 
 	// Bind Click
 	$("#newX01Dialog form").unbind("submit").submit(launchX01);
@@ -167,6 +180,20 @@ var showNewX01 = function() {
 	// Show Dialog
 	$("#newX01Dialog").show();
 	$("#startScore").focus();
+};
+
+var updatePlayersTableField = function() {
+	var $rows = $("#newX01Dialog .players tbody tr");
+	var len = $rows.size();
+	$rows.each(function(idx, tr){
+		$(tr, "td:eq(1)").empty().append(idx+1);
+		if (idx===0) {
+			// TODO hide up
+		}
+		if (idx===(len-1)) {
+			// TODO hide down
+		}
+	});
 };
 
 // Quick Launch
@@ -193,6 +220,7 @@ checkQuickLaunch();
 
 // Launch x01
 var launchX01 = function(event) {
+	$("#newX01Dialog").hide();
 	// new option
 	var newX01Options = {};
 	newX01Options.score = parseInt($("#startScore").val(),10);
@@ -202,15 +230,17 @@ var launchX01 = function(event) {
 	// Players
 	newX01Options.players = [];
 
-	var p1 = getPlayer("p1");
-	newX01Options.players.push(p1);
+	var tmp = [];
+	$("#newX01Dialog .playersTable tbody tr").each(function(idx, tr){
+		var id = tr.attr("id");
+		var p = players.getPlayer(id);
+		if ($.inArray(id, tmp)) {
+			p.uuid = p.uuid+ "_" + idx;
+		}
+		tmp.push(p.uuid);
+		newX01Options.players.push(p);
+	});
 
-	var p2 = getPlayer("p2");
-	if (p1.uuid === p2.uuid) {
-		p2 = players.getPlayerByNameSurname(p1.name, " " + p1.surname);
-	}
-	newX01Options.players.push(p2);
-	
 	newX01Options.stats = x01.options.stats;
 
 	// QuickLaunch
@@ -223,18 +253,22 @@ var launchX01 = function(event) {
 	// Start
 	game.start();
 	x01.currentGame = game;
+	x01.currentGame.next();
 	
-	$("#newX01Dialog").unbind("hidden").on("hidden", function() {
-		x01.currentGame.next();
-	});
-	$("#newX01Dialog").modal("hide");
-
 	event.preventDefault();
 	return false;
 };
 
 // Set player in dialog
-var showPlayerDialog = function(prefix, player) {
+var showPlayerDialog = function(idx, player) {
+	$("#newX01Dialog .players tbody").append(tmpl("PlayerTableRow", {
+		player: player,
+		position: (idx+1)
+	}));
+	// FIXME Bind remove, up, down
+};
+
+var newPlayerDialog = function(prefix, player) {
 	$("#" + prefix + "Name").val(player.name);
 	$("#" + prefix + "Surname").val(player.surname);
 
@@ -274,7 +308,7 @@ var showPlayerDialog = function(prefix, player) {
 		$("#"+prefix+"Level").val("7");
 		$("#"+prefix+"LevelDisplay").html("7");
 	}
-};
+}
 
 // Load player from dialog
 var getPlayer = function(prefix) {

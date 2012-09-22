@@ -198,6 +198,24 @@ var players = {
 		this.addPlayer(player);
 		return player;
 	},
+	getByPrefix : function(prefix) {
+		console.log("User startsWith: " + prefix);
+		var res = [];
+		var player;
+		var p;
+		for (var i=0; i<players.db.length; i++) {
+			p = players.db[i];
+			if (prefix===null || prefix==="" || p.name.startsWith(prefix)) {
+				player = new Player(p.name, p.surname);
+				player.uuid = p.uuid;
+				player.com = p.com;
+				player.comLevel = p.comLevel;
+				player.comTarget = p.comTarget;
+				res.push(player);
+			}
+		}
+		return res;
+	},
 	getPlayerByNameSurname : function(name, surname) {
 		var player;
 		for (var i=0; i<players.db.length; i++) {
@@ -250,9 +268,58 @@ function Player(name, surname) {
 	};
 	this.getComputer = function() {
 		if (this.com) {
-			return '<i class="badge">'+this.comLevel+'</i> play at ' + this.comTarget;
+			return '<i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
 		} else {
 			return '<i class="icon-ban-circle"></i>';
 		}
 	};
 }
+// Dialog for player selection
+$("#diaPlayerSelect .input").keyup(function() {
+	var prefix = $(this).val();
+	updatePlayerList(prefix);
+});
+var updatePlayerList = function(prefix) {
+	// unselect all & clear list
+	$("#diaPlayerSelect .btn-primary").attr("disabled","disabled");
+	$("#diaSelectedPlayer").val("");
+	$("#diaPlayerSelect .playerList").empty();
+
+	// Fill list
+	var p = players.getByPrefix(prefix);
+	$.each(p, function(idx, player) {
+		$("#diaPlayerSelect .playerList").append(
+			$("<li/>").append(
+				$("<a/>").attr("href", "#").append(player.getName()).click(function () {
+					if ($(this).parent().hasClass("active")) {
+						$("#diaSelectedPlayer").val("");
+						$("#diaPlayerSelect .btn-primary").attr("disabled","disabled");
+						$("#diaPlayerSelect .playerList li").removeClass("active");
+					} else {
+						$("#diaSelectedPlayer").val(player.uuid);
+						$("#diaPlayerSelect .btn-primary").removeAttr("disabled");
+						$("#diaPlayerSelect .playerList li").removeClass("active");
+						$(this).parent().addClass("active");
+					}
+				})
+			)
+		);
+	});
+};
+
+$("#diaPlayerSelect").on("shown", function() {
+	$("#diaPlayerSelect .input").focus();
+});
+var selectPlayer = function(callback) {
+	updatePlayerList(null);
+
+	$("#diaPlayerSelect .btn-primary").unbind("click").click(function(e) {
+		var playerId = $("#diaSelectedPlayer").val();
+		if (playerId!=="") {
+			var player = players.getPlayer(playerId);
+			$("#diaPlayerSelect").modal("hide");
+			callback(player);
+		}
+	});
+	$("#diaPlayerSelect").modal("show");
+};
