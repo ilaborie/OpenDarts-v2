@@ -1,0 +1,46 @@
+<!--
+    prefix: the prefix
+-->
+<script id="PlayerForm" type="text/html">
+ 	<label class="checkbox">
+        <input type="checkbox" id="<%=prefix%>IsComputer" /> Computer?
+    </label>
+    &nbsp;&nbsp;
+    <label class="humanPlayer" for="<%=prefix%>Name">Name</label>
+    <input type="text" id="<%=prefix%>Name" class="input-small humanPlayer" placeholder="First player name" value="" required="required" />
+    <span class="humanPlayer">&nbsp;</span>
+    <label class="humanPlayer" for="<%=prefix%>Surname">Surname</label>
+    <input type="text" id="<%=prefix%>Surname" class="input-small humanPlayer" placeholder="First player surname" value="" />
+    &nbsp;&nbsp;
+    <label class="playerComputer">Target</label>
+    <label class="radio inline playerComputer">
+        <input type="radio" name="<%=prefix%>Target" id="<%=prefix%>Target-20"  value="20" />20
+    </label>
+    <label class="radio inline playerComputer">
+        <input type="radio" name="<%=prefix%>Target" id="<%=prefix%>Target-19"  value="19" />19
+    </label>
+    &nbsp;&nbsp;
+    <label class="playerComputer">Level</label>
+    <input type="number" class="playerComputer input-mini" min="0" max="15" id="<%=prefix%>Level" />
+</script>
+<!--
+    player: the player
+    position: the position
+    last: if is the last player
+-->
+<script id="PlayerTableRow" type="text/html">
+    <tr>
+        <td><%=position%></td>
+        <td><%=player.getName()%></td>
+        <td><%=player.getComputer()%></td>
+        <td>
+            <button class="btn btn-mini btn-warning"><i class="icon-white icon-remove"></i> Remove</button>
+            <% if (position>1) { %>
+                <button class="btn btn-mini"><i class="icon-white icon-arrow-up"></i></button>
+            <% } %>
+            <% if (!last) { %>
+                <button class="btn btn-mini"><i class="icon-white icon-arrow-down"></i></button>
+            <% } %>
+        </td>
+    </tr>
+</script>

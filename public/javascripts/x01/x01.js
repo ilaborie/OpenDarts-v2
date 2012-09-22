@@ -121,6 +121,10 @@ var processFinish = function(nbDart, entry, callback) {
 
 // Show new X01
 var showNewX01 = function() {
+	// Cleaning the space
+	$(".hero-unit").hide();
+	$("#history").hide();
+
 	// Show dialog with options
 	var lastOption;
 	if (x01.currentGame) {
@@ -161,10 +165,8 @@ var showNewX01 = function() {
 	$("#newX01Dialog form").unbind("submit").submit(launchX01);
 
 	// Show Dialog
-	$("#newX01Dialog").unbind("shown").on("shown",function() {
-		$("#startScore").focus();
-	});
-	$("#newX01Dialog").modal("show");
+	$("#newX01Dialog").show();
+	$("#startScore").focus();
 };
 
 // Quick Launch

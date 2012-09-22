@@ -1,13 +1,9 @@
 @(message: String)
 
 @bootstrap(message) {
-    <div class="hero-unit">
-        <h1>Welcome to OpenDarts</h1>
-        <p>The best Web scoring tools for Darts</p>
-        <p class="hide">
-            <a class="btn btn-success btn-large">Sign Up for Free</a>
-        </p>
-    </div>
+    @intro()
+
+    @x01.NewGame()
 
 	<!-- Game -->
 	<div id="game"></div>

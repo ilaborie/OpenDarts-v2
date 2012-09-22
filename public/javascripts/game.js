@@ -248,4 +248,11 @@ function Player(name, surname) {
 		}
 		return res;
 	};
+	this.getComputer = function() {
+		if (this.com) {
+			return '<i class="badge">'+this.comLevel+'</i> play at ' + this.comTarget;
+		} else {
+			return '<i class="icon-ban-circle"></i>';
+		}
+	};
 }

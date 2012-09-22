@@ -401,8 +401,6 @@ function GameX01(options) {
 				return;
 			}
 		}
-		$(".hero-unit").hide();
-		$("#history").hide();
 		x01Stats.db.clear();
 
 		// Create set
