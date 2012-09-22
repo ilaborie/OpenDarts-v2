@@ -65,18 +65,7 @@ function GameX01(options) {
 	// GameX01 displayFinished
 	this.displayFinished = function() {
 		$("#game").empty();
-		var title = this.getName() +" Finished!";
-		
-		var msg = this.getTableStats();
-		// Notifiy
-		var game = this;
-		openModalDialog(title, msg, {
-			text: '<i class="icon-stop"></i> End',
-			click: function() {
-				$("#modalDialog").modal("hide");
-				game.displayHistory();
-			}
-		});
+		this.displayHistory();
 	};
 	this.displayHistory = function() {
 		var $list = $("<ul/>").addClass("nav").addClass("nav-tabs");
