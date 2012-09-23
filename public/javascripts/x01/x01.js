@@ -8,6 +8,7 @@ var Philou = players.getPlayerByNameSurname("Philou", "The Failure");
 var HAL = players.getPlayerByNameSurname("HAL",null);
 HAL.com = true;
 HAL.comLevel = 7;
+players.update(HAL);
 
 // Status
 var x01 =  {
@@ -162,15 +163,19 @@ var showNewX01 = function() {
 	$("#newX01Dialog .players tbody").empty();
 	var player;
 	var len = lastOption.players.length;
+	var $row;
 	for (var i=0; i< len; i++) {
 		player = lastOption.players[i];
-		showPlayerDialog(i, player);
+		$row = getPlayerRow(i, player);
+		$("#newX01Dialog .players tbody").append($row);
 	}
+	updatePlayersTableField();
 	$("#btnX01AddPlayer").unbind("click").click(function() {
 		selectPlayer(function(player) {
 			var nbPlayer = $("#newX01Dialog .players tbody tr").size();
-			showPlayerDialog(nbPlayer-1, player);
-			// FIXME handle up/down btn
+			$row = getPlayerRow(nbPlayer-1, player);
+			$("#newX01Dialog .players tbody").append($row);
+			updatePlayersTableField();
 		});
 	});
 
@@ -182,17 +187,56 @@ var showNewX01 = function() {
 	$("#startScore").focus();
 };
 
+// Set player in dialog
+var getPlayerRow = function(idx, player) {
+	var row = tmpl("PlayerTableRow", {
+		player: player,
+		position: (idx+1)
+	});
+	return row;
+};
+
 var updatePlayersTableField = function() {
 	var $rows = $("#newX01Dialog .players tbody tr");
 	var len = $rows.size();
+	var $tr;
 	$rows.each(function(idx, tr){
-		$(tr, "td:eq(1)").empty().append(idx+1);
+		$tr = $(tr);
+		$tr.find("td:eq(0)").empty().append(idx+1);
 		if (idx===0) {
-			// TODO hide up
+			$tr.find("a.up").hide();
+		} else {
+			$tr.find("a.up").show();
 		}
 		if (idx===(len-1)) {
-			// TODO hide down
+			$tr.find("a.down").hide();
+		} else {
+			$tr.find("a.down").show();
 		}
+		// Bind remove
+		$tr.find("a.remove").click(function(e) {
+			var $row = $(this).parent().parent();
+			$row.remove();
+			updatePlayersTableField();
+			e.preventDefault();
+			return false;
+		});
+		// Bind up
+		$tr.find("a.up").click(function(e) {
+			var $row = $(this).parent().parent();
+			$row.prev().before($row);
+			updatePlayersTableField();
+			e.preventDefault();
+			return false;
+		});
+		// Bind down
+		$tr.find("a.down").click(function(e) {
+			var $row = $(this).parent().parent();
+			$row.next().after($row);
+			updatePlayersTableField();
+			e.preventDefault();
+			return false;
+		});
 	});
 };
 
@@ -232,7 +276,7 @@ var launchX01 = function(event) {
 
 	var tmp = [];
 	$("#newX01Dialog .playersTable tbody tr").each(function(idx, tr){
-		var id = tr.attr("id");
+		var id = $(tr).attr("id");
 		var p = players.getPlayer(id);
 		if ($.inArray(id, tmp)) {
 			p.uuid = p.uuid+ "_" + idx;
@@ -257,15 +301,6 @@ var launchX01 = function(event) {
 	
 	event.preventDefault();
 	return false;
-};
-
-// Set player in dialog
-var showPlayerDialog = function(idx, player) {
-	$("#newX01Dialog .players tbody").append(tmpl("PlayerTableRow", {
-		player: player,
-		position: (idx+1)
-	}));
-	// FIXME Bind remove, up, down
 };
 
 var newPlayerDialog = function(prefix, player) {
@@ -308,7 +343,7 @@ var newPlayerDialog = function(prefix, player) {
 		$("#"+prefix+"Level").val("7");
 		$("#"+prefix+"LevelDisplay").html("7");
 	}
-}
+};
 
 // Load player from dialog
 var getPlayer = function(prefix) {

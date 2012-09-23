@@ -199,7 +199,6 @@ var players = {
 		return player;
 	},
 	getByPrefix : function(prefix) {
-		console.log("User startsWith: " + prefix);
 		var res = [];
 		var player;
 		var p;
