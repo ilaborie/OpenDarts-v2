@@ -120,7 +120,7 @@ var processFinish = function(nbDart, entry, callback) {
 
 
 // Show new X01
-var showNewX01 = function() {
+var showNewX01 = function(event) {
 	// Show dialog with options
 	var lastOption;
 	if (x01.currentGame) {
@@ -165,6 +165,9 @@ var showNewX01 = function() {
 		$("#startScore").focus();
 	});
 	$("#newX01Dialog").modal("show");
+
+	event.preventDefault();
+	return false;
 };
 
 // Quick Launch
