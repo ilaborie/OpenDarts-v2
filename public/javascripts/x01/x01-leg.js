@@ -364,11 +364,9 @@ function LegX01(parentSet) {
 	this.display = function() {
 		// Players
 		var ps = parent.getParent().getPlayers();
-		if (ps.length!==2) {
-			throw "Expected 2 players !";
-		}
-		var p1 = ps[0];
-		var p2 = ps[1];
+		//if (ps.length!==2) {
+		//	throw "Expected 2 players !";
+		//}
 		
 		// Players Elements
 		var playersheader= [];
@@ -383,31 +381,40 @@ function LegX01(parentSet) {
 			playersScore[p.uuid] = this.getPlayerLeft(p);
 		}
 
-		// Col 1
-		var $p1Col = $("<div/>")
-			.append(playersheader[p1.uuid])
-			.append(playersStats[p1.uuid]);
+		if(ps.length === 2) {
+			// 2 Players layout
+			var p1 = ps[0];
+			var p2 = ps[1];
+			// Col 1
+			var $p1Col = $("<div/>")
+				.append(playersheader[p1.uuid])
+				.append(playersStats[p1.uuid]);
 
-		// Col 2
-		var $p2Col = $("<div/>")
-			.append(playersheader[p2.uuid])
-			.append(playersStats[p2.uuid]);
+			// Col 2
+			var $p2Col = $("<div/>")
+				.append(playersheader[p2.uuid])
+				.append(playersStats[p2.uuid]);
 
-		// div Table
-		var $divTable = $("<div>").addClass("data");
-		$divTable.append(this.getTableScore(ps, true));
+			// div Table
+			var $divTable = $("<div>").addClass("data");
+			$divTable.append(this.getTableScore(ps, true));
 
-		// Score Left
-		var $legLeft = $("<div/>").addClass("container").addClass("score-left-container")
-			.append(playersScore[p1.uuid].addClass("span6"))
-			.append(playersScore[p2.uuid].addClass("span6"));
+			// Score Left
+			var $legLeft = $("<div/>").addClass("container").addClass("score-left-container")
+				.append(playersScore[p1.uuid].addClass("span6"))
+				.append(playersScore[p2.uuid].addClass("span6"));
 
-		// Assemble Leg
-		var $leg = $('<div/>').addClass("leg").addClass("row-fluid").attr("id",this.uuid)
-			.append($p1Col.addClass("span3"))
-			.append($divTable.addClass("span6"))
-			.append($p2Col.addClass("span3"))
-			.append($legLeft);
+			// Assemble Leg
+			var $leg = $('<div/>').addClass("leg").addClass("row-fluid").attr("id",this.uuid)
+				.append($p1Col.addClass("span3"))
+				.append($divTable.addClass("span6"))
+				.append($p2Col.addClass("span3"))
+				.append($legLeft);
+		} else {
+			// FIXME Implements
+			// first Col with players info + btn Stats span3
+			// Table span9
+		}
 
 		return $leg;
 	};

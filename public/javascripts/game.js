@@ -289,7 +289,7 @@ var updatePlayerList = function(prefix) {
 	$.each(p, function(idx, player) {
 		$("#diaPlayerSelect .playerList").append(
 			$("<li/>").append(
-				$("<a/>").attr("href", "#").append(player.getName()).click(function () {
+				$("<a/>").attr("href", "#").append(player.getFullName()).click(function (event) {
 					if ($(this).parent().hasClass("active")) {
 						$("#diaSelectedPlayer").val("");
 						$("#diaPlayerSelect .btn-primary").attr("disabled","disabled");
@@ -300,6 +300,7 @@ var updatePlayerList = function(prefix) {
 						$("#diaPlayerSelect .playerList li").removeClass("active");
 						$(this).parent().addClass("active");
 					}
+					return true;
 				})
 			)
 		);
