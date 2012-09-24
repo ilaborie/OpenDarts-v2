@@ -178,6 +178,14 @@ var showNewX01 = function() {
 			updatePlayersTableField();
 		});
 	});
+	$("#btnX01CreatePlayer").unbind("click").click(function() {
+		createPlayer(function(player) {
+			var nbPlayer = $("#newX01Dialog .players tbody tr").size();
+			$row = getPlayerRow(nbPlayer-1, player);
+			$("#newX01Dialog .players tbody").append($row);
+			updatePlayersTableField();
+		});
+	});
 
 	// Bind Click
 	$("#newX01Dialog form").unbind("submit").submit(launchX01);
@@ -301,81 +309,6 @@ var launchX01 = function(event) {
 	
 	event.preventDefault();
 	return false;
-};
-
-var newPlayerDialog = function(prefix, player) {
-	$("#" + prefix + "Name").val(player.name);
-	$("#" + prefix + "Surname").val(player.surname);
-
-	// Dynamic Player
-	$("#"+prefix+"IsComputer").unbind("change").change(function() {
-		if ($(this).is(":checked")) {
-			$("." + prefix + " .playerComputer").show();
-			$("." + prefix + " .humanPlayer").hide();
-			if ($("#" + prefix + "Name").val()==="") {
-				$("#" + prefix + "Name").val("HAL");
-			}
-		} else {
-			$("." + prefix + " .playerComputer").hide();
-			$("." + prefix + " .humanPlayer").show();
-		}
-	});
-
-	// Is computer
-	if (player.com) {
-		$("." + prefix + " .playerComputer").show();
-		$("." + prefix + " .humanPlayer").hide();
-		
-		$("#"+prefix+"IsComputer").attr("checked",true);
-		
-		// Target
-		$("#"+prefix+"Target-"+player.comTarget).attr("checked", true);
-
-		// Level
-		$("#"+prefix+"Level").val(player.comLevel);
-		$("#"+prefix+"LevelDisplay").html(player.comLevel);
-	} else {
-		$("." + prefix + " .playerComputer").hide();
-		$("." + prefix + " .humanPlayer").show();
-
-		$("#"+prefix+"IsComputer").removeAttr("checked");
-		$("#"+prefix+"Target-20").attr("checked", true);
-		$("#"+prefix+"Level").val("7");
-		$("#"+prefix+"LevelDisplay").html("7");
-	}
-};
-
-// Load player from dialog
-var getPlayer = function(prefix) {
-	var name;
-	var surname;
-
-	var isComputer = $("#"+prefix+"IsComputer").is(":checked");
-	if (isComputer) {
-		name = "Ishur #" + $("#"+prefix+"Level").val();
-		surname = "Computer";
-	} else {
-		name = $("#" + prefix + "Name").val();
-		surname = $("#" + prefix + "Surname").val();
-
-		if (!name) {
-			name = "Mr. X";
-		}
-	}
-	
-	// Create player
-	var p;
-	// Computer field
-	if (isComputer) {
-		p = players.getPlayerByNameSurname(name, surname);
-		p.com = true;
-		p.comLevel = $("#"+prefix+"Level").val();
-		p.comTarget = $("#newX01Dialog input[name="+prefix+"Target]:checked").val();
-		players.update(p);
-	} else {
-		p = players.getPlayerByNameSurname(name, surname);
-	}
-	return p;
 };
 
 // Validate Input

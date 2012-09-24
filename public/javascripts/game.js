@@ -322,3 +322,56 @@ var selectPlayer = function(callback) {
 	});
 	$("#diaPlayerSelect").modal("show");
 };
+
+// Create player Dialog
+$("#playerIsComputer").unbind("change").change(function() {
+	if ($(this).is(":checked")) {
+		$(".playerComputer").show();
+		$(".humanPlayer").hide();
+		if ($("#playerName").val()==="") {
+			$("#playerName").val("HAL");
+		}
+	} else {
+		$(".playerComputer").hide();
+		$(".humanPlayer").show();
+	}
+});
+
+var createPlayer = function(callback) {
+	$("#diaPlayerCreation .btn-success").unbind("click").click(function(e) {
+		var name;
+		var surname;
+
+		var isComputer = $("#playerIsComputer").is(":checked");
+		if (isComputer) {
+			name = "Ishur #" + $("#playerLevel").val();
+			surname = $("#newX01Dialog input[name=playerTarget]:checked").val();
+		} else {
+			name = $("#playerName").val();
+			surname = $("#playerSurname").val();
+			if (!name) {
+				name = "Mr. X";
+			}
+		}
+		
+		// Create player
+		var player;
+		// Computer field
+		if (isComputer) {
+			player = players.getPlayerByNameSurname(name, surname);
+			player.com = true;
+			player.comLevel = $("#playerLevel").val();
+			player.comTarget = $("#newX01Dialog input[name=playerTarget]:checked").val();
+			players.update(p);
+		} else {
+			player = players.getPlayerByNameSurname(name, surname);
+		}
+		$("#diaPlayerCreation").modal("hide");
+
+		// Callback
+		if (callback && $.isFunction(callback)) {
+			callback(player);
+		}
+	});
+	$("#diaPlayerCreation").modal("show");
+};
