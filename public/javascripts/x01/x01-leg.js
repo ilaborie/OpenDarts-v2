@@ -380,7 +380,7 @@ function LegX01(parentSet) {
 			playersStats[p.uuid] = this.getPlayerStats(p);
 			playersScore[p.uuid] = this.getPlayerLeft(p);
 		}
-
+		var $leg;
 		if(ps.length === 2) {
 			// 2 Players layout
 			var p1 = ps[0];
@@ -405,7 +405,7 @@ function LegX01(parentSet) {
 				.append(playersScore[p2.uuid].addClass("span6"));
 
 			// Assemble Leg
-			var $leg = $('<div/>').addClass("leg").addClass("row-fluid").attr("id",this.uuid)
+			$leg = $('<div/>').addClass("leg").addClass("row-fluid").attr("id",this.uuid)
 				.append($p1Col.addClass("span3"))
 				.append($divTable.addClass("span6"))
 				.append($p2Col.addClass("span3"))

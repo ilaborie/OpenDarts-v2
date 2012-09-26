@@ -362,8 +362,8 @@ var createPlayer = function(callback) {
 			player = players.getPlayerByNameSurname(name, surname);
 			player.com = true;
 			player.comLevel = $("#playerLevel").val();
-			player.comTarget = $("#newX01Dialog input[name=playerTarget]:checked").val();
-			players.update(p);
+			player.comTarget = $("#diaPlayerCreation input[name=playerTarget]:checked").val();
+			players.update(player);
 		} else {
 			player = players.getPlayerByNameSurname(name, surname);
 		}
