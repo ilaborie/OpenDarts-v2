@@ -270,7 +270,6 @@ checkQuickLaunch();
 
 // Launch x01
 var launchX01 = function(event) {
-	$("#newX01Dialog").hide();
 	// new option
 	var newX01Options = {};
 	newX01Options.score = parseInt($("#startScore").val(),10);
@@ -291,6 +290,14 @@ var launchX01 = function(event) {
 		newX01Options.players.push(p);
 	});
 
+	if (newX01Options.players.length<2) {
+		createNotice({
+			kind: "error",
+			message: "<strong>Hey!</strong> You need at least 2 players !"
+		});
+		return;
+	}
+	$("#newX01Dialog").hide();
 	newX01Options.stats = x01.options.stats;
 
 	// QuickLaunch
