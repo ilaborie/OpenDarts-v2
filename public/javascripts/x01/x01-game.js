@@ -397,23 +397,32 @@ function GameX01(options) {
 	// GameX01 start
 	this.start = function() {
 		if (x01.currentGame) {
-			if (!x01.currentGame.close()) {
-				return;
-			}
+			x01.currentGame.close();
+			return;
 		}
-		x01Stats.db.clear();
+		x01.currentGame = this;
 
 		// Create set
 		currentSet = new SetX01(this);
 		currentSet.start();
 
+		x01Stats.db.clear();
 		this.display();
 	};
 
 	// GameX01 close
 	this.close = function() {
-		console.log("close " + this.getName());
-		return true;
+		var game = this;
+		openModalDialog("Close", "Do you want to quit this game ?", {
+			text: '<i class="icon-white icon-stop"></i> Quit',
+			"class" : "btn-warning",
+			click: function() {
+				$("#modalDialog").modal("hide");
+				x01.currentGame = null;
+				game.start();
+				game.next();
+			}
+		});
 	};
 
 	// GameX01 display

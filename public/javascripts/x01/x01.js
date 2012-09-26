@@ -2,10 +2,8 @@
  * Handel x01 Games
  */
 
-
 var Philou = players.getPlayerByNameSurname("Philou", "The Failure");
-
-var HAL = players.getPlayerByNameSurname("HAL",null);
+var HAL = players.getPlayerByNameSurname("Ishur #7","20");
 HAL.com = true;
 HAL.comLevel = 7;
 players.update(HAL);
@@ -125,6 +123,7 @@ var showNewX01 = function() {
 	// Cleaning the space
 	$(".hero-unit").hide();
 	$("#history").hide();
+	$("#game").empty();
 
 	// Show dialog with options
 	var lastOption;
@@ -250,13 +249,12 @@ var updatePlayersTableField = function() {
 
 // Quick Launch
 var quickLaunch = function(event) {
+	$("#newX01Dialog").hide();
 	var options = x01.getLast();
 	
 	// Start
 	var game = new GameX01(options);
 	game.start();
-	x01.currentGame = game;
-	x01.currentGame.next();
 
 	event.preventDefault();
 	return false;

@@ -329,50 +329,60 @@ $("#playerIsComputer").unbind("change").change(function() {
 	if ($(this).is(":checked")) {
 		$(".playerComputer").show();
 		$(".humanPlayer").hide();
-		if ($("#playerName").val()==="") {
-			$("#playerName").val("HAL");
-		}
 	} else {
 		$(".playerComputer").hide();
 		$(".humanPlayer").show();
 	}
 });
 
+$("#diaPlayerCreation").on("shown", function(event) {
+	$("#playerName").focus();
+});
 var createPlayer = function(callback) {
-	$("#diaPlayerCreation .btn-success").unbind("click").click(function(e) {
-		var name;
-		var surname;
-
-		var isComputer = $("#playerIsComputer").is(":checked");
-		if (isComputer) {
-			name = "Ishur #" + $("#playerLevel").val();
-			surname = $("#newX01Dialog input[name=playerTarget]:checked").val();
-		} else {
-			name = $("#playerName").val();
-			surname = $("#playerSurname").val();
-			if (!name) {
-				name = "Mr. X";
-			}
-		}
-		
-		// Create player
-		var player;
-		// Computer field
-		if (isComputer) {
-			player = players.getPlayerByNameSurname(name, surname);
-			player.com = true;
-			player.comLevel = $("#playerLevel").val();
-			player.comTarget = $("#diaPlayerCreation input[name=playerTarget]:checked").val();
-			players.update(player);
-		} else {
-			player = players.getPlayerByNameSurname(name, surname);
-		}
-		$("#diaPlayerCreation").modal("hide");
-
-		// Callback
-		if (callback && $.isFunction(callback)) {
-			callback(player);
-		}
+	$("#diaPlayerCreation .btn-success").unbind("click").click(function(event){
+		doCreatePlayer(event, callback);
+	});
+	$("#diaPlayerCreation form").unbind("submit").submit(function(event){
+		doCreatePlayer(event, callback);
 	});
 	$("#diaPlayerCreation").modal("show");
+};
+
+var doCreatePlayer = function(event, callback) {
+	var name;
+	var surname;
+
+	var isComputer = $("#playerIsComputer").is(":checked");
+	if (isComputer) {
+		name = "Ishur #" + $("#playerLevel").val();
+		surname = $("#diaPlayerCreation input[name=playerTarget]:checked").val();
+	} else {
+		name = $("#playerName").val();
+		surname = $("#playerSurname").val();
+		if (!name) {
+			name = "Mr. X";
+		}
+	}
+	
+	// Create player
+	var player;
+	// Computer field
+	if (isComputer) {
+		player = players.getPlayerByNameSurname(name, surname);
+		player.com = true;
+		player.comLevel = $("#playerLevel").val();
+		player.comTarget = $("#diaPlayerCreation input[name=playerTarget]:checked").val();
+		players.update(player);
+	} else {
+		player = players.getPlayerByNameSurname(name, surname);
+	}
+	$("#diaPlayerCreation").modal("hide");
+
+	// Callback
+	if (callback && $.isFunction(callback)) {
+		callback(player);
+	}
+
+	event.preventDefault();
+	return false;
 };

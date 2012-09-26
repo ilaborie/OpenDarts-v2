@@ -55,7 +55,7 @@ function EntryX01(parentLeg, index) {
 	};
 	this.activatePlayer = function() {
 		var w = $(window).width();
-		if (w<768) {
+		if (w<768) { // FIXME do in Resize
 			$(".cellInput input.playerInput").removeClass("input-medium").addClass("input-mini");
 			for(var i=0; i<players.length; i++) {
 					if (players[i].uuid===lastPlayer.uuid) {
