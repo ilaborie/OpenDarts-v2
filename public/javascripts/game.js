@@ -176,11 +176,16 @@ var players = {
 		localStorage.setItem("players", JSON.stringify(players.db));
 	},
 	getPlayer: function(playerId) {
+		var pId = playerId;
+		if (pId.lastIndexOf("_")!=-1) {
+			var idx = pId.lastIndexOf("_");
+			pId = pId.substring(0,idx);
+		}
 		var p;
 		var player;
 		for (var i=0; i<players.db.length; i++) {
 			p = players.db[i];
-			if (p.uuid === playerId) {
+			if (p.uuid === pId) {
 				player = new Player(p.name, p.surname);
 				player.uuid = p.uuid;
 				player.com = p.com;

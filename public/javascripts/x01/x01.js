@@ -302,7 +302,7 @@ var launchX01 = function(event) {
 	$("#newX01Dialog .playersTable tbody tr").each(function(idx, tr){
 		var id = $(tr).attr("id");
 		var p = players.getPlayer(id);
-		if ($.inArray(id, tmp)) {
+		if ($.inArray(id, tmp)!==-1) {
 			p.uuid = p.uuid+ "_" + idx;
 		}
 		tmp.push(p.uuid);
