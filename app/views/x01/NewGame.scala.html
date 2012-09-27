@@ -1,21 +1,31 @@
 <!-- New x01 Dialog -->
 <div id="newX01Dialog" class="hide well" >
     <h3>New x01 Game</h3>
-    <form class="form ">
+    <form class="form form-horizontal">
         <div class="row-fluid">
-            <fieldset class="span6">
+            <fieldset class="span5">
                 <legend>Configuration</legend>
-                <label for="startScore">Score</label>
-                <input class="text input-small" type="number" min="2" id="startScore" placeholder="x01" value="501">
-                &nbsp;&nbsp;
-                <label class="nbLeg" for="nbLeg">Nb. Leg(s)</label>
-                <input class="text input-mini nbLeg" type="number" min="1" id="nbLeg" placeholder="How many Leg(s) ?" value="1">
-                &nbsp;&nbsp;
-                <label class="nbSet" for="nbSet">Nb. set(s)</label>
-                <input class="text input-mini nbSet" type="number" min="1" id="nbSet" placeholder="How many set(s) ?" value="1">
+                <div class="control-group">
+                    <label class="control-label" for="startScore">Score</label>
+                    <div class="controls">
+                        <input class="text input-small" type="number" min="2" id="startScore" placeholder="x01" value="501">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="nbLeg control-label" for="nbLeg">Nb. Leg(s)</label>
+                    <div class="controls">
+                        <input class="text input-mini nbLeg" type="number" min="1" id="nbLeg" placeholder="How many Leg(s) ?" value="1">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="nbSet control-label" for="nbSet">Nb. set(s)</label>
+                    <div class="controls">
+                        <input class="text input-mini nbSet" type="number" min="1" id="nbSet" placeholder="How many set(s) ?" value="1">
+                    </div>
+                </div>
             </fieldset>
         
-            <fieldset class="players span6">
+            <fieldset class="players span6 offset1">
                 <legend>
                     Players
                     &nbsp;
@@ -27,10 +37,10 @@
                 <table class="table table-striped table-bordered playersTable">
                     <thead>
                         <tr>
-                            <th class="textRight">#</th>
+                            <th class="textRight" style="width: 12px">#</th>
                             <th width="*">Name</th>
                             <th>Computer</th>
-                            <th>Actions</th>
+                            <th style="width: 100px">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
