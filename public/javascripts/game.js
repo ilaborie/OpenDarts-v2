@@ -306,7 +306,7 @@ $("#diaPlayerSelect").on("shown", function() {
 	$("#diaPlayerSelect .input").focus();
 });
 var selectPlayer = function(callback) {
-	updatePlayerList(null);
+	updatePlayerList($("#diaPlayerSelect .input").val());
 
 	$("#diaPlayerSelect .btn-primary").unbind("click").click(function(e) {
 		var playerId = $("#diaSelectedPlayer").val();

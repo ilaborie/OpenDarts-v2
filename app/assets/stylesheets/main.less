@@ -128,6 +128,10 @@ div.admin {
 	padding: .5em;
 }
 
+.accordion-group {
+	border: none !important;
+}
+
 div.player-head {
 	.whiteBox();
 	padding-left: .5em;
@@ -220,6 +224,18 @@ div.data {
 		text-shadow: 4px 4px 8px fadeout(@BoardLight, 50%);
 	}
 }
+table tfoot th.score-left {
+		text-align: center;
+		height: 1em;
+		text-align: center;
+		vertical-align: middle;
+		font-size: 6em;
+
+		background-color: @BoardDark;
+		font-weight: bold;
+		color: @BoardLight;
+		text-shadow: 4px 4px 8px fadeout(@BoardLight, 50%);
+	}
 @media (max-width: 979px) {
 	.score-left-container {
 		display: none;

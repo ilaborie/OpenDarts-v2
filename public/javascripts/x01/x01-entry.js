@@ -39,6 +39,7 @@ function EntryX01(parentLeg, index) {
 		}
 
 		// Next player
+		var previousPlayer = lastPlayer;
 		if (lastPlayer===null) {
 			lastPlayer = players[0]; // First player
 		} else {
@@ -50,10 +51,27 @@ function EntryX01(parentLeg, index) {
 		}
 		
 		// Call score (handle input, status)
-		this.activatePlayer();
+		this.activatePlayer(previousPlayer);
 		this.askNewInput(callback);
 	};
-	this.activatePlayer = function() {
+	this.close = function() {
+		var $acc =  $("#" + parent.getStatsPlayerId(lastPlayer)).parent();
+		if ($acc.hasClass("collapse")) {
+			$acc.collapse("hide");
+		}
+	};
+	this.activatePlayer = function(previousPlayer) {
+		var $acc =  $("#" + parent.getStatsPlayerId(lastPlayer)).parent();
+		if ($acc.hasClass("collapse")) {
+			$acc.collapse("show");
+		}
+		if (previousPlayer && previousPlayer.uuid) {
+			$acc =  $("#" + parent.getStatsPlayerId(previousPlayer)).parent();
+			if ($acc.hasClass("collapse")) {
+				$acc.collapse("hide");
+			}
+		}
+
 		var w = $(window).width();
 		if (w<768) { // FIXME do in Resize
 			$(".cellInput input.playerInput").removeClass("input-medium").addClass("input-mini");

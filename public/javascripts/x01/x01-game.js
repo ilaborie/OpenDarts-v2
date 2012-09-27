@@ -173,8 +173,12 @@ function GameX01(options) {
 		for (var i=0; i< options.players.length; i++) {
 			player = options.players[i];
 			clazz = "textRight";
-			if (i%2===1) {
-				clazz = "textLeft";
+			if (i!==0) {
+				if (i<(options.players.length-1)) {
+					clazz = "textCenter";
+				} else {
+					clazz = "textLeft";
+				}
 				$head.append(
 					$("<td/>").addClass("textCenter").append(
 						this.getPlayerWin(options.players[i-1]) + " - "  + this.getPlayerWin(player)
@@ -194,10 +198,14 @@ function GameX01(options) {
 			$row = $("<tr/>");
 			for (var k=0; k<options.players.length; k++) {
 				player = options.players[k];
-				if (k%2===1) {
-					clazz = "textLeft";
+				if (k!==0) {
+					if (k<(options.players.length-1)) {
+						clazz = "textCenter";
+					} else {
+						clazz = "textLeft";
+					}
 					$row.append(
-						$("<td/>").addClass("textCenter").append(set.getName()));
+						$("<td/>").addClass("textCenter").append(" "));
 				}
 				$row.append($("<td/>").addClass(clazz).append(set.getPlayerWin(player)));
 			}
