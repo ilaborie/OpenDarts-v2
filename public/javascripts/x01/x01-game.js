@@ -404,10 +404,6 @@ function GameX01(options) {
 
 	// GameX01 start
 	this.start = function() {
-		if (x01.currentGame) {
-			x01.currentGame.close();
-			return;
-		}
 		x01.currentGame = this;
 
 		// Create set
@@ -416,19 +412,20 @@ function GameX01(options) {
 
 		x01Stats.db.clear();
 		this.display();
+
+		this.next();
 	};
 
 	// GameX01 close
-	this.close = function() {
+	this.close = function(callback) {
 		var game = this;
 		openModalDialog("Close", "Do you want to quit this game ?", {
 			text: '<i class="icon-white icon-stop"></i> Quit',
 			"class" : "btn-warning",
 			click: function() {
-				$("#modalDialog").modal("hide");
 				x01.currentGame = null;
-				game.start();
-				game.next();
+				$("#modalDialog").unbind("hidden").on("hidden", callback);
+				$("#modalDialog").modal("hide");
 			}
 		});
 	};

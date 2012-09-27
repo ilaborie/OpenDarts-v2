@@ -119,7 +119,15 @@ var processFinish = function(nbDart, entry, callback) {
 
 
 // Show new X01
-var showNewX01 = function() {
+var showNewX01 = function(event) {
+	if (x01.currentGame) {
+		x01.currentGame.close(function() {
+			showNewX01(event);
+		});
+		event.preventDefault();
+		return false;
+	}
+
 	// Cleaning the space
 	$(".hero-unit").hide();
 	$("#history").hide();
@@ -192,6 +200,9 @@ var showNewX01 = function() {
 	// Show Dialog
 	$("#newX01Dialog").show();
 	$("#startScore").focus();
+
+	event.preventDefault();
+	return false;
 };
 
 // Set player in dialog
@@ -250,12 +261,20 @@ var updatePlayersTableField = function() {
 // Quick Launch
 var quickLaunch = function(event) {
 	$("#newX01Dialog").hide();
+	$(".hero-unit").hide();
+	$("#history").hide();
 	var options = x01.getLast();
-	
-	// Start
-	var game = new GameX01(options);
-	game.start();
 
+	var game = new GameX01(options);
+	if (x01.currentGame) {
+		x01.currentGame.close(function() {
+			game.start();
+		});
+	} else {
+		// Start
+		game.start();
+	}
+	
 	event.preventDefault();
 	return false;
 };
@@ -309,8 +328,6 @@ var launchX01 = function(event) {
 
 	// Start
 	game.start();
-	x01.currentGame = game;
-	x01.currentGame.next();
 	
 	event.preventDefault();
 	return false;
