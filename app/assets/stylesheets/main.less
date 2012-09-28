@@ -16,6 +16,15 @@
 	text-shadow: 0px 0px 2px #777;
 }
 
+#btnQuick {
+	display: none;
+}
+// Player
+.playerList {
+	height: 200px;
+	overflow: auto;
+}
+
 // History
 .icon-chevron-right {
 	float: right;
@@ -67,6 +76,25 @@ ul.game-detail li.set-detail {
 	}	
 }
 
+.well {
+	h1, h2, h3, h4, h5, h6 {
+		margin-top: 0px;
+	}
+}
+
+#newX01Dialog {
+	padding-top: 0px;
+	.form-actions {
+		text-align: right;
+		margin-bottom: 0px; 
+		padding-bottom: 0px; 
+	}
+
+	legend + .control-group {
+		margin-top: 0px; 
+	}
+}
+
 // Modal
 /* fix modal position for 480px devices */
 @media (max-width: 678px) {
@@ -108,6 +136,10 @@ ul.game-detail li.set-detail {
 div.admin {
 	.whiteBox();
 	padding: .5em;
+}
+
+.accordion-group {
+	border: none !important;
 }
 
 div.player-head {
@@ -202,6 +234,18 @@ div.data {
 		text-shadow: 4px 4px 8px fadeout(@BoardLight, 50%);
 	}
 }
+table tfoot th.score-left {
+		text-align: center;
+		height: 1em;
+		text-align: center;
+		vertical-align: middle;
+		font-size: 6em;
+
+		background-color: @BoardDark;
+		font-weight: bold;
+		color: @BoardLight;
+		text-shadow: 4px 4px 8px fadeout(@BoardLight, 50%);
+	}
 @media (max-width: 979px) {
 	.score-left-container {
 		display: none;
@@ -393,4 +437,21 @@ div.data {
 }
 .score18x {
 	color: @colorScore18x;
+}
+
+// Notices
+.notifications {
+  position: fixed;
+}
+
+/* Positioning */ 
+.notifications.top-right {
+  right: 10px;
+  top: 55px;
+}
+/* Notification Element */
+.notifications > div {
+  position: relative;
+  z-index: 9999;
+  margin: 5px 0px;
 }

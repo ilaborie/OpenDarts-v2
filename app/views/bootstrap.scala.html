@@ -30,13 +30,13 @@
     @x01.TemplatesLeg()
     @x01.TemplatesSet()
     @x01.TemplatesGame()
+    @x01.TemplatesPlayer()
 
 </head>
 <body id="body">
     @navbar()
-
+     <div class='notifications top-right'></div>
     <div class="container">
-        <div id="notices" class="span12"></div>
         @content
     </div>
 
@@ -53,15 +53,19 @@
         </div>
     </div>
 
+    <!-- Dialog Player -->
+    @DialogSelectPlayer() 
+    @DialogCreatePlayer()  
+
     <!-- Dialog x01 -->
-    @x01.DialogNewGame()
     @x01.DialogComputerThrow()
     @x01.DialogNbDarts()  
 
     <!-- Scripts -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.3/jquery.dataTables.min.js"></script>
+    
+    <script src="@routes.Assets.at("javascripts/lib/bootstrap-notify.js")"></script>
     <!-- TODO i18n -->
     <script src="@routes.Assets.at("javascripts/i18n.js")"></script>
     <!-- Commons -->

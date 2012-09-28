@@ -2,12 +2,11 @@
  * Handel x01 Games
  */
 
-
 var Philou = players.getPlayerByNameSurname("Philou", "The Failure");
-
-var HAL = players.getPlayerByNameSurname("HAL",null);
+var HAL = players.getPlayerByNameSurname("Ishur #7","20");
 HAL.com = true;
 HAL.comLevel = 7;
+players.update(HAL);
 
 // Status
 var x01 =  {
@@ -121,6 +120,19 @@ var processFinish = function(nbDart, entry, callback) {
 
 // Show new X01
 var showNewX01 = function(event) {
+	if (x01.currentGame) {
+		x01.currentGame.close(function() {
+			showNewX01(event);
+		});
+		event.preventDefault();
+		return false;
+	}
+
+	// Cleaning the space
+	$(".hero-unit").hide();
+	$("#history").hide();
+	$("#game").empty();
+
 	// Show dialog with options
 	var lastOption;
 	if (x01.currentGame) {
@@ -154,32 +166,115 @@ var showNewX01 = function(event) {
 		}
 	});
 
-	showPlayerDialog("p1", lastOption.players[0]);
-	showPlayerDialog("p2", lastOption.players[1]);
+	// Display Players
+	$("#newX01Dialog .players tbody").empty();
+	var player;
+	var len = lastOption.players.length;
+	var $row;
+	for (var i=0; i< len; i++) {
+		player = lastOption.players[i];
+		$row = getPlayerRow(i, player);
+		$("#newX01Dialog .players tbody").append($row);
+	}
+	updatePlayersTableField();
+	$("#btnX01AddPlayer").unbind("click").click(function() {
+		selectPlayer(function(player) {
+			var nbPlayer = $("#newX01Dialog .players tbody tr").size();
+			$row = getPlayerRow(nbPlayer-1, player);
+			$("#newX01Dialog .players tbody").append($row);
+			updatePlayersTableField();
+		});
+	});
+	$("#btnX01CreatePlayer").unbind("click").click(function() {
+		createPlayer(function(player) {
+			var nbPlayer = $("#newX01Dialog .players tbody tr").size();
+			$row = getPlayerRow(nbPlayer-1, player);
+			$("#newX01Dialog .players tbody").append($row);
+			updatePlayersTableField();
+		});
+	});
 
 	// Bind Click
 	$("#newX01Dialog form").unbind("submit").submit(launchX01);
 
 	// Show Dialog
-	$("#newX01Dialog").unbind("shown").on("shown",function() {
-		$("#startScore").focus();
-	});
-	$("#newX01Dialog").modal("show");
+	$("#newX01Dialog").show();
+	$("#startScore").focus();
 
 	event.preventDefault();
 	return false;
 };
 
+// Set player in dialog
+var getPlayerRow = function(idx, player) {
+	var row = tmpl("PlayerTableRow", {
+		player: player,
+		position: (idx+1)
+	});
+	return row;
+};
+
+var updatePlayersTableField = function() {
+	var $rows = $("#newX01Dialog .players tbody tr");
+	var len = $rows.size();
+	var $tr;
+	$rows.each(function(idx, tr){
+		$tr = $(tr);
+		$tr.find("td:eq(0)").empty().append(idx+1);
+		if (idx===0) {
+			$tr.find("a.up").hide();
+		} else {
+			$tr.find("a.up").show();
+		}
+		if (idx===(len-1)) {
+			$tr.find("a.down").hide();
+		} else {
+			$tr.find("a.down").show();
+		}
+		// Bind remove
+		$tr.find("a.remove").click(function(e) {
+			var $row = $(this).parent().parent();
+			$row.remove();
+			updatePlayersTableField();
+			e.preventDefault();
+			return false;
+		});
+		// Bind up
+		$tr.find("a.up").click(function(e) {
+			var $row = $(this).parent().parent();
+			$row.prev().before($row);
+			updatePlayersTableField();
+			e.preventDefault();
+			return false;
+		});
+		// Bind down
+		$tr.find("a.down").click(function(e) {
+			var $row = $(this).parent().parent();
+			$row.next().after($row);
+			updatePlayersTableField();
+			e.preventDefault();
+			return false;
+		});
+	});
+};
+
 // Quick Launch
 var quickLaunch = function(event) {
+	$("#newX01Dialog").hide();
+	$(".hero-unit").hide();
+	$("#history").hide();
 	var options = x01.getLast();
-	
-	// Start
-	var game = new GameX01(options);
-	game.start();
-	x01.currentGame = game;
-	x01.currentGame.next();
 
+	var game = new GameX01(options);
+	if (x01.currentGame) {
+		x01.currentGame.close(function() {
+			game.start();
+		});
+	} else {
+		// Start
+		game.start();
+	}
+	
 	event.preventDefault();
 	return false;
 };
@@ -203,15 +298,25 @@ var launchX01 = function(event) {
 	// Players
 	newX01Options.players = [];
 
-	var p1 = getPlayer("p1");
-	newX01Options.players.push(p1);
+	var tmp = [];
+	$("#newX01Dialog .playersTable tbody tr").each(function(idx, tr){
+		var id = $(tr).attr("id");
+		var p = players.getPlayer(id);
+		if ($.inArray(id, tmp)!==-1) {
+			p.uuid = p.uuid+ "_" + idx;
+		}
+		tmp.push(p.uuid);
+		newX01Options.players.push(p);
+	});
 
-	var p2 = getPlayer("p2");
-	if (p1.uuid === p2.uuid) {
-		p2 = players.getPlayerByNameSurname(p1.name, " " + p1.surname);
+	if (newX01Options.players.length<2) {
+		createNotice({
+			kind: "error",
+			message: "<strong>Hey!</strong> You need at least 2 players !"
+		});
+		return;
 	}
-	newX01Options.players.push(p2);
-	
+	$("#newX01Dialog").hide();
 	newX01Options.stats = x01.options.stats;
 
 	// QuickLaunch
@@ -223,91 +328,9 @@ var launchX01 = function(event) {
 
 	// Start
 	game.start();
-	x01.currentGame = game;
 	
-	$("#newX01Dialog").unbind("hidden").on("hidden", function() {
-		x01.currentGame.next();
-	});
-	$("#newX01Dialog").modal("hide");
-
 	event.preventDefault();
 	return false;
-};
-
-// Set player in dialog
-var showPlayerDialog = function(prefix, player) {
-	$("#" + prefix + "Name").val(player.name);
-	$("#" + prefix + "Surname").val(player.surname);
-
-	// Dynamic Player
-	$("#"+prefix+"IsComputer").unbind("change").change(function() {
-		if ($(this).is(":checked")) {
-			$("." + prefix + " .playerComputer").show();
-			$("." + prefix + " .humanPlayer").hide();
-			if ($("#" + prefix + "Name").val()==="") {
-				$("#" + prefix + "Name").val("HAL");
-			}
-		} else {
-			$("." + prefix + " .playerComputer").hide();
-			$("." + prefix + " .humanPlayer").show();
-		}
-	});
-
-	// Is computer
-	if (player.com) {
-		$("." + prefix + " .playerComputer").show();
-		$("." + prefix + " .humanPlayer").hide();
-		
-		$("#"+prefix+"IsComputer").attr("checked",true);
-		
-		// Target
-		$("#"+prefix+"Target-"+player.comTarget).attr("checked", true);
-
-		// Level
-		$("#"+prefix+"Level").val(player.comLevel);
-		$("#"+prefix+"LevelDisplay").html(player.comLevel);
-	} else {
-		$("." + prefix + " .playerComputer").hide();
-		$("." + prefix + " .humanPlayer").show();
-
-		$("#"+prefix+"IsComputer").removeAttr("checked");
-		$("#"+prefix+"Target-20").attr("checked", true);
-		$("#"+prefix+"Level").val("7");
-		$("#"+prefix+"LevelDisplay").html("7");
-	}
-};
-
-// Load player from dialog
-var getPlayer = function(prefix) {
-	var name;
-	var surname;
-
-	var isComputer = $("#"+prefix+"IsComputer").is(":checked");
-	if (isComputer) {
-		name = "Ishur #" + $("#"+prefix+"Level").val();
-		surname = "Computer";
-	} else {
-		name = $("#" + prefix + "Name").val();
-		surname = $("#" + prefix + "Surname").val();
-
-		if (!name) {
-			name = "Mr. X";
-		}
-	}
-	
-	// Create player
-	var p;
-	// Computer field
-	if (isComputer) {
-		p = players.getPlayerByNameSurname(name, surname);
-		p.com = true;
-		p.comLevel = $("#"+prefix+"Level").val();
-		p.comTarget = $("#newX01Dialog input[name="+prefix+"Target]:checked").val();
-		players.update(p);
-	} else {
-		p = players.getPlayerByNameSurname(name, surname);
-	}
-	return p;
 };
 
 // Validate Input
