@@ -1,3 +1,18 @@
+/*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 /**
  * EntryX01
  */
@@ -169,10 +184,6 @@ function EntryX01(parentLeg, index) {
 		// Ask Human
 		$input.unbind("input").on("input",validatePlayerThrow);
 
-		// FIXME blur kill the editing entry
-		//$input.unbind("blur").blur(function(e) {
-		//	$("#"+ parent.getSubmitPlayer(player)).click();
-		//});
 		// Enter
 		$input.parent().unbind("submit").submit(function(e) {
 			if (this.checkValidity()) {
@@ -216,7 +227,6 @@ function EntryX01(parentLeg, index) {
 		var player = lastPlayer;
 		var status = analyseInputX01(this, value, left, function(status, nbDart) {
 			$input.unbind("blur").unbind("keyup");
-			//console.log("# " + entry.index +" Player: " + player.getName() + " value:" +value+ " status:" + status + " nbDarts:"+nbDart);
 			if (nbDart) {
 				entry.nbDart = nbDart;
 			}
@@ -249,11 +259,18 @@ function EntryX01(parentLeg, index) {
 		}
 
 		// Update Entry display
-		$("#"+this.getLeftId(lastPlayer)).html(this.getLeft(lastPlayer));
+		var pLeft = this.getLeft(lastPlayer);
+		$("#"+this.getLeftId(lastPlayer)).html(pLeft);
+		if (isSpecial(pLeft)) {
+			$("#"+this.getLeftId(lastPlayer)).addClass("special");
+		}
+		
+
 		$("#"+this.getScoreId(lastPlayer)).addClass(status).html(this.getScore(lastPlayer)).addClass(function() {
 			var z =  Math.floor(value/10);
 			return "score"+ z+"x";
 		});
+
 		var entry = this;
 		var player = lastPlayer;
 		if (!lastPlayer.com) {
