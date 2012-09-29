@@ -15,14 +15,16 @@
 *@
 @(message: String)
 
-@bootstrap(message) {
-    @intro()
+@bootstrap(message, true) {
+  @intro()
 
-    @x01.NewGame()
+  @x01.NewGame()
 
-	@* Game *@
-	<div id="game"></div>
+  @* Game *@
+  <div id="game"></div>
 
-    @* History *@
-    <div id="history" class="row"></div>
+  @* History *@
+  <div id="history" class="row"></div>
+
+  @ScriptGame()
 }
