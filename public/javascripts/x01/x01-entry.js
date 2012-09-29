@@ -230,7 +230,7 @@ function EntryX01(parentLeg, index) {
 			if (nbDart) {
 				entry.nbDart = nbDart;
 			}
-			entry.handleNewInput(status, parseInt(value,10), callback);
+			entry.handleNewInput(status, getInputPlayerValue(value), callback);
 		});
 	};
 
@@ -346,16 +346,17 @@ function EntryX01(parentLeg, index) {
 		var value = "" + $this.html();
 		if ($this.data("score") != value) {
 			value = value.replace(/<br>/g,"");
-			if (value) {
+			try {
 				this.changeEntry($this, player, value);
-			} else {
+			} catch (e) {
+				console.log("Invalid input: " +value);
 				$this.addClass("needEdit");
 			}
 		}
 	};
 	// Change a value
 	this.changeEntry = function($cell, player, value) {
-		var val = parseInt(value,10);
+		var val = getInputPlayerValue(value);
 		var left = this.getPreviousLeft(player);
 		var entry = this;
 		var status = validatePlayerValue(value);
@@ -504,7 +505,7 @@ function EntryX01(parentLeg, index) {
 	};
 
 	// EntryX01 getScore
-	this.getScore = function(player) {
+	this.getScore = function(player) {
 		var res;
 		if (playerStatus[player.uuid] === "win") {
 			res = "+" + this.nbDart +" (" +this.getNbDartsPlayed() +")";
@@ -516,14 +517,14 @@ function EntryX01(parentLeg, index) {
 		}
 		return res;
 	};
-	this.getScoreAsInt = function(player) {
+	this.getScoreAsInt = function(player) {
 		var res = playerScore[player.uuid];
 		if ((res===null)||(typeof res!=="number")) {
 			res = 0;
 		}
 		return res;
 	};
-	this.getLeftAsInt = function(player) {
+	this.getLeftAsInt = function(player) {
 		var res = playerLeft[player.uuid];
 		if ((res===null)||(typeof res!=="number")) {
 			res = 0;
@@ -553,7 +554,7 @@ function EntryX01(parentLeg, index) {
 	};
 
 	// EntryX01 getLeft
-	this.getLeft = function(player) {
+	this.getLeft = function(player) {
 		var res;
 		if (typeof playerScore[player.uuid] !== "number") {
 			res = "&nbsp;";
@@ -564,13 +565,13 @@ function EntryX01(parentLeg, index) {
 	};
 
 	// EntryX01 status
-	this.getStatus = function(player) {
+	this.getStatus = function(player) {
 		return playerStatus[player.uuid];
 	};
 
 	// EntryX01 display
 	this.display = function() {
-		return tmpl("EntryToRow",  {
+		return tmpl("EntryToRow", {
 			entry: this,
 			players: parent.getParent().getParent().getPlayers()
 		});

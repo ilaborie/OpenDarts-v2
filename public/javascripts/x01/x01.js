@@ -280,6 +280,16 @@ var quickLaunch = function(event) {
 	$("#history").hide();
 	var options = x01.getLast();
 
+	// Check pvp
+	var tmp = [];
+	$.each(options.players, function(idx, p){
+		var id = p.uuid;
+		if ($.inArray(id, tmp)!==-1) {
+			p.uuid += "_" + idx;
+		}
+		tmp.push(p.uuid);
+	});
+
 	var game = new GameX01(options);
 	if (x01.currentGame) {
 		x01.currentGame.close(function() {
@@ -318,7 +328,7 @@ var launchX01 = function(event) {
 		var id = $(tr).attr("id");
 		var p = players.getPlayer(id);
 		if ($.inArray(id, tmp)!==-1) {
-			p.uuid = p.uuid+ "_" + idx;
+			p.uuid += "_" + idx;
 		}
 		tmp.push(p.uuid);
 		newX01Options.players.push(p);
@@ -350,24 +360,21 @@ var launchX01 = function(event) {
 
 // Validate Input
 var analyseInputX01 = function(entry, value, score, callback) {
-	if (!$.isNumeric(value)) {
-		// Skip this input
-		return;
-	}
-	var val = parseInt(value, 10);
-	if (isNaN(val)) {
-		// Skip this input
-		return;
-	} else if ((val > score) || (val === (score-1))) {
-		callback("broken");
-	} else if (val === score) {
-		if ((typeof entry.nbDart === "number") && (entry.nbDart>0)) {
-			callback("win", entry.nbDart);
+	try {
+		var val = getInputPlayerValue(value, 10);
+		if ((val > score) || (val === (score-1))) {
+			callback("broken");
+		} else if (val === score) {
+			if ((typeof entry.nbDart === "number") && (entry.nbDart>0)) {
+				callback("win", entry.nbDart);
+			} else {
+				getNbDart(val, callback);
+			}
 		} else {
-			getNbDart(val, callback);
+			callback("normal");
 		}
-	} else {
-		callback("normal");
+	} catch (e) {
+		console.log("Invalid input: " +e );
 	}
 };
 
@@ -379,25 +386,53 @@ var validatePlayerThrow = function(event) {
 	event.target.setCustomValidity(status);
 };
 
+var getInputPlayerValue = function(value) {
+	var val;
+	if ($.isNumeric(value)) {
+		val  = parseInt(value, 10);
+	} else {
+		val = 0;
+		// Try a+b+v+c+
+		var elts = value.split("+");
+		for (var i=0;i<elts.length; i++) {
+			var e = $.trim(elts[i]);
+			if ($.isNumeric(e)) {
+				val += parseInt(e,10);
+			} else {
+				var firstChar = e.charAt(0);
+				var rest = e.substring(1);
+				if ($.isNumeric(rest) && (firstChar === 't' || firstChar === 'T')) {
+					val += 3*parseInt(rest,10);
+				} else if ($.isNumeric(rest) && (firstChar === 'd' || firstChar === 'D')) {
+					val += 2*parseInt(rest,10);
+				} else {
+					throw "Invalid input";
+				}
+			}
+		}
+	}
+	return val;
+};
+
 var validatePlayerValue = function(value) {
 	var status = "";
 	if (value === "") {
 		status = "No score ?";
-	} else if (isNaN(value) || !$.isNumeric(value)) {
-		status = "?";
-	} else if (isInteger(value)) {
-		var val = parseInt(value, 10);
-		if (isNaN(val)) {
-			status = "?";
-		} else if (val<0) {
-			status = "Try harder ! You can make a positive score.";
-		} else if (val > 180 || val === 172 || val === 173 || val === 175 || val === 176 || val === 178 || val === 179) {
-			status = "Sly !";
-		} else {
-			status = "";
-		}
 	} else {
-		status = "Integer expected !";
+		try {
+			var val = getInputPlayerValue(value);
+			if (isNaN(val)) {
+				status = "?";
+			} else if (val<0) {
+				status = "Try harder ! You can make a positive score.";
+			} else if (val > 180 || val === 172 || val === 173 || val === 175 || val === 176 || val === 178 || val === 179) {
+				status = "Sly !";
+			} else {
+				status = "";
+			}
+		} catch (e) {
+			status = e;
+		}
 	}
 	return status;
 };
