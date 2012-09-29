@@ -1,3 +1,18 @@
+/*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 /**
  * EntryX01
  */
@@ -169,10 +184,6 @@ function EntryX01(parentLeg, index) {
 		// Ask Human
 		$input.unbind("input").on("input",validatePlayerThrow);
 
-		// FIXME blur kill the editing entry
-		//$input.unbind("blur").blur(function(e) {
-		//	$("#"+ parent.getSubmitPlayer(player)).click();
-		//});
 		// Enter
 		$input.parent().unbind("submit").submit(function(e) {
 			if (this.checkValidity()) {
@@ -216,11 +227,10 @@ function EntryX01(parentLeg, index) {
 		var player = lastPlayer;
 		var status = analyseInputX01(this, value, left, function(status, nbDart) {
 			$input.unbind("blur").unbind("keyup");
-			//console.log("# " + entry.index +" Player: " + player.getName() + " value:" +value+ " status:" + status + " nbDarts:"+nbDart);
 			if (nbDart) {
 				entry.nbDart = nbDart;
 			}
-			entry.handleNewInput(status, parseInt(value,10), callback);
+			entry.handleNewInput(status, getInputPlayerValue(value), callback);
 		});
 	};
 
@@ -249,11 +259,18 @@ function EntryX01(parentLeg, index) {
 		}
 
 		// Update Entry display
-		$("#"+this.getLeftId(lastPlayer)).html(this.getLeft(lastPlayer));
+		var pLeft = this.getLeft(lastPlayer);
+		$("#"+this.getLeftId(lastPlayer)).html(pLeft);
+		if (isSpecial(pLeft)) {
+			$("#"+this.getLeftId(lastPlayer)).addClass("special");
+		}
+		
+
 		$("#"+this.getScoreId(lastPlayer)).addClass(status).html(this.getScore(lastPlayer)).addClass(function() {
 			var z =  Math.floor(value/10);
 			return "score"+ z+"x";
 		});
+
 		var entry = this;
 		var player = lastPlayer;
 		if (!lastPlayer.com) {
@@ -329,16 +346,17 @@ function EntryX01(parentLeg, index) {
 		var value = "" + $this.html();
 		if ($this.data("score") != value) {
 			value = value.replace(/<br>/g,"");
-			if (value) {
+			try {
 				this.changeEntry($this, player, value);
-			} else {
+			} catch (e) {
+				console.log("Invalid input: " +value);
 				$this.addClass("needEdit");
 			}
 		}
 	};
 	// Change a value
 	this.changeEntry = function($cell, player, value) {
-		var val = parseInt(value,10);
+		var val = getInputPlayerValue(value);
 		var left = this.getPreviousLeft(player);
 		var entry = this;
 		var status = validatePlayerValue(value);
@@ -487,7 +505,7 @@ function EntryX01(parentLeg, index) {
 	};
 
 	// EntryX01 getScore
-	this.getScore = function(player) {
+	this.getScore = function(player) {
 		var res;
 		if (playerStatus[player.uuid] === "win") {
 			res = "+" + this.nbDart +" (" +this.getNbDartsPlayed() +")";
@@ -499,14 +517,14 @@ function EntryX01(parentLeg, index) {
 		}
 		return res;
 	};
-	this.getScoreAsInt = function(player) {
+	this.getScoreAsInt = function(player) {
 		var res = playerScore[player.uuid];
 		if ((res===null)||(typeof res!=="number")) {
 			res = 0;
 		}
 		return res;
 	};
-	this.getLeftAsInt = function(player) {
+	this.getLeftAsInt = function(player) {
 		var res = playerLeft[player.uuid];
 		if ((res===null)||(typeof res!=="number")) {
 			res = 0;
@@ -536,7 +554,7 @@ function EntryX01(parentLeg, index) {
 	};
 
 	// EntryX01 getLeft
-	this.getLeft = function(player) {
+	this.getLeft = function(player) {
 		var res;
 		if (typeof playerScore[player.uuid] !== "number") {
 			res = "&nbsp;";
@@ -547,13 +565,13 @@ function EntryX01(parentLeg, index) {
 	};
 
 	// EntryX01 status
-	this.getStatus = function(player) {
+	this.getStatus = function(player) {
 		return playerStatus[player.uuid];
 	};
 
 	// EntryX01 display
 	this.display = function() {
-		return tmpl("EntryToRow",  {
+		return tmpl("EntryToRow", {
 			entry: this,
 			players: parent.getParent().getParent().getPlayers()
 		});

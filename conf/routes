@@ -4,6 +4,8 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+GET     /doc                        controllers.Application.doc()
+GET     /faq                        controllers.Application.faq()
 
 # x01
 POST	/x01/ComputerPlayer			controllers.GameX01.getComputerPlayerThrow()
