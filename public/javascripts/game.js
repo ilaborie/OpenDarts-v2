@@ -340,20 +340,21 @@ var selectPlayer = function(callback) {
 };
 
 // Create player Dialog
-$("#playerIsComputer").unbind("change").change(function() {
-	if ($(this).is(":checked")) {
-		$(".playerComputer").show();
-		$(".humanPlayer").hide();
-	} else {
-		$(".playerComputer").hide();
-		$(".humanPlayer").show();
-	}
-});
 
 $("#diaPlayerCreation").on("shown", function(event) {
 	$("#playerName").focus();
 });
 var createPlayer = function(callback) {
+	$("#playerIsComputer").unbind("click").click(function() {
+		if ($(this).is(":checked")) {
+			$(".playerComputer").show();
+			$(".humanPlayer").hide();
+		} else {
+			$(".playerComputer").hide();
+			$(".humanPlayer").show();
+		}
+	});
+	
 	$("#diaPlayerCreation .btn-success").unbind("click").click(function(event){
 		doCreatePlayer(event, callback);
 	});
