@@ -28,6 +28,7 @@ var x01 =  {
 	options :  {
 		score: 501,
 		players: [Philou, HAL],
+		handicap: {},
 		nbSets: 1,
 		nbLegs: 1
 	},
@@ -322,6 +323,7 @@ var launchX01 = function(event) {
 
 	// Players
 	newX01Options.players = [];
+	newX01Options.handicap = {};
 
 	var tmp = [];
 	$("#newX01Dialog .playersTable tbody tr").each(function(idx, tr){
@@ -332,6 +334,24 @@ var launchX01 = function(event) {
 		}
 		tmp.push(p.uuid);
 		newX01Options.players.push(p);
+		
+		// Handicap
+		var hd = $(tr).find("input").val();
+		if (typeof hd !== "undefined") {
+			try {
+				var hand = getInputPlayerValue(hd);
+				if (hand>0) {
+					newX01Options.handicap[p.uuid] = hand;
+				}
+			} catch(e) {
+				createNotice({
+					kind: "error",
+					message: "<strong>Hey!</strong> invalid handicap: " + hd
+				});
+				event.preventDefault();
+				return false;
+			}
+		}
 	});
 
 	if (newX01Options.players.length<2) {
@@ -339,8 +359,12 @@ var launchX01 = function(event) {
 			kind: "error",
 			message: "<strong>Hey!</strong> You need at least 2 players !"
 		});
-		return;
+		event.preventDefault();
+		return false;
 	}
+
+
+
 	$("#newX01Dialog").hide();
 	newX01Options.stats = x01.options.stats;
 

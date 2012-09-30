@@ -98,6 +98,10 @@ function LegX01(parentSet) {
 
 	this.applyChange=function(entry, player) {
 		var score = parent.getOption().score;
+		if (parent.getOption().handicap[player.uuid]) {
+			score += parent.getOption().handicap[player.uuid];
+		}
+
 		var e;
 		var st;
 		var entriesToDestroy = [];
@@ -148,8 +152,12 @@ function LegX01(parentSet) {
 						playersScore[p.uuid] = previousEntry.getLeftAsInt(p);// FIXME display left instead of score
 						$("#"+this.getLeftPlayerId(p)).html(playersScore[p.uuid]);
 					} else {
-						playersScore[p.uuid] = parent.getOption().score;
-						$("#"+this.getLeftPlayerId(p)).html(parent.getOption().score);
+						var sc = parent.getOption().score;
+						if (parent.getOption().handicap[p.uuid]) {
+							sc += parent.getOption().handicap[p.uuid];
+						}
+						playersScore[p.uuid] = sc;
+						$("#"+this.getLeftPlayerId(p)).html(sc);
 					}
 				} else if (p.uuid === player.uuid) {
 					flag = true;
@@ -376,7 +384,11 @@ function LegX01(parentSet) {
 		// Score
 		for (var idx=0; idx<players.length; idx++) {
 			p = players[idx];
-			playersScore[p.uuid] = parent.getOption().score;
+			var sc = parent.getOption().score;
+			if (parent.getOption().handicap[p.uuid]) {
+				sc += parent.getOption().handicap[p.uuid];
+			}
+			playersScore[p.uuid] = sc;
 		}
 
 		// Entry
@@ -480,7 +492,8 @@ function LegX01(parentSet) {
 			players: parent.getParent().getPlayers(),
 			firstPlayer: players[0],
 			score: parent.getOption().score,
-			showInput: input
+			showInput: input,
+			handicap: parent.getOption().handicap
 		});
 	};
 
