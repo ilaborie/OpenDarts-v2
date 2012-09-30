@@ -282,7 +282,7 @@ function Player(name, surname) {
 	};
 	this.getDisplayName = function() {
 		if (this.com) {
-			return '<i class="icon-cog"></i> ' +this.name+ ' <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
+			return '<i class="icon-cog"></i> Lvl. <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
 		} else {
 			return '<i class="icon-user"></i> ' + this.getFullName();
 
