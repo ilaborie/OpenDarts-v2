@@ -1,6 +1,23 @@
+/*!
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+
 // Main CSS
 @import "bootstrap/variables.less";
 @import "bootstrap/mixins.less";
+@import "bootstrap-toggle-buttons.less";
 
 // Dartboard Colors
 @BoardDark:		#110e11;
@@ -14,6 +31,19 @@
 	color: @white;
 	font-weight: bolder;
 	text-shadow: 0px 0px 2px #777;
+}
+
+.navbar .navbar-inner .container .navbar-form {
+	display: inline;
+}
+
+#btnQuick {
+	display: none;
+}
+// Player
+.playerList {
+	height: 200px;
+	overflow: auto;
 }
 
 // History
@@ -54,6 +84,15 @@ ul.game-detail li.set-detail {
 }
 
 // Body
+#faqQuestions {
+	.whiteBox();
+	padding: 1em;
+}
+#docBody {
+	.whiteBox();
+	padding: 1em;
+}
+
 #body {
 	padding-top: 44px; 
 	background-color: @BoardDark;
@@ -67,7 +106,33 @@ ul.game-detail li.set-detail {
 	}	
 }
 
+.well {
+	h1, h2, h3, h4, h5, h6 {
+		margin-top: 0px;
+	}
+}
+
+#newX01Dialog {
+	padding-top: 0px;
+	.form-actions {
+		text-align: right;
+		margin-bottom: 0px; 
+		padding-bottom: 0px; 
+	}
+
+	legend + .control-group {
+		margin-top: 0px; 
+	}
+}
+
 // Modal
+ul.social {
+	list-style: none;
+	li {
+		float: left;
+	}
+}
+
 /* fix modal position for 480px devices */
 @media (max-width: 678px) {
     .modal.fade.in {
@@ -103,11 +168,19 @@ ul.game-detail li.set-detail {
 	text-align: right !important;
 }
 
+.special {
+	text-decoration: underline;
+}
+
 // Divs
 
 div.admin {
 	.whiteBox();
 	padding: .5em;
+}
+
+.accordion-group {
+	border: none !important;
 }
 
 div.player-head {
@@ -202,6 +275,18 @@ div.data {
 		text-shadow: 4px 4px 8px fadeout(@BoardLight, 50%);
 	}
 }
+table tfoot th.score-left {
+		text-align: center;
+		height: 1em;
+		text-align: center;
+		vertical-align: middle;
+		font-size: 6em;
+
+		background-color: @BoardDark;
+		font-weight: bold;
+		color: @BoardLight;
+		text-shadow: 4px 4px 8px fadeout(@BoardLight, 50%);
+	}
 @media (max-width: 979px) {
 	.score-left-container {
 		display: none;
@@ -336,7 +421,7 @@ div.data {
 }
 
 // Inputs
-.cellInput input.playerInput[type="number"] {
+.cellInput input.playerInput {
 	background-color: @yellow;
 	text-align: center;
 	height: 32px;
@@ -393,4 +478,21 @@ div.data {
 }
 .score18x {
 	color: @colorScore18x;
+}
+
+// Notices
+.notifications {
+  position: fixed;
+}
+
+/* Positioning */ 
+.notifications.top-right {
+  right: 10px;
+  top: 55px;
+}
+/* Notification Element */
+.notifications > div {
+  position: relative;
+  z-index: 9999;
+  margin: 5px 0px;
 }

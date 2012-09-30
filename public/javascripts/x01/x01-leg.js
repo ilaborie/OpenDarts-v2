@@ -1,4 +1,19 @@
-		/**
+/*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+/**
  * LegX01 Object
  */
 function LegX01(parentSet) {
@@ -46,6 +61,7 @@ function LegX01(parentSet) {
 			});
 		} else {
 			// Create a new Entry
+			currentEntry.close();
 			currentEntry = new EntryX01(this,currentEntry.index+1);
 			entries.push(currentEntry);
 
@@ -82,6 +98,10 @@ function LegX01(parentSet) {
 
 	this.applyChange=function(entry, player) {
 		var score = parent.getOption().score;
+		if (parent.getOption().handicap && parent.getOption().handicap[player.uuid]) {
+			score += parent.getOption().handicap[player.uuid];
+		}
+
 		var e;
 		var st;
 		var entriesToDestroy = [];
@@ -132,8 +152,12 @@ function LegX01(parentSet) {
 						playersScore[p.uuid] = previousEntry.getLeftAsInt(p);// FIXME display left instead of score
 						$("#"+this.getLeftPlayerId(p)).html(playersScore[p.uuid]);
 					} else {
-						playersScore[p.uuid] = parent.getOption().score;
-						$("#"+this.getLeftPlayerId(p)).html(parent.getOption().score);
+						var sc = parent.getOption().score;
+						if (parent.getOption().handicap[p.uuid]) {
+							sc += parent.getOption().handicap[p.uuid];
+						}
+						playersScore[p.uuid] = sc;
+						$("#"+this.getLeftPlayerId(p)).html(sc);
 					}
 				} else if (p.uuid === player.uuid) {
 					flag = true;
@@ -176,8 +200,12 @@ function LegX01(parentSet) {
 		for (var i=0; i< parent.getParent().getPlayers().length; i++) {
 			player = parent.getParent().getPlayers()[i];
 			clazz = "textRight";
-			if (i%2===1) {
-				clazz = "textLeft";
+			if (i!==0) {
+				if (i<(parent.getParent().getPlayers().length-1)) {
+					clazz = "textCenter";
+				} else {
+					clazz = "textLeft";
+				}
 				$head.append(
 					$("<td/>").addClass("textCenter").append(
 						this.getPlayerWin(parent.getParent().getPlayers()[i-1]) + " - "  + this.getPlayerWin(player)
@@ -203,8 +231,12 @@ function LegX01(parentSet) {
 			bestValue = null;
 			for (var k=0; k<parent.getParent().getPlayers().length; k++) {
 				player  = parent.getParent().getPlayers()[k];
-				if (k%2===1) {
-					clazz = "textLeft";
+				if (k!==0) {
+					if (k<(parent.getParent().getPlayers().length-1)) {
+						clazz = "textCenter";
+					} else {
+						clazz = "textLeft";
+					}
 					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.leg, key)));
 				}
 				$currentCell = $("<td/>").addClass(clazz);
@@ -352,7 +384,11 @@ function LegX01(parentSet) {
 		// Score
 		for (var idx=0; idx<players.length; idx++) {
 			p = players[idx];
-			playersScore[p.uuid] = parent.getOption().score;
+			var sc = parent.getOption().score;
+			if (parent.getOption().handicap && parent.getOption().handicap[p.uuid]) {
+				sc += parent.getOption().handicap[p.uuid];
+			}
+			playersScore[p.uuid] = sc;
 		}
 
 		// Entry
@@ -364,11 +400,9 @@ function LegX01(parentSet) {
 	this.display = function() {
 		// Players
 		var ps = parent.getParent().getPlayers();
-		if (ps.length!==2) {
-			throw "Expected 2 players !";
-		}
-		var p1 = ps[0];
-		var p2 = ps[1];
+		//if (ps.length!==2) {
+		//	throw "Expected 2 players !";
+		//}
 		
 		// Players Elements
 		var playersheader= [];
@@ -383,31 +417,70 @@ function LegX01(parentSet) {
 			playersScore[p.uuid] = this.getPlayerLeft(p);
 		}
 
-		// Col 1
-		var $p1Col = $("<div/>")
-			.append(playersheader[p1.uuid])
-			.append(playersStats[p1.uuid]);
-
-		// Col 2
-		var $p2Col = $("<div/>")
-			.append(playersheader[p2.uuid])
-			.append(playersStats[p2.uuid]);
-
 		// div Table
 		var $divTable = $("<div>").addClass("data");
 		$divTable.append(this.getTableScore(ps, true));
 
-		// Score Left
-		var $legLeft = $("<div/>").addClass("container").addClass("score-left-container")
-			.append(playersScore[p1.uuid].addClass("span6"))
-			.append(playersScore[p2.uuid].addClass("span6"));
+		var $leg;
+		if(ps.length === 2) {
+			// 2 Players layout
+			var p1 = ps[0];
+			var p2 = ps[1];
+			// Col 1
+			var $p1Col = $("<div/>")
+				.append(playersheader[p1.uuid])
+				.append(playersStats[p1.uuid]);
 
-		// Assemble Leg
-		var $leg = $('<div/>').addClass("leg").addClass("row-fluid").attr("id",this.uuid)
-			.append($p1Col.addClass("span3"))
-			.append($divTable.addClass("span6"))
-			.append($p2Col.addClass("span3"))
-			.append($legLeft);
+			// Col 2
+			var $p2Col = $("<div/>")
+				.append(playersheader[p2.uuid])
+				.append(playersStats[p2.uuid]);
+
+			// Score Left
+			var $legLeft = $("<div/>").addClass("container").addClass("score-left-container")
+				.append(playersScore[p1.uuid].addClass("span6"))
+				.append(playersScore[p2.uuid].addClass("span6"));
+
+			// Assemble Leg
+			$leg = $('<div/>').addClass("leg").addClass("row-fluid").attr("id",this.uuid)
+				.append($p1Col.addClass("span3"))
+				.append($divTable.addClass("span6"))
+				.append($p2Col.addClass("span3"))
+				.append($legLeft);
+		} else {
+			// Accordion columns
+			var $playersCol = $("<div/>").addClass("accordion");
+			var $elt;
+			for (var idx2=0; idx2<players.length; idx2++) {
+				p = players[idx2];
+				$elt = $("<div/>").addClass("accordion-group")
+					.append($("<div/>").addClass("accordion-heading").append(playersheader[p.uuid]))
+					.append($("<div/>").addClass("accordion-body").addClass("collapse").append(playersStats[p.uuid]));
+
+				$playersCol.append($elt);
+			}
+			// Add Score Left
+			var $tableLeft = $("<tfoot/>");
+			var $tr = $("<tr/>");
+			for (var idx3=0; idx3<ps.length; idx3++) {
+				p = ps[idx3];
+				if (idx3!==0) {
+					$tr.append($("<th/>").addClass("cell cellDartsHide").append(" "));
+				}
+				
+				$tr.append($("<th/>")
+					.attr("colspan",2)
+					.addClass("score-left")
+					.attr("id",this.getLeftPlayerId(p))
+					.append(this.getPlayerScore(p)));
+			}
+			$divTable.children("table").append($tableLeft.append($tr));
+
+			// Assemble leg
+			$leg = $('<div/>').addClass("leg").addClass("row-fluid").attr("id",this.uuid)
+				.append($playersCol.addClass("span3"))
+				.append($divTable.addClass("span9"));
+		}
 
 		return $leg;
 	};
@@ -419,7 +492,8 @@ function LegX01(parentSet) {
 			players: parent.getParent().getPlayers(),
 			firstPlayer: players[0],
 			score: parent.getOption().score,
-			showInput: input
+			showInput: input,
+			handicap: parent.getOption().handicap
 		});
 	};
 

@@ -1,4 +1,19 @@
-@(title: String)(content: Html)
+@*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*@
+@(title: String, full: Boolean= false)(content: Html)
 
 <!DOCTYPE html>
 
@@ -6,75 +21,66 @@
 <head>
     <meta charset="utf-8">
     <title>@title</title>
-    <!-- Meta -->
+    @* Meta *@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Igor Laborie <ilaborie@@gmail.com>">
     <meta name="description" content="Test">
 
-    <!-- Style -->
+    @* Style *@
     @minified=@{ if (play.Play.isProd()) ".min" else "" }
     <link rel="shortcut icon" type="images/png" href="@routes.Assets.at("images/favicon.png")">
-    <!-- TODO Google Web font -->
+    @* TODO Google Web font *@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main"+minified+".css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap"+minified+".css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-responsive"+minified+".css")">
 
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    @*Le HTML5 shim, for IE6-8 support of HTML5 elements *@
     <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <!-- Template x01 -->
-    @x01.TemplatesStats()
-    @x01.TemplatesEntry()
-    @x01.TemplatesLeg()
-    @x01.TemplatesSet()
-    @x01.TemplatesGame()
+    @if(full) {
+        @* Template x01 *@
+        @x01.TemplatesStats()
+        @x01.TemplatesEntry()
+        @x01.TemplatesLeg()
+        @x01.TemplatesSet()
+        @x01.TemplatesGame()
+        @x01.TemplatesPlayer()
+    }
 
 </head>
 <body id="body">
-    @navbar()
-
+    @if(full) {
+        @navbar()
+    }
+    <div class='notifications top-right'></div>
     <div class="container">
-        <div id="notices" class="span12"></div>
         @content
     </div>
 
-    <!-- Dialogs -->
-    <div id="modalDialog" class="modal hide" >
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">×</button>
-            <h3></h3>
+    @if(full) {
+        @* Dialogs *@
+        <div id="modalDialog" class="modal hide" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h3></h3>
+            </div>
+            <div class="modal-body">
+                <p></p>
+            </div>
+            <div class="modal-footer">
+            </div>
         </div>
-        <div class="modal-body">
-            <p></p>
-        </div>
-        <div class="modal-footer">
-        </div>
-    </div>
 
-    <!-- Dialog x01 -->
-    @x01.DialogNewGame()
-    @x01.DialogComputerThrow()
-    @x01.DialogNbDarts()  
+        @* Dialog Commons *@
+        @DialogSelectPlayer() 
+        @DialogCreatePlayer()
+        @DialogAbout()
 
-    <!-- Scripts -->
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.3/jquery.dataTables.min.js"></script>
-    <!-- TODO i18n -->
-    <script src="@routes.Assets.at("javascripts/i18n.js")"></script>
-    <!-- Commons -->
-    <script src="@routes.Assets.at("javascripts/game.js")"></script>
-    <script src="@routes.Assets.at("javascripts/template.js")"></script>
-    <!-- X01 -->
-    <script src="@routes.Assets.at("javascripts/x01/x01-entry.js")"></script>
-    <script src="@routes.Assets.at("javascripts/x01/x01-leg.js")"></script>
-    <script src="@routes.Assets.at("javascripts/x01/x01-set.js")"></script>
-    <script src="@routes.Assets.at("javascripts/x01/x01-game.js")"></script>
-    <script src="@routes.Assets.at("javascripts/x01/x01.js")"></script>
-    <script src="@routes.Assets.at("javascripts/x01/x01-stats.js")"></script>
-    <!-- Main -->
-    <script src="@routes.Assets.at("javascripts/main.js")"></script>
+        @* Dialog x01 *@
+        @x01.DialogComputerThrow()
+        @x01.DialogNbDarts()  
+    }
 </body>
 </html>

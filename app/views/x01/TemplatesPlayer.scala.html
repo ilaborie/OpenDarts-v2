@@ -1,0 +1,56 @@
+@*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*@
+@*
+    prefix: the prefix
+*@
+<script id="PlayerForm" type="text/html">
+ 	<label class="checkbox">
+        <input type="checkbox" id="<%=prefix%>IsComputer" /> Computer?
+    </label>
+    &nbsp;&nbsp;
+    <label class="humanPlayer" for="<%=prefix%>Name">Name</label>
+    <input type="text" id="<%=prefix%>Name" class="input-small humanPlayer" placeholder="First player name" value="" required="required" />
+    <span class="humanPlayer">&nbsp;</span>
+    <label class="humanPlayer" for="<%=prefix%>Surname">Surname</label>
+    <input type="text" id="<%=prefix%>Surname" class="input-small humanPlayer" placeholder="First player surname" value="" />
+    &nbsp;&nbsp;
+    <label class="playerComputer">Target</label>
+    <label class="radio inline playerComputer">
+        <input type="radio" name="<%=prefix%>Target" id="<%=prefix%>Target-20"  value="20" />20
+    </label>
+    <label class="radio inline playerComputer">
+        <input type="radio" name="<%=prefix%>Target" id="<%=prefix%>Target-19"  value="19" />19
+    </label>
+    &nbsp;&nbsp;
+    <label class="playerComputer">Level</label>
+    <input type="number" class="playerComputer input-mini" min="0" max="15" id="<%=prefix%>Level" />
+</script>
+@*
+    player: the player
+    position: the position
+*@
+<script id="PlayerTableRow" type="text/html">
+    <tr id="<%=player.uuid%>">
+        <td class="textRight"><%=position%></td>
+        <td><%=player.getDisplayName()%></td>
+        <td><input id="handicap-<%=player.uuid%>" class="input-mini" type="number" min="0" value="0"></td>
+        <td>
+            <a class="btn btn-mini btn-warning remove" title="Remove"><i class="icon-white icon-remove"></i></a>
+            <a class="btn btn-mini up" title="Move Up"><i class="icon-arrow-up"></i></a>
+            <a class="btn btn-mini down" title="Move down"><i class="icon-arrow-down"></i></a>
+        </td>
+    </tr>
+</script>

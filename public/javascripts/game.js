@@ -1,3 +1,18 @@
+/*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 // Define some default objets
 // Utilities
 if (typeof String.prototype.startsWith != "function") {
@@ -58,15 +73,10 @@ var doOnError = function(xhr, textStatus, errorThrown) {
  * Create a dynamic notice
  */
 var createNotice = function(notice) {
-	var $div = $("<div>").html("<a class=\"close\" data-dismiss=\"alert\" href=\"#\">&times;</a>")
-		.append(notice.message).addClass("alert fade in alert-" + notice.kind);
-	$("#notices").append($div);
-	$div.fadeIn(100).delay(5000).fadeOut(400, function() {
-		$div.remove();
-		if ($("#notices div").length===0) {
-			$("#notices").empty();
-		}
-	});
+	$(".top-right").notify({
+		type: notice.kind,
+		message: { html: notice.message }
+	}).show();
 };
 
 /**
@@ -181,11 +191,16 @@ var players = {
 		localStorage.setItem("players", JSON.stringify(players.db));
 	},
 	getPlayer: function(playerId) {
+		var pId = playerId;
+		if (pId.lastIndexOf("_")!=-1) {
+			var idx = pId.lastIndexOf("_");
+			pId = pId.substring(0,idx);
+		}
 		var p;
 		var player;
 		for (var i=0; i<players.db.length; i++) {
 			p = players.db[i];
-			if (p.uuid === playerId) {
+			if (p.uuid === pId) {
 				player = new Player(p.name, p.surname);
 				player.uuid = p.uuid;
 				player.com = p.com;
@@ -197,6 +212,23 @@ var players = {
 		player = new Player("Mr. X", null);
 		this.addPlayer(player);
 		return player;
+	},
+	getByPrefix : function(prefix) {
+		var res = [];
+		var player;
+		var p;
+		for (var i=0; i<players.db.length; i++) {
+			p = players.db[i];
+			if (prefix===null || prefix==="" || p.name.startsWith(prefix)) {
+				player = new Player(p.name, p.surname);
+				player.uuid = p.uuid;
+				player.com = p.com;
+				player.comLevel = p.comLevel;
+				player.comTarget = p.comTarget;
+				res.push(player);
+			}
+		}
+		return res;
 	},
 	getPlayerByNameSurname : function(name, surname) {
 		var player;
@@ -248,4 +280,144 @@ function Player(name, surname) {
 		}
 		return res;
 	};
+	this.getDisplayName = function() {
+		if (this.com) {
+			return '<i class="icon-cog"></i> Lvl. <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
+		} else {
+			return '<i class="icon-user"></i> ' + this.getFullName();
+
+		}
+	};
 }
+// Dialog for player selection
+var updatePlayerList = function(prefix) {
+	// unselect all & clear list
+	$("#diaPlayerSelect .btn-primary").attr("disabled","disabled");
+	$("#diaSelectedPlayer").val("");
+	$("#diaPlayerSelect .playerList").empty();
+
+	// Fill list
+	var p = players.getByPrefix(prefix);
+	$.each(p, function(idx, player) {
+		$("#diaPlayerSelect .playerList").append(
+			$("<li/>").append(
+				$("<a/>").attr("href", "#").append(player.getDisplayName()).click(function (event) {
+					if ($(this).parent().hasClass("active")) {
+						$("#diaSelectedPlayer").val("");
+						$("#diaPlayerSelect .btn-primary").attr("disabled","disabled");
+						$("#diaPlayerSelect .playerList li").removeClass("active");
+					} else {
+						$("#diaSelectedPlayer").val(player.uuid);
+						$("#diaPlayerSelect .btn-primary").removeAttr("disabled");
+						$("#diaPlayerSelect .playerList li").removeClass("active");
+						$(this).parent().addClass("active");
+					}
+					return true;
+				})
+			)
+		);
+	});
+};
+var diaSelectPlayerLoaded = false;
+var selectPlayer = function(callback) {
+	if (!diaSelectPlayerLoaded) {
+		diaSelectPlayerLoaded = true;
+
+		$("#diaPlayerSelect .input").keyup(function() {
+			var prefix = $(this).val();
+			updatePlayerList(prefix);
+		});
+		$("#diaPlayerSelect").on("shown", function() {
+			$("#diaPlayerSelect .input").focus();
+		});
+	}
+	updatePlayerList($("#diaPlayerSelect .input").val());
+
+	$("#diaPlayerSelect .btn-primary").unbind("click").click(function(e) {
+		var playerId = $("#diaSelectedPlayer").val();
+		if (playerId!=="") {
+			var player = players.getPlayer(playerId);
+			$("#diaPlayerSelect").modal("hide");
+			callback(player);
+		}
+	});
+	$("#diaPlayerSelect").modal("show");
+};
+
+// Create player Dialog
+
+$("#diaPlayerCreation").on("shown", function(event) {
+	$("#playerName").focus();
+});
+var diaCreatePlayerLoaded = false;
+var createPlayer = function(callback) {
+	if (!diaCreatePlayerLoaded) {
+		diaCreatePlayerLoaded = true;
+		$("#isComputer").toggleButtons({
+			onChange: function($el, status) {
+				if (status) {
+					$(".playerComputer").show();
+					$(".humanPlayer").hide();
+				} else {
+					$(".playerComputer").hide();
+					$(".humanPlayer").show();
+				}
+			}
+		});
+	}
+	// initial state
+	if ($("#isComputer input").is(":checked")) {
+		$(".playerComputer").show();
+		$(".humanPlayer").hide();
+	} else {
+		$(".playerComputer").hide();
+		$(".humanPlayer").show();
+	}
+	
+	$("#diaPlayerCreation .btn-success").unbind("click").click(function(event){
+		doCreatePlayer(event, callback);
+	});
+	$("#diaPlayerCreation form").unbind("submit").submit(function(event){
+		doCreatePlayer(event, callback);
+	});
+	$("#diaPlayerCreation").modal("show");
+};
+
+var doCreatePlayer = function(event, callback) {
+	var name;
+	var surname;
+
+	var isComputer = $("#isComputer input").is(":checked");
+	if (isComputer) {
+		name = "Ishur #" + $("#playerLevel").val();
+		surname = $("#diaPlayerCreation .btnTarget .active").html();
+	} else {
+		name = $("#playerName").val();
+		surname = $("#playerSurname").val();
+		if (!name) {
+			name = "Mr. X";
+		}
+	}
+	
+	// Create player
+	var player;
+	// Computer field
+	if (isComputer) {
+		player = players.getPlayerByNameSurname(name, surname);
+		player.com = true;
+		player.comLevel = $("#playerLevel").val();
+		player.comTarget = $("#diaPlayerCreation .btnTarget .active").html();
+		players.update(player);
+	} else {
+		player = players.getPlayerByNameSurname(name, surname);
+	}
+	$("#diaPlayerCreation").modal("hide");
+
+	// Callback
+	if (callback && $.isFunction(callback)) {
+		callback(player);
+	}
+
+	event.preventDefault();
+	return false;
+};

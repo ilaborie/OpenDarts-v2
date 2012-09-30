@@ -1,3 +1,18 @@
+/*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 /**
  * SetX01 Object
  */
@@ -98,8 +113,12 @@ function SetX01(parentGame) {
 		for (var i=0; i< parent.getPlayers().length; i++) {
 			player = parent.getPlayers()[i];
 			clazz = "textRight";
-			if (i%2===1) {
-				clazz = "textLeft";
+			if (i!==0) {
+				if (i<(parent.getPlayers().length-1)) {
+					clazz = "textCenter";
+				} else {
+					clazz = "textLeft";
+				}
 				$head.append(
 					$("<td/>").addClass("textCenter").append(
 						this.getPlayerWin(parent.getPlayers()[i-1]) + " - "  + this.getPlayerWin(player)
@@ -125,8 +144,12 @@ function SetX01(parentGame) {
 			bestValue = null;
 			for (var k=0; k<parent.getPlayers().length; k++) {
 				player  = parent.getPlayers()[k];
-				if (k%2===1) {
-					clazz = "textLeft";
+				if (k!==0) {
+					if (k<(parent.getPlayers().length-1)) {
+						clazz = "textCenter";
+					} else {
+						clazz = "textLeft";
+					}
 					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.set, key)));
 				}
 				$currentCell = $("<td/>").addClass(clazz);
@@ -189,7 +212,7 @@ function SetX01(parentGame) {
 				if (k%2===1) {
 					clazz = "textLeft";
 					$row.append(
-						$("<td/>").addClass("textCenter").append(leg.getName()));
+						$("<td/>").addClass("textCenter").append(" "));
 				}
 				$row.append($("<td/>").addClass(clazz).append(leg.getPlayerWin(player)));
 			}

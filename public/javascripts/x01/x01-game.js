@@ -1,3 +1,18 @@
+/*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 /**
  * GameX01 Object
  */
@@ -173,8 +188,12 @@ function GameX01(options) {
 		for (var i=0; i< options.players.length; i++) {
 			player = options.players[i];
 			clazz = "textRight";
-			if (i%2===1) {
-				clazz = "textLeft";
+			if (i!==0) {
+				if (i<(options.players.length-1)) {
+					clazz = "textCenter";
+				} else {
+					clazz = "textLeft";
+				}
 				$head.append(
 					$("<td/>").addClass("textCenter").append(
 						this.getPlayerWin(options.players[i-1]) + " - "  + this.getPlayerWin(player)
@@ -194,10 +213,14 @@ function GameX01(options) {
 			$row = $("<tr/>");
 			for (var k=0; k<options.players.length; k++) {
 				player = options.players[k];
-				if (k%2===1) {
-					clazz = "textLeft";
+				if (k!==0) {
+					if (k<(options.players.length-1)) {
+						clazz = "textCenter";
+					} else {
+						clazz = "textLeft";
+					}
 					$row.append(
-						$("<td/>").addClass("textCenter").append(set.getName()));
+						$("<td/>").addClass("textCenter").append(" "));
 				}
 				$row.append($("<td/>").addClass(clazz).append(set.getPlayerWin(player)));
 			}
@@ -396,26 +419,30 @@ function GameX01(options) {
 
 	// GameX01 start
 	this.start = function() {
-		if (x01.currentGame) {
-			if (!x01.currentGame.close()) {
-				return;
-			}
-		}
-		$(".hero-unit").hide();
-		$("#history").hide();
-		x01Stats.db.clear();
+		x01.currentGame = this;
 
 		// Create set
 		currentSet = new SetX01(this);
 		currentSet.start();
 
+		x01Stats.db.clear();
 		this.display();
+
+		this.next();
 	};
 
 	// GameX01 close
-	this.close = function() {
-		console.log("close " + this.getName());
-		return true;
+	this.close = function(callback) {
+		var game = this;
+		openModalDialog("Close", "Do you want to quit this game ?", {
+			text: '<i class="icon-white icon-stop"></i> Quit',
+			"class" : "btn-warning",
+			click: function() {
+				x01.currentGame = null;
+				$("#modalDialog").unbind("hidden").on("hidden", callback);
+				$("#modalDialog").modal("hide");
+			}
+		});
 	};
 
 	// GameX01 display
