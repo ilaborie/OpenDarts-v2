@@ -19,4 +19,9 @@ $(function() {
 
 	// Navbar button
 	$("#btnNewX01").click(showNewX01);
+
+   // XXX for bootstrap dropdown (waiting for next release)
+    $(".dropdown-menu").on("touchstart.dropdown.data-api", function (e) {
+      e.stopPropagation();
+    });
 });
