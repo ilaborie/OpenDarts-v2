@@ -282,7 +282,7 @@ function Player(name, surname) {
 	};
 	this.getDisplayName = function() {
 		if (this.com) {
-			return '<i class="icon-cog"></i> <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
+			return '<i class="icon-cog"></i> ' +this.name+ ' <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
 		} else {
 			return '<i class="icon-user"></i> ' + this.getFullName();
 
@@ -290,10 +290,6 @@ function Player(name, surname) {
 	};
 }
 // Dialog for player selection
-$("#diaPlayerSelect .input").keyup(function() {
-	var prefix = $(this).val();
-	updatePlayerList(prefix);
-});
 var updatePlayerList = function(prefix) {
 	// unselect all & clear list
 	$("#diaPlayerSelect .btn-primary").attr("disabled","disabled");
@@ -322,11 +318,19 @@ var updatePlayerList = function(prefix) {
 		);
 	});
 };
-
-$("#diaPlayerSelect").on("shown", function() {
-	$("#diaPlayerSelect .input").focus();
-});
+var diaSelectPlayerLoaded = false;
 var selectPlayer = function(callback) {
+	if (!diaSelectPlayerLoaded) {
+		diaSelectPlayerLoaded = true;
+
+		$("#diaPlayerSelect .input").keyup(function() {
+			var prefix = $(this).val();
+			updatePlayerList(prefix);
+		});
+		$("#diaPlayerSelect").on("shown", function() {
+			$("#diaPlayerSelect .input").focus();
+		});
+	}
 	updatePlayerList($("#diaPlayerSelect .input").val());
 
 	$("#diaPlayerSelect .btn-primary").unbind("click").click(function(e) {
