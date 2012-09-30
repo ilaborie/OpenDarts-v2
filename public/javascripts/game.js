@@ -280,11 +280,12 @@ function Player(name, surname) {
 		}
 		return res;
 	};
-	this.getComputer = function() {
+	this.getDisplayName = function() {
 		if (this.com) {
-			return '<i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
+			return '<i class="icon-cog"></i> <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
 		} else {
-			return '<i class="icon-ban-circle"></i>';
+			return '<i class="icon-user"></i> ' + this.getFullName();
+
 		}
 	};
 }
@@ -304,7 +305,7 @@ var updatePlayerList = function(prefix) {
 	$.each(p, function(idx, player) {
 		$("#diaPlayerSelect .playerList").append(
 			$("<li/>").append(
-				$("<a/>").attr("href", "#").append(player.getFullName()).click(function (event) {
+				$("<a/>").attr("href", "#").append(player.getDisplayName()).click(function (event) {
 					if ($(this).parent().hasClass("active")) {
 						$("#diaSelectedPlayer").val("");
 						$("#diaPlayerSelect .btn-primary").attr("disabled","disabled");
