@@ -280,19 +280,16 @@ function Player(name, surname) {
 		}
 		return res;
 	};
-	this.getComputer = function() {
+	this.getDisplayName = function() {
 		if (this.com) {
-			return '<i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
+			return '<i class="icon-cog"></i> Lvl. <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
 		} else {
-			return '<i class="icon-ban-circle"></i>';
+			return '<i class="icon-user"></i> ' + this.getFullName();
+
 		}
 	};
 }
 // Dialog for player selection
-$("#diaPlayerSelect .input").keyup(function() {
-	var prefix = $(this).val();
-	updatePlayerList(prefix);
-});
 var updatePlayerList = function(prefix) {
 	// unselect all & clear list
 	$("#diaPlayerSelect .btn-primary").attr("disabled","disabled");
@@ -304,7 +301,7 @@ var updatePlayerList = function(prefix) {
 	$.each(p, function(idx, player) {
 		$("#diaPlayerSelect .playerList").append(
 			$("<li/>").append(
-				$("<a/>").attr("href", "#").append(player.getFullName()).click(function (event) {
+				$("<a/>").attr("href", "#").append(player.getDisplayName()).click(function (event) {
 					if ($(this).parent().hasClass("active")) {
 						$("#diaSelectedPlayer").val("");
 						$("#diaPlayerSelect .btn-primary").attr("disabled","disabled");
@@ -321,11 +318,19 @@ var updatePlayerList = function(prefix) {
 		);
 	});
 };
-
-$("#diaPlayerSelect").on("shown", function() {
-	$("#diaPlayerSelect .input").focus();
-});
+var diaSelectPlayerLoaded = false;
 var selectPlayer = function(callback) {
+	if (!diaSelectPlayerLoaded) {
+		diaSelectPlayerLoaded = true;
+
+		$("#diaPlayerSelect .input").keyup(function() {
+			var prefix = $(this).val();
+			updatePlayerList(prefix);
+		});
+		$("#diaPlayerSelect").on("shown", function() {
+			$("#diaPlayerSelect .input").focus();
+		});
+	}
 	updatePlayerList($("#diaPlayerSelect .input").val());
 
 	$("#diaPlayerSelect .btn-primary").unbind("click").click(function(e) {
@@ -344,16 +349,30 @@ var selectPlayer = function(callback) {
 $("#diaPlayerCreation").on("shown", function(event) {
 	$("#playerName").focus();
 });
+var diaCreatePlayerLoaded = false;
 var createPlayer = function(callback) {
-	$("#playerIsComputer").unbind("click").click(function() {
-		if ($(this).is(":checked")) {
-			$(".playerComputer").show();
-			$(".humanPlayer").hide();
-		} else {
-			$(".playerComputer").hide();
-			$(".humanPlayer").show();
-		}
-	});
+	if (!diaCreatePlayerLoaded) {
+		diaCreatePlayerLoaded = true;
+		$("#isComputer").toggleButtons({
+			onChange: function($el, status) {
+				if (status) {
+					$(".playerComputer").show();
+					$(".humanPlayer").hide();
+				} else {
+					$(".playerComputer").hide();
+					$(".humanPlayer").show();
+				}
+			}
+		});
+	}
+	// initial state
+	if ($("#isComputer input").is(":checked")) {
+		$(".playerComputer").show();
+		$(".humanPlayer").hide();
+	} else {
+		$(".playerComputer").hide();
+		$(".humanPlayer").show();
+	}
 	
 	$("#diaPlayerCreation .btn-success").unbind("click").click(function(event){
 		doCreatePlayer(event, callback);
@@ -368,10 +387,10 @@ var doCreatePlayer = function(event, callback) {
 	var name;
 	var surname;
 
-	var isComputer = $("#playerIsComputer").is(":checked");
+	var isComputer = $("#isComputer input").is(":checked");
 	if (isComputer) {
 		name = "Ishur #" + $("#playerLevel").val();
-		surname = $("#diaPlayerCreation input[name=playerTarget]:checked").val();
+		surname = $("#diaPlayerCreation .btnTarget .active").html();
 	} else {
 		name = $("#playerName").val();
 		surname = $("#playerSurname").val();
@@ -387,7 +406,7 @@ var doCreatePlayer = function(event, callback) {
 		player = players.getPlayerByNameSurname(name, surname);
 		player.com = true;
 		player.comLevel = $("#playerLevel").val();
-		player.comTarget = $("#diaPlayerCreation input[name=playerTarget]:checked").val();
+		player.comTarget = $("#diaPlayerCreation .btnTarget .active").html();
 		players.update(player);
 	} else {
 		player = players.getPlayerByNameSurname(name, surname);

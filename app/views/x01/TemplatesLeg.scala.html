@@ -31,7 +31,7 @@
 	<%	for(var i=0; i<players.length; i++) { %>
 	<%		player = players[i]; %>
 	<%		sc = score; %>
-	<%		if (handicap[player.uuid]) { %>
+	<%		if (handicap && handicap[player.uuid]) { %>
 	<%			sc += handicap[player.uuid]; %>
 	<%		} %>
 	<%		if (i!==0) { %>
@@ -85,18 +85,18 @@
 *@
 <script id="LegHeadPlayer" type="text/html">
 	<div id="<%=leg.getHeadPlayerId(player)%>" class="player-head">
-		<h4>
+		<h5>
 	<%	if (firstPlayer.uuid===player.uuid) { %>
 			<i class="icon-asterisk"></i>
 	<% } %>
-			<%=player.getFullName()%>
+			<%=player.getDisplayName()%>
 	<% 	if (nbSets>1) { %>
 			<span class="badge badge-primary"><%=setWin%></span>
 	<%	} %>
 	<% 	if (nbLegs>1) { %>
 			<span class="badge badge-success"><%=legWin%></span>
 	<%	} %>
-		</h4>
+		</h5>
 	<%	if (nbSets!=1 || nbLegs!=1) { %>
 		<div class="progress progress-striped">
 			<div class="bar" style="width: <%=(setWin/nbSets)*100%>%"></div>

@@ -98,7 +98,7 @@ function LegX01(parentSet) {
 
 	this.applyChange=function(entry, player) {
 		var score = parent.getOption().score;
-		if (parent.getOption().handicap[player.uuid]) {
+		if (parent.getOption().handicap && parent.getOption().handicap[player.uuid]) {
 			score += parent.getOption().handicap[player.uuid];
 		}
 
@@ -385,7 +385,7 @@ function LegX01(parentSet) {
 		for (var idx=0; idx<players.length; idx++) {
 			p = players[idx];
 			var sc = parent.getOption().score;
-			if (parent.getOption().handicap[p.uuid]) {
+			if (parent.getOption().handicap && parent.getOption().handicap[p.uuid]) {
 				sc += parent.getOption().handicap[p.uuid];
 			}
 			playersScore[p.uuid] = sc;

@@ -45,8 +45,7 @@
 <script id="PlayerTableRow" type="text/html">
     <tr id="<%=player.uuid%>">
         <td class="textRight"><%=position%></td>
-        <td><%=player.getName()%></td>
-        <td><%=player.getComputer()%></td>
+        <td><%=player.getDisplayName()%></td>
         <td><input id="handicap-<%=player.uuid%>" class="input-mini" type="number" min="0" value="0"></td>
         <td>
             <a class="btn btn-mini btn-warning remove" title="Remove"><i class="icon-white icon-remove"></i></a>
