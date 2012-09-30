@@ -193,21 +193,25 @@ var showNewX01 = function(event) {
 		$("#newX01Dialog .players tbody").append($row);
 	}
 	updatePlayersTableField();
-	$("#btnX01AddPlayer").unbind("click").click(function() {
+	$("#btnX01AddPlayer").unbind("click").click(function(event) {
 		selectPlayer(function(player) {
 			var nbPlayer = $("#newX01Dialog .players tbody tr").size();
 			$row = getPlayerRow(nbPlayer-1, player);
 			$("#newX01Dialog .players tbody").append($row);
 			updatePlayersTableField();
 		});
+		event.preventDefault();
+		return false;
 	});
-	$("#btnX01CreatePlayer").unbind("click").click(function() {
+	$("#btnX01CreatePlayer").unbind("click").click(function(event) {
 		createPlayer(function(player) {
 			var nbPlayer = $("#newX01Dialog .players tbody tr").size();
 			$row = getPlayerRow(nbPlayer-1, player);
 			$("#newX01Dialog .players tbody").append($row);
 			updatePlayersTableField();
 		});
+		event.preventDefault();
+		return false;
 	});
 
 	// Bind Click
