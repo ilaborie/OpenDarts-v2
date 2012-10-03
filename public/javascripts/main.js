@@ -85,8 +85,8 @@ var i18n = function() {
 
 var switchLang = function(lang){
   var path = "assets/i18n/"+lang+".json";
-  $.getJSON(path, null,  function(json) {
     localStorage.setItem("lang", lang);
+  $.getJSON(path, null,  function(json) {
     $("#langFlag").attr("src", "assets/images/" + lang +".png");
     msg.keys = json;
     

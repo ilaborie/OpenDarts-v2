@@ -18,19 +18,16 @@
     <div class="container">
       <a class="brand" href="#">OpenDarts v2</a>
       <form class="navbar-form">
-        <button id="btnNewX01" class="btn btn-primary">x01</button>
-        <button id="btnQuick" class="btn btn-warning">Quick Game</button>
+        <button id="btnNewX01" class="btn btn-primary" data-i18n="menu.x01"></button>
+        <button id="btnQuick" class="btn btn-warning" data-i18n="menu.quick"></button>
         <ul class="nav pull-right">
           <li class="dropdown">
-            <a href="#" class="dropdown-toggle " data-toggle="dropdown">
-              Help
-              <span class="caret"></span>
-            </a>
+            <a href="#" class="dropdown-toggle " data-toggle="dropdown" data-i18n="menu.help"></a>
             <ul class="dropdown-menu">
-              <li><a tabindex="-1" href="/doc" target="openDartDoc">Documentation</a></li>
-              <li><a tabindex="-1" href="/faq" target="openDartFAQ">FAQ</a></li>
+              <li><a tabindex="-1" href="/doc" target="openDartDoc" data-i18n="menu.help.doc"></a></li>
+              <li><a tabindex="-1" href="/faq" target="openDartFAQ" data-i18n="menu.help.faq"></a></li>
               <li class="divider"></li>
-              <li><a tabindex="-1" href="#about" data-toggle="modal">About...</a></li>
+              <li><a tabindex="-1" href="#about" data-toggle="modal" data-i18n="menu.help.about"></a></li>
             </ul>
           </li>
           <li class="dropdown">

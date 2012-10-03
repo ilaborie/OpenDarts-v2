@@ -16,39 +16,27 @@
 <div id="about" class="modal hide">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		<h3>About OpenDarts v2</h3>
+		<h3 data-i18n="dia.about.title"></h3>
 	</div>
 	<div class="modal-body">
 		@* Main *@
 		<h2>OpenDarts v2</h2>
-		<p>
-			This application has been created by <em>Igor Laborie</em>.
-		</p>
+		<p data-i18n="dia.about.author"></p>
 		<ul class="social">
 			<li><iframe src="http://ghbtns.com/github-btn.html?user=ilaborie&repo=OpenDarts-v2&type=watch&count=true"
 allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe></li>
 			<li><iframe src="http://ghbtns.com/github-btn.html?user=ilaborie&repo=OpenDarts-v2&type=fork&count=true"
 allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20px"></iframe></li>
-			<li><a href="https://twitter.com/ilaborie" class="twitter-follow-button" data-show-count="false">Follow @@ilaborie</a>
+			<li><a href="https://twitter.com/ilaborie" class="twitter-follow-button" data-show-count="false" data-i18n="dia.about.follow"></a>
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></li>
 		</ul>
 			@* paypal: *@
 		@* Contribution *@
-		<h2 class="clearfix">Contributions are welcome</h2>
-		<ul>
-			<li>Give me thanks, or fresh beer</li>
-			<li>Report Bugs</li>
-			<li>Speaking about the project</li>
-			<li>Improvements and new Feature suggestions</li>
-			<li>Fix Spelling mistakes</li>
-			<li>Writing documentations (help, ...)</li>
-			<li>Translation (not yet available)</li>
-			<li>Graphical contribution (icons,  ...)</li>
-			<li>Writing code</li>
-		</ul>
+		<h2 class="clearfix" data-i18n="dia.about.contribute.title"></h2>
+		<ul data-i18n="dia.about.contribute.p"></ul>
 
 		@* Thanks *@
-		<h2>Thanks</h2>
+		<h2 data-i18n="dia.about.thanks.title"></h2>
 
 		<p>
 			<ul>
@@ -78,6 +66,6 @@ allowtransparency="true" frameborder="0" scrolling="0" width="110px" height="20p
 		</p>
 	</div>
 	<div class="modal-footer">
-		<a href="#" data-dismiss="modal" class="btn">Close</a>
+		<a href="#" data-dismiss="modal" class="btn" data-i18n="btn.close"></a>
 	</div>
 </div>
