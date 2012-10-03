@@ -477,18 +477,12 @@ var getNbDart = function(score, func) {
 
 	var btns = ["#btnThreeDarts", "#btnTwoDarts", "#btnOneDart"];
 	var $btn;
+	var tmp;
 	for (var i=0; i<btns.length; i++) {
 		$btn = $(btns[i]);
-		$btn.off("click").on("click", {
-			status: "win",
-			nbDart: (3-i)
-		}, callback);
-
-		if (couldFinish(score,3-i)) {
-			$btn.removeAttr("disabled");
-			$defaultButton = $btn;
-		} else {
-			$btn.attr("disabled", "disabled");
+		tmp = handleNbDartsButton($btn, score, 3-i, callback);
+		if (tmp) {
+			$defaultButton = tmp;
 		}
 	}
 	// Broken
@@ -527,6 +521,22 @@ var getNbDart = function(score, func) {
 			return false;
 		});
 	}).modal("show");
+};
+
+var handleNbDartsButton = function($btn, score, nb, callback) {
+	$btn.off("click");
+
+	if (couldFinish(score,nb)) {
+		$btn.removeAttr("disabled");
+		$btn.on("click", {
+			status: "win",
+			nbDart: nb
+		}, callback);
+		return $btn;
+	} else {
+		$btn.attr("disabled", "disabled");
+		return null;
+	}
 };
 
 // Could finish
