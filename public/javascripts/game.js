@@ -354,6 +354,10 @@ var createPlayer = function(callback) {
 	if (!diaCreatePlayerLoaded) {
 		diaCreatePlayerLoaded = true;
 		$("#isComputer").toggleButtons({
+			label: {
+				enabled: msg.get("btn.on"),
+				disabled: msg.get("btn.off")
+			},
 			onChange: function($el, status) {
 				if (status) {
 					$(".playerComputer").show();

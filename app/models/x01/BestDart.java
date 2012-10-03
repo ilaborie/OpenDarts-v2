@@ -42,7 +42,7 @@ public final class BestDart {
 	 * @param score the score
 	 * @param nbDart the nb dart
 	 * @return the i dart */
-	public static IDart chooseBestDart(int target, int score, int nbDart) {
+	public static IDart chooseBestDart(String target, int score, int nbDart) {
 		BestDart bestDart = bestDarts.get(Integer.valueOf(nbDart));
 		return bestDart.getBestDart(score, target);
 	}
@@ -113,11 +113,11 @@ public final class BestDart {
 	 * @param score the score
 	 * @param target the target
 	 * @return the best dart */
-	public IDart getBestDart(int score, int target) {
+	public IDart getBestDart(int score, String target) {
 		IDart dart = this.darts.get(Integer.valueOf(score));
 		if (dart == null) {
 			DartService dartService = new DartService();
-			dart = dartService.getDart("T" + target);
+			dart = dartService.getDart(target);
 		}
 		return dart;
 	}

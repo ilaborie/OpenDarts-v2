@@ -27,7 +27,7 @@ public class ComputerThrowRequest {
 	private int left;
 
 	/** The type. */
-	private int type;
+	private String type;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -36,7 +36,7 @@ public class ComputerThrowRequest {
 	public String toString() {
 		return Objects.toStringHelper(this)
 				.add("level", Integer.valueOf(this.lvl))
-				.add("type", Integer.valueOf(this.type))
+				.add("type", this.type)
 				.add("left", Integer.valueOf(this.left))
 				.toString();
 	}
@@ -72,14 +72,14 @@ public class ComputerThrowRequest {
 	/** Gets the type.
 	 * 
 	 * @return the type */
-	public int getType() {
+	public String getType() {
 		return this.type;
 	}
 
 	/** Sets the type.
 	 * 
 	 * @param type the new type */
-	public void setType(int type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 
