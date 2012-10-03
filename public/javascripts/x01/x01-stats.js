@@ -52,39 +52,39 @@ var reverseSorter = function(a, b) {
 
 x01.stats = {
 	game: {
-		title: "Game",
+		title: "label.game",
 		key: "gameStats",
 		contents: {
-			count60: { label: "60", sorter: normalSorter},
-			count100: { label: "100", sorter: normalSorter},
-			count140: { label: "140", sorter: normalSorter},
-			count180: { label: "180", sorter: normalSorter},
-			plus60: { label: "60+", sorter: normalSorter},
-			plus100: { label: "100+", sorter: normalSorter},
-			plus140: { label: "140+", sorter: normalSorter},
-			bestOut: { label: "Best Out", sorter: normalSorter},
-			avgDart: { label: "Avg.", sorter: normalSorter},
-			avg3Dart: { label: "Avg.3", sorter: normalSorter},
-			avgLeg: { label: "Avg Leg", sorter: reverseSorter},
-			bestLeg: { label: "Best Leg", sorter: reverseSorter}
+			count60: { label: "stats60", sorter: normalSorter},
+			count100: { label: "stats100", sorter: normalSorter},
+			count140: { label: "stats140", sorter: normalSorter},
+			count180: { label: "stats180", sorter: normalSorter},
+			plus60: { label: "stats60plus", sorter: normalSorter},
+			plus100: { label: "stats100plus", sorter: normalSorter},
+			plus140: { label: "stats140plus", sorter: normalSorter},
+			bestOut: { label: "statsbestout", sorter: normalSorter},
+			avgDart: { label: "statsavg", sorter: normalSorter},
+			avg3Dart: { label: "statsavg3", sorter: normalSorter},
+			avgLeg: { label: "statsavgleg", sorter: reverseSorter},
+			bestLeg: { label: "statsbestleg", sorter: reverseSorter}
 		}
 	},
 	set: {
-		title: "Set",
+		title: "label.set",
 		key: "setStats",
 		contents: {
-			avgDart: { label: "Avg.", sorter: normalSorter},
-			avg3Dart: { label: "Avg.3", sorter: normalSorter},
-			avgLeg: { label: "Avg Leg", sorter: reverseSorter},
-			bestLeg: { label: "Best Leg", sorter: reverseSorter}
+			avgDart: { label: "statsavg", sorter: normalSorter},
+			avg3Dart: { label: "statsavg3", sorter: normalSorter},
+			avgLeg: { label: "statsavgleg", sorter: reverseSorter},
+			bestLeg: { label: "statsbestleg", sorter: reverseSorter}
 		}
 	},
 	leg: {
-		title: "Leg",
+		title: "label.leg",
 		key: "letStats",
 		contents: {
-			avgDart: { label: "Avg.", sorter: normalSorter},
-			avg3Dart: { label: "Avg.3", sorter: normalSorter}
+			avgDart: { label: "statsavg", sorter: normalSorter},
+			avg3Dart: { label: "statsavg3", sorter: normalSorter}
 		}
 	}
 };
@@ -268,7 +268,7 @@ x01Stats.db.getPlayerStats = function(game, set, leg, player, callback)	{
 var getStatLabel = function(obj, key) {
 	for (var skey in obj.contents) {
 		if (skey === key) {
-			return obj.contents[skey].label;
+			return msg.get(obj.contents[skey].label);
 		}
 	}
 	return " ??? ";

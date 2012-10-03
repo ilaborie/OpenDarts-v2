@@ -178,14 +178,14 @@ function LegX01(parentSet) {
 
 	// LegX01 displayFinished
 	this.displayFinished = function() {
-		var title = this.getName() +" Finished!";
+		var title = msg.get("dia.x01.leg.finish.title", {name:this.getName()});
 		
-		var msg = this.getTableStats();
+		var finishMessage = this.getTableStats();
 
 		// Notifiy
 		var set = parent;
-		openModalDialog(title, msg, {
-			text: '<i class="icon-white icon-step-forward"></i> Next Leg',
+		openModalDialog(title, finishMessage, {
+			text: '<i class="icon-white icon-step-forward"></i> ' + msg.get("dia.x01.leg.finish.next"),
 			"class" : "btn-primary",
 			click: function() { $("#modalDialog").modal("hide"); set.startNewLeg(); }
 		});
@@ -340,7 +340,7 @@ function LegX01(parentSet) {
 
 	// LegX01 getName
 	this.getName = function() {
-		var res = "Leg #" + (id+1) + " <small>";
+		var res = msg.get("label.leg")+" #" + (id+1) + " <small>";
 		$.each(this.getPlayers(),function(index, p){
 			if (index!==0) {
 				res += ", ";
@@ -350,7 +350,7 @@ function LegX01(parentSet) {
 		return res + "</small>";
 	};
 	this.getNameWinner = function() {
-		return "Leg #" + (id+1);
+		return msg.get("label.leg") + " #" + (id+1);
 	};
 	this.getParent = function() {
 		return parent;

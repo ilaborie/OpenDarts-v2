@@ -1,0 +1,94 @@
+{
+	"btn.on": "oui",
+	"btn.off": "non",
+	"btn.close": "Fermer",
+	"btn.create": "Créer",
+	"btn.select": "Choisir",
+	"btn.quit": "Quitter",
+	"btn.launch": "<i class=\"icon-play icon-white\"></i> Lancer",
+
+	"label.game": "Partie",
+	"label.set": "Set",
+	"label.leg": "Manche",
+
+	"dia.game.close.title": "Fermer la partie",
+	"dia.game.close.msg": "Voulez vous quitter la partie en cours ?",
+
+	"abbrv.lvl": "Niv.",
+
+	"stats60": "60",
+	"stats100": "100",
+	"stats140": "140",
+	"stats180": "180",
+	"stats60plus": "60+",
+	"stats100plus": "100+",
+	"stats140plus": "140+",
+	"statsbestout": "Meil. finish",
+	"statsavg": "Moy.",
+	"statsavg3": "Moy.3",
+	"statsavgleg": "Moy manche",
+	"statsbestleg": "Meil. manche",
+
+	"error.invalid.handicap": "<strong>He!</strong> Handicap invalide: $handicap !",
+	"error.invalid.nb.player": "<strong>He!</strong> Il faut au moins 2 joueurs !",
+	"error.invalid.input": "Entrée invalide",
+	"error.no.score": "Pas de score ?",
+	"error.negative": "Essai encore ! tu peux faire un score positif",
+	"error.cheater": "Sly !",
+
+	"welcome.title": "Bienvenu dans OpenDarts",
+	"welcome.p": "La meilleure application web de scorage pour les fléchettes",
+
+	"menu.x01": "x01",
+	"menu.quick": "Partie rapide",
+	"menu.help": "Aide<span class=\"caret\"></span>",
+	"menu.help.doc": "Documentation",
+	"menu.help.faq": "FAQ",
+	"menu.help.about": "A propos...",
+
+	"dia.create.player.title": "Créer un nouveau joueur",
+	"dia.create.player.computer": "Ordinateur",
+	"dia.create.player.name": "Nom",
+	"dia.create.player.surname": "Surnom",
+	"dia.create.player.target": "Cible",
+	"dia.create.player.level": "Niveau",
+
+	"dia.select.player.title": "Choisir un joueur",
+	"dia.select.player.prefix": "Nom: ",
+
+	"dia.about.title": "A propos d'OpenDarts v2",
+	"dia.about.author": "Cette application a été créer par <em>Igor Laborie</em>.",
+	"dia.about.follow": "Suivre @@ilaborie",
+	"dia.about.contribute.title": "Contribuez !",
+	"dia.about.contribute.p": 
+		"<li>Remerciments, ou des bières fraiches</li><li>Rapport de bogues</li><li>Parler de cette application</li><li>Propositions d'améliorations et de nouvelles fonctionalités</li><li>Correction des fautes d'orthographe</li><li>Participer à l'écriture de la documetation</li><li>Traduction</li><li>Contributions graphiques</li><li>Ecriture de code</li>",
+	"dia.about.thanks.title": "Remerciments",
+
+	"dia.x01.nbdart.title": "Combien de fléchette(s) ?",
+	"dia.x01.nbdart.1": "Une",
+	"dia.x01.nbdart.2": "Deux",
+	"dia.x01.nbdart.3": "Trois",
+	"dia.x01.nbdart.broken": "Cassé",
+
+	"dia.x01.computer.throw.title": "$name a besoin de $score",
+
+	"dia.x01.leg.finish.title": "$name terminé !",
+	"dia.x01.leg.finish.next": "Manche suivante",
+
+	"dia.x01.set.finish.title": "$name terminé !",
+	"dia.x01.set.finish.next": "Set suivant",
+
+	"x01.new.title": "Nouvelle partie de x01",
+	"x01.new.configuration": "Configuration",
+	"x01.new.configuration.score": "Score",
+	"x01.new.configuration.legs": "Nb. manche(s)",
+	"x01.new.configuration.sets": "Nb. set(s)",
+	"x01.new.players": "Joueurs",
+	"x01.new.players.add": "<i class=\"icon-white icon-plus\"></i> Ajouter",
+	"x01.new.players.create": "<i class=\"icon-white icon-plus-sign\"></i> Créer",
+	"x01.new.players.name": "Nom",
+	"x01.new.players.handicap": "Handicap",
+	"x01.new.players.actions": "Actions",
+
+	"end": "fin"
+}

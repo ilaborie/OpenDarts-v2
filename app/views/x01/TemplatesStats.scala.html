@@ -3,11 +3,11 @@
 *@
 <script id="StatsDiv" type="text/html">
     <div>
-        <h5><%=stats.title%></h5>
+        <h5><%=msg.get(stats.title)%></h5>
         <div class="row-fluid statsEntries <%=stats.key%>">
     <%  for(var key in stats.contents) {%>
             <div class="stat span6">
-                <label><%=stats.contents[key].label%></label><span class="<%=key%>"> - </span>
+                <label><%=msg.get(stats.contents[key].label)%></label><span class="<%=key%>"> - </span>
             </div>
     <%  } %>
         </div>

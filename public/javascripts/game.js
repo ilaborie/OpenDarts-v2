@@ -90,7 +90,7 @@ var openModalDialog = function(title, message, buttons) {
 	$buttonsBar.empty();
 	if (typeof buttons === "undefined") {
 		$buttonsBar.append(createButton({
-			text: "Close",
+			text: msg.get("btn.close"),
 			"data-dismiss" : "modal"
 		}));
 	} else if ($.isArray(buttons)) {
@@ -282,7 +282,7 @@ function Player(name, surname) {
 	};
 	this.getDisplayName = function() {
 		if (this.com) {
-			return '<i class="icon-cog"></i> Lvl. <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
+			return '<i class="icon-cog"></i> '+msg.get("abbrv.lvl")+' <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
 		} else {
 			return '<i class="icon-user"></i> ' + this.getFullName();
 
