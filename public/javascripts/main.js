@@ -33,6 +33,12 @@ $(function() {
 
   // i18n
   i18n();
+  $("#switchLang a").click(function(e){
+    var lang = $(this).attr("href");
+    switchLang(lang);
+    e.preventDefault();
+    return false;
+  });
 });
 
 var msg = null;
@@ -81,6 +87,7 @@ var switchLang = function(lang){
   var path = "assets/i18n/"+lang+".json";
   $.getJSON(path, null,  function(json) {
     localStorage.setItem("lang", lang);
+    $("#langFlag").attr("src", "assets/images/" + lang +".png");
     msg.keys = json;
     
     // Apply to all page
