@@ -350,7 +350,7 @@ var launchX01 = function(event) {
 			} catch(e) {
 				createNotice({
 					kind: "error",
-					message: "<strong>Hey!</strong> invalid handicap: " + hd
+					message: msg.get("error.invalid.handicap", {handicap: hd})
 				});
 				event.preventDefault();
 				return false;
@@ -361,7 +361,7 @@ var launchX01 = function(event) {
 	if (newX01Options.players.length<2) {
 		createNotice({
 			kind: "error",
-			message: "<strong>Hey!</strong> You need at least 2 players !"
+			message: msg.get("error.invalid.nb.player")
 		});
 		event.preventDefault();
 		return false;
@@ -434,7 +434,7 @@ var getInputPlayerValue = function(value) {
 				} else if ($.isNumeric(rest) && (firstChar === 'd' || firstChar === 'D')) {
 					val += 2*parseInt(rest,10);
 				} else {
-					throw "Invalid input";
+					throw msg.get("error.invalid.input");
 				}
 			}
 		}
@@ -445,16 +445,16 @@ var getInputPlayerValue = function(value) {
 var validatePlayerValue = function(value) {
 	var status = "";
 	if (value === "") {
-		status = "No score ?";
+		status = msg.get("error.no.score");
 	} else {
 		try {
 			var val = getInputPlayerValue(value);
 			if (isNaN(val)) {
 				status = "?";
 			} else if (val<0) {
-				status = "Try harder ! You can make a positive score.";
+				status = msg.get("error.negative");
 			} else if (val > 180 || val === 172 || val === 173 || val === 175 || val === 176 || val === 178 || val === 179) {
-				status = "Sly !";
+				status = msg.get("error.cheater");
 			} else {
 				status = "";
 			}

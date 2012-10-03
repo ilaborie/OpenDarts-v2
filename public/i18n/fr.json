@@ -4,7 +4,37 @@
 	"btn.close": "Fermer",
 	"btn.create": "Créer",
 	"btn.select": "Choisir",
+	"btn.quit": "Quitter",
 	"btn.launch": "<i class=\"icon-play icon-white\"></i> Lancer",
+
+	"label.game": "Partie",
+	"label.set": "Set",
+	"label.leg": "Manche",
+
+	"dia.game.close.title": "Fermer la partie",
+	"dia.game.close.msg": "Voulez vous quitter la partie en cours ?",
+
+	"abbrv.lvl": "Niv.",
+
+	"stats60": "60",
+	"stats100": "100",
+	"stats140": "140",
+	"stats180": "180",
+	"stats60plus": "60+",
+	"stats100plus": "100+",
+	"stats140plus": "140+",
+	"statsbestout": "Meil. finish",
+	"statsavg": "Moy.",
+	"statsavg3": "Moy.3",
+	"statsavgleg": "Moy manche",
+	"statsbestleg": "Meil. manche",
+
+	"error.invalid.handicap": "<strong>He!</strong> Handicap invalide: $handicap !",
+	"error.invalid.nb.player": "<strong>He!</strong> Il faut au moins 2 joueurs !",
+	"error.invalid.input": "Entrée invalide",
+	"error.no.score": "Pas de score ?",
+	"error.negative": "Essai encore ! tu peux faire un score positif",
+	"error.cheater": "Sly !",
 
 	"welcome.title": "Bienvenu dans OpenDarts",
 	"welcome.p": "La meilleure application web de scorage pour les fléchettes",
@@ -39,6 +69,14 @@
 	"dia.x01.nbdart.2": "Deux",
 	"dia.x01.nbdart.3": "Trois",
 	"dia.x01.nbdart.broken": "Cassé",
+
+	"dia.x01.computer.throw.title": "$name a besoin de $score",
+
+	"dia.x01.leg.finish.title": "$name terminé !",
+	"dia.x01.leg.finish.next": "Manche suivante",
+
+	"dia.x01.set.finish.title": "$name terminé !",
+	"dia.x01.set.finish.next": "Set suivant",
 
 	"x01.new.title": "Nouvelle partie de x01",
 	"x01.new.configuration": "Configuration",

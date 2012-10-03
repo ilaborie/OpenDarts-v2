@@ -63,7 +63,7 @@ function GameX01(options) {
 		}
 	};
 
-	this.startNewSet = function() {
+	this.startNewSet = function() {
 		// Create a new Set
 		currentSet = new SetX01(this);
 		currentSet.start();
@@ -82,7 +82,7 @@ function GameX01(options) {
 		$("#game").empty();
 		this.displayHistory();
 	};
-	this.displayHistory = function() {
+	this.displayHistory = function() {
 		var $list = $("<ul/>").addClass("nav").addClass("nav-tabs");
 		// Add Game
 		var $gameNav = $("<a/>", {
@@ -90,7 +90,7 @@ function GameX01(options) {
 				"data-toggle": "tab",
 				"class": "navGame"
 			}).append('<i class="icon-chevron-right"></i>')
-				.append($("<span/>").addClass("badge badge-inverse").append("Game"))
+				.append($("<span/>").addClass("badge badge-inverse").append(msg.get("label.game")))
 				.append(" ")
 				.append(this.getName());
 		$list.append($("<li/>")
@@ -108,7 +108,7 @@ function GameX01(options) {
 					"data-toggle": "tab",
 					"class": "navSet"
 				}).append('<i class="icon-chevron-right"></i>')
-					.append($("<span/>").addClass("badge badge-primary").append("Set"))
+					.append($("<span/>").addClass("badge badge-primary").append(msg.get("label.set")))
 					.append(" ")
 					.append(set.getName());
 			$list.append($("<li/>")
@@ -122,7 +122,7 @@ function GameX01(options) {
 					"data-toggle": "tab",
 					"class": "navLeg"
 				}).append('<i class="icon-chevron-right"></i>')
-					.append($("<span/>").addClass("badge badge-success").append("Leg"))
+					.append($("<span/>").addClass("badge badge-success").append(msg.get("label.leg")))
 					.append(" ")
 					.append(leg.getName());
 				$list.append($("<li/>")
@@ -406,7 +406,7 @@ function GameX01(options) {
 
 	// GameX01 getName
 	this.getName = function() {
-		var res =  "Game #"+ (id+1) +" <small>" ;
+		var res =  msg.get("label.game") + " #"+ (id+1) +" <small>" ;
 		$.each(this.getPlayers(),function(index, p){
 			if (index!==0) {
 				res += ", ";
@@ -434,8 +434,8 @@ function GameX01(options) {
 	// GameX01 close
 	this.close = function(callback) {
 		var game = this;
-		openModalDialog("Close", "Do you want to quit this game ?", {
-			text: '<i class="icon-white icon-stop"></i> Quit',
+		openModalDialog(msg.get("dia.game.close.title"), msg.get("dia.game.close.msg"), {
+			text: '<i class="icon-white icon-stop"></i> ' + msg.get("btn.quit"),
 			"class" : "btn-warning",
 			click: function() {
 				x01.currentGame = null;

@@ -91,14 +91,14 @@ function SetX01(parentGame) {
 
 	// SetX01 displayFinished
 	this.displayFinished = function() {
-		var title = this.getName() +" Finished!";
+		var title = msg.get("dia.x01.set.finish.title", {name: this.getName()});
 		
-		var msg = this.getTableStats();
+		var finishMessage = this.getTableStats();
 
 		// Notifiy
 		var game = parent;
-		openModalDialog(title, msg, {
-			text: '<i class="icon-white icon-step-forward"></i> Next Set',
+		openModalDialog(title, finishMessage, {
+			text: '<i class="icon-white icon-step-forward"></i> '+ msg.get("dia.x01.set.finish.next"),
 			"class" : "btn-primary",
 			click: function() { $("#modalDialog").modal("hide"); game.startNewSet(); }
 		});
@@ -385,7 +385,7 @@ function SetX01(parentGame) {
 
 	// SetX01 getName
 	this.getName = function() {
-		var res = "Set #" + (id+1) + " <small>";
+		var res = msg.get("label.set") + " #" + (id+1) + " <small>";
 		$.each(this.getPlayers(),function(index, p){
 			if (index!==0) {
 				res += ", ";
@@ -395,7 +395,7 @@ function SetX01(parentGame) {
 		return res + "</small>";
 	};
 	this.getNameWinner = function() {
-		return "Set #" + (id+1) + ": " + this.getWinner().getName();
+		return msg.get("label.set") + " #" + (id+1) + ": " + this.getWinner().getName();
 	};
 
 	// SetX01 display
