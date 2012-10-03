@@ -17,11 +17,73 @@
 $(function() {
 	// TODO Check configuration
 
+  // AJAX configuration
+  $.ajaxSetup({
+    cache: false,
+    error: doOnError
+  });
+
 	// Navbar button
 	$("#btnNewX01").click(showNewX01);
 
-   // XXX for bootstrap dropdown (waiting for next release)
-    $(".dropdown-menu").on("touchstart.dropdown.data-api", function (e) {
-      e.stopPropagation();
-    });
+  // XXX for bootstrap dropdown (waiting for next release)
+  $(".dropdown-menu").on("touchstart.dropdown.data-api", function (e) {
+    e.stopPropagation();
+  });
+
+  // i18n
+  i18n();
 });
+
+var msg = null;
+var i18n = function() {
+  function Messages() {
+    this.keys = {};
+  }
+  msg = new Messages();
+  // Add get
+  Messages.prototype.get = function(key, args) {
+    var msg = this.keys[key];
+    if (!msg) {
+      msg = "!!! " + key +" !!!";
+    }
+
+    // check args
+    if (args!==null && $.isPlainObject(args)) {
+      // TODO handle arg
+      var a = args;
+      a["$"] = "$";
+      for (var prop in a) {
+        var pattern = "$" + prop;
+        msg = msg.replace(pattern, a[prop]);
+      }
+    }
+    return msg;
+  };
+  // Add apply
+  Messages.prototype.apply = function($elt) {
+    var msg = this;
+    $elt.find("[data-i18n]").each(function(idx, e){
+      var key = $(e).attr("data-i18n");
+      $(e).html(msg.get(key));
+    });
+  };
+
+  // Set lang
+  var lang = localStorage.getItem("lang");
+  if (!lang) {
+    lang = "en";
+  }
+  switchLang(lang);
+};
+
+var switchLang = function(lang){
+  var path = "assets/i18n/"+lang+".json";
+  $.getJSON(path, null,  function(json) {
+    localStorage.setItem("lang", lang);
+    msg.keys = json;
+    
+    // Apply to all page
+    msg.apply($("body"));
+  });
+};
