@@ -31,7 +31,16 @@ public class Application extends Controller {
 	 */
 	public static Result index() {
 		return ok(index.render("OpenDarts v2"));
-	}
+ 	}
+
+  /**
+   * Admin.
+   *
+   * @return the result
+   */
+  public static Result admin() {
+    return ok(admin.render("Admin"));
+  }
 
    /**
     * Documentation.

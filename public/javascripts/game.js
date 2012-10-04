@@ -232,6 +232,7 @@ var players = {
 	},
 	getPlayerByNameSurname : function(name, surname) {
 		var player;
+		var p;
 		for (var i=0; i<players.db.length; i++) {
 			p = players.db[i];
 			if ((p.name === name) && (p.surname===surname)) {
@@ -246,6 +247,19 @@ var players = {
 		player = new Player(name, surname);
 		this.addPlayer(player);
 		return player;
+	},
+	deletePlayer : function(player) {
+		var tab = [];
+		var p;
+		for (var i=0; i<players.db.length; i++) {
+			p = players.db[i];
+			if (p.uuid !== player.uuid) {
+				tab.push (p);
+			}
+		}
+		players.db = tab;
+		// Store to DB
+		localStorage.setItem("players", JSON.stringify(players.db));
 	}
 };
 // Load to DB
