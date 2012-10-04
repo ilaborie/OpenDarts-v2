@@ -447,6 +447,7 @@ function GameX01(options) {
 		x01Stats.db.clear();
 		this.display();
 
+
 		this.next();
 	};
 
@@ -480,5 +481,6 @@ function GameX01(options) {
 
 		});
 		tuningSize();
+		msg.apply($game);
 	};
 }

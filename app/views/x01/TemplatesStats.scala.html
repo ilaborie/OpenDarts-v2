@@ -7,7 +7,7 @@
         <div class="row-fluid statsEntries <%=stats.key%>">
     <%  for(var key in stats.contents) {%>
             <div class="stat span6">
-                <label><%=msg.get(stats.contents[key].label)%></label><span class="<%=key%>"> - </span>
+                <label data-i18n="<%=stats.contents[key].label%>"></label><span class="<%=key%>"> - </span>
             </div>
     <%  } %>
         </div>
