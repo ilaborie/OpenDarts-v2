@@ -17,11 +17,26 @@
 $(function() {
 	// TODO Check configuration
 
+  // AJAX configuration
+  $.ajaxSetup({
+    cache: false,
+    error: doOnError
+  });
+
 	// Navbar button
 	$("#btnNewX01").click(showNewX01);
 
-   // XXX for bootstrap dropdown (waiting for next release)
-    $(".dropdown-menu").on("touchstart.dropdown.data-api", function (e) {
-      e.stopPropagation();
-    });
+  // XXX for bootstrap dropdown (waiting for next release)
+  $(".dropdown-menu").on("touchstart.dropdown.data-api", function (e) {
+    e.stopPropagation();
+  });
+
+  // i18n
+  i18n();
+  $("#switchLang a").click(function(e){
+    var lang = $(this).attr("href");
+    switchLang(lang);
+    e.preventDefault();
+    return false;
+  });
 });

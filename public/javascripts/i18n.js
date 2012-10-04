@@ -13,25 +13,59 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-// Labels and messages
-function Messages() {
-	var keys = {
-		hello : "Hello"
-	};
+var msg = null;
+var i18n = function(callback) {
+  function Messages() {
+    this.keys = {};
+  }
+  msg = new Messages();
+  // Add get
+  Messages.prototype.get = function(key, args) {
+    var msg = this.keys[key];
+    if (!msg) {
+      msg = "!!! " + key +" !!!";
+    }
 
-	this.get = function(key, args) {
-		var msg = this.keys[key];
-		if (!msg) {
-			msg = "!!! " + key +" !!!";
-		}
+    // check args
+    if (args!==null && $.isPlainObject(args)) {
+      // TODO handle arg
+      var a = args;
+      a["$"] = "$";
+      for (var prop in a) {
+        var pattern = "$" + prop;
+        msg = msg.replace(pattern, a[prop]);
+      }
+    }
+    return msg;
+  };
+  // Add apply
+  Messages.prototype.apply = function($elt) {
+    var msg = this;
+    $elt.find("[data-i18n]").each(function(idx, e){
+      var key = $(e).attr("data-i18n");
+      $(e).html(msg.get(key));
+    });
+  };
 
-		// check args
-		if (args) {
-			// TODO handle arg
-		}
+  // Set lang
+  var lang = localStorage.getItem("lang");
+  if (!lang) {
+    lang = "en";
+  }
+  switchLang(lang, callback);
+};
 
-		return msg;
-	};
-}
-
-var msg = new Messages();
+var switchLang = function(lang, callback){
+  var path = "assets/i18n/"+lang+".json";
+    localStorage.setItem("lang", lang);
+  $.getJSON(path, null,  function(json) {
+    $("#langFlag").attr("src", "assets/images/" + lang +".png");
+    msg.keys = json;
+    
+    // Apply to all page
+    msg.apply($("body"));
+    if (callback && $.isFunction(callback)) {
+      callback();
+    }
+  });
+};

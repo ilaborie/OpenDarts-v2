@@ -90,7 +90,7 @@ var openModalDialog = function(title, message, buttons) {
 	$buttonsBar.empty();
 	if (typeof buttons === "undefined") {
 		$buttonsBar.append(createButton({
-			text: "Close",
+			text: msg.get("btn.close"),
 			"data-dismiss" : "modal"
 		}));
 	} else if ($.isArray(buttons)) {
@@ -232,6 +232,7 @@ var players = {
 	},
 	getPlayerByNameSurname : function(name, surname) {
 		var player;
+		var p;
 		for (var i=0; i<players.db.length; i++) {
 			p = players.db[i];
 			if ((p.name === name) && (p.surname===surname)) {
@@ -246,6 +247,19 @@ var players = {
 		player = new Player(name, surname);
 		this.addPlayer(player);
 		return player;
+	},
+	deletePlayer : function(player) {
+		var tab = [];
+		var p;
+		for (var i=0; i<players.db.length; i++) {
+			p = players.db[i];
+			if (p.uuid !== player.uuid) {
+				tab.push (p);
+			}
+		}
+		players.db = tab;
+		// Store to DB
+		localStorage.setItem("players", JSON.stringify(players.db));
 	}
 };
 // Load to DB
@@ -282,7 +296,7 @@ function Player(name, surname) {
 	};
 	this.getDisplayName = function() {
 		if (this.com) {
-			return '<i class="icon-cog"></i> Lvl. <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
+			return '<i class="icon-cog"></i> '+msg.get("abbrv.lvl")+' <i class="badge">'+this.comLevel+'</i> play ' + this.comTarget;
 		} else {
 			return '<i class="icon-user"></i> ' + this.getFullName();
 
@@ -354,6 +368,10 @@ var createPlayer = function(callback) {
 	if (!diaCreatePlayerLoaded) {
 		diaCreatePlayerLoaded = true;
 		$("#isComputer").toggleButtons({
+			label: {
+				enabled: msg.get("btn.on"),
+				disabled: msg.get("btn.off")
+			},
 			onChange: function($el, status) {
 				if (status) {
 					$(".playerComputer").show();

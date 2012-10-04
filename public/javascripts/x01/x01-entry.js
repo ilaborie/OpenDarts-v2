@@ -125,10 +125,13 @@ function EntryX01(parentLeg, index) {
 		var score = parent.getPlayerScore(lastPlayer);
 
 		// Open Dialog
-		var msg = lastPlayer.getName() + " require " + score;
+		var msgTitle = msg.get("dia.x01.computer.throw.title", {
+			name: lastPlayer.getName(),
+			score: score
+		});
 		$("#computerThrowDialog .done").empty();
 		$("#computerThrowDialog .wished").empty();
-		$("#computerThrowDialog h3").html(msg);
+		$("#computerThrowDialog h3").html(msgTitle);
 		$("#computerThrowDialog").off("shown").on("shown", function() {
 			// Call to server
 			$.postJSON("/x01/ComputerPlayer", {

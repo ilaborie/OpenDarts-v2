@@ -1,0 +1,94 @@
+{
+	"btn.on": "on",
+	"btn.off": "off",
+	"btn.close": "Close",
+	"btn.create": "Create",
+	"btn.select": "Select",
+	"btn.quit": "Quit",
+	"btn.launch": "<i class=\"icon-play icon-white\"></i> Launch",
+
+	"label.game": "Game",
+	"label.set": "Set",
+	"label.leg": "Leg",
+
+	"dia.game.close.title": "Close game",
+	"dia.game.close.msg": "Do you want to quit this game ?",
+
+	"abbrv.lvl": "Lvl.",
+
+	"stats60": "60",
+	"stats100": "100",
+	"stats140": "140",
+	"stats180": "180",
+	"stats60plus": "60+",
+	"stats100plus": "100+",
+	"stats140plus": "140+",
+	"statsbestout": "Best Out",
+	"statsavg": "Avg.",
+	"statsavg3": "Avg.3",
+	"statsavgleg": "Avg Leg",
+	"statsbestleg": "Best Leg",
+
+	"error.invalid.handicap": "<strong>Hey!</strong> invalid handicap: $handicap",
+	"error.invalid.nb.player": "<strong>Hey!</strong> You need at least 2 players !",
+	"error.invalid.input": "Invalid input",
+	"error.no.score": "No score ?",
+	"error.negative": "Try harder ! You can make a positive score.",
+	"error.cheater": "Sly !",
+
+	"welcome.title": "Welcome to OpenDarts",
+	"welcome.p": "The best Web scoring tools for Darts",
+
+	"menu.x01": "x01",
+	"menu.quick": "Quick Game",
+	"menu.help": "Help<span class=\"caret\"></span>",
+	"menu.help.doc": "Documentation",
+	"menu.help.faq": "FAQ",
+	"menu.help.about": "About...",
+
+	"dia.create.player.title": "Create a new Player",
+	"dia.create.player.computer": "Computer",
+	"dia.create.player.name": "Name",
+	"dia.create.player.surname": "Surame",
+	"dia.create.player.target": "Target",
+	"dia.create.player.level": "Level",
+
+	"dia.select.player.title": "Select a Player",
+	"dia.select.player.prefix": "Name: ",
+
+	"dia.about.title": "About OpenDarts v2",
+	"dia.about.author": "This application has been created by <em>Igor Laborie</em>.",
+	"dia.about.follow": "Follow @@ilaborie",
+	"dia.about.contribute.title": "Contributions are welcome",
+	"dia.about.contribute.p": 
+		"<li>Give me thanks, or fresh beer</li><li>Report Bugs</li><li>Speaking about the application</li><li>Improvements and new Feature suggestions</li><li>Fix Spelling mistakes</li><li>Writing documentations</li><li>Translation</li><li>Graphical contribution (icons,  ...)</li><li>Writing code</li>",
+	"dia.about.thanks.title": "Thanks",
+
+	"dia.x01.nbdart.title": "How many dart(s) ?",
+	"dia.x01.nbdart.1": "One Dart",
+	"dia.x01.nbdart.2": "Two Darts",
+	"dia.x01.nbdart.3": "Three Darts",
+	"dia.x01.nbdart.broken": "Broken",
+
+	"dia.x01.computer.throw.title": "$name require $score",
+
+	"dia.x01.leg.finish.title": "$name Finished !",
+	"dia.x01.leg.finish.next": "Next Leg",
+
+	"dia.x01.set.finish.title": "$name Finished !",
+	"dia.x01.set.finish.next": "Next Set",
+
+	"x01.new.title": "New x01 Game",
+	"x01.new.configuration": "Configuration",
+	"x01.new.configuration.score": "Score",
+	"x01.new.configuration.legs": "Nb. Leg(s)",
+	"x01.new.configuration.sets": "Nb. Set(s)",
+	"x01.new.players": "Players",
+	"x01.new.players.add": "<i class=\"icon-white icon-plus\"></i> Add",
+	"x01.new.players.create": "<i class=\"icon-white icon-plus-sign\"></i> Create",
+	"x01.new.players.name": "Name",
+	"x01.new.players.handicap": "Handicap",
+	"x01.new.players.actions": "Actions",
+
+	"end": "fin"
+}
