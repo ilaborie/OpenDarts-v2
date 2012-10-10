@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Github
+git push origin master
+
 # Heroku
 git push heroku master
 
