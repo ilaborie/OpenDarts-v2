@@ -42,6 +42,15 @@ public class Application extends Controller {
     return ok(admin.render("Admin"));
   }
 
+  /**
+   * Admin.
+   *
+   * @return the result
+   */
+  public static Result charts() {
+    return ok(charts.render("Charts"));
+  }
+
    /**
     * Documentation.
     *

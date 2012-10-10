@@ -55,36 +55,55 @@ x01.stats = {
 		title: "label.game",
 		key: "gameStats",
 		contents: {
-			count60: { label: "stats60", sorter: normalSorter},
-			count100: { label: "stats100", sorter: normalSorter},
-			count140: { label: "stats140", sorter: normalSorter},
-			count180: { label: "stats180", sorter: normalSorter},
-			plus60: { label: "stats60plus", sorter: normalSorter},
-			plus100: { label: "stats100plus", sorter: normalSorter},
-			plus140: { label: "stats140plus", sorter: normalSorter},
-			bestOut: { label: "statsbestout", sorter: normalSorter},
-			avgDart: { label: "statsavg", sorter: normalSorter},
-			avg3Dart: { label: "statsavg3", sorter: normalSorter},
-			avgLeg: { label: "statsavgleg", sorter: reverseSorter},
-			bestLeg: { label: "statsbestleg", sorter: reverseSorter}
+			count60: { label: "stats60", sorter: normalSorter, display:true},
+			count100: { label: "stats100", sorter: normalSorter, display:true},
+			count140: { label: "stats140", sorter: normalSorter, display:true},
+			count180: { label: "stats180", sorter: normalSorter, display:true},
+			plus60: { label: "stats60plus", sorter: normalSorter, display:true},
+			plus100: { label: "stats100plus", sorter: normalSorter, display:true},
+			plus140: { label: "stats140plus", sorter: normalSorter, display:true},
+			bestOut: { label: "statsbestout", sorter: normalSorter, display:true},
+			avgDart: { label: "statsavg", sorter: normalSorter, display:true},
+			avg3Dart: { label: "statsavg3", sorter: normalSorter, display:true},
+			avgLeg: { label: "statsavgleg", sorter: reverseSorter, display:true},
+			bestLeg: { label: "statsbestleg", sorter: reverseSorter, display:true},
+
+			zone0: { label: "statsZone0", sorter: normalSorter},
+			zone1: { label: "statsZone1", sorter: normalSorter},
+			zone2: { label: "statsZone2", sorter: normalSorter},
+			zone3: { label: "statsZone3", sorter: normalSorter},
+			zone4: { label: "statsZone4", sorter: normalSorter},
+			zone5: { label: "statsZone5", sorter: normalSorter},
+			zone6: { label: "statsZone6", sorter: normalSorter},
+			zone7: { label: "statsZone7", sorter: normalSorter},
+			zone8: { label: "statsZone8", sorter: normalSorter},
+			zone9: { label: "statsZone9", sorter: normalSorter},
+			zone10: { label: "statsZone10", sorter: normalSorter},
+			zone11: { label: "statsZone11", sorter: normalSorter},
+			zone12: { label: "statsZone12", sorter: normalSorter},
+			zone13: { label: "statsZone13", sorter: normalSorter},
+			zone14: { label: "statsZone14", sorter: normalSorter},
+			zone15: { label: "statsZone15", sorter: normalSorter},
+			zone16: { label: "statsZone16", sorter: normalSorter},
+			zone17: { label: "statsZone17", sorter: normalSorter}
 		}
 	},
 	set: {
 		title: "label.set",
 		key: "setStats",
 		contents: {
-			avgDart: { label: "statsavg", sorter: normalSorter},
-			avg3Dart: { label: "statsavg3", sorter: normalSorter},
-			avgLeg: { label: "statsavgleg", sorter: reverseSorter},
-			bestLeg: { label: "statsbestleg", sorter: reverseSorter}
+			avgDart: { label: "statsavg", sorter: normalSorter, display:true},
+			avg3Dart: { label: "statsavg3", sorter: normalSorter, display:true},
+			avgLeg: { label: "statsavgleg", sorter: reverseSorter, display:true},
+			bestLeg: { label: "statsbestleg", sorter: reverseSorter, display:true}
 		}
 	},
 	leg: {
 		title: "label.leg",
 		key: "letStats",
 		contents: {
-			avgDart: { label: "statsavg", sorter: normalSorter},
-			avg3Dart: { label: "statsavg3", sorter: normalSorter}
+			avgDart: { label: "statsavg", sorter: normalSorter, display:true},
+			avg3Dart: { label: "statsavg3", sorter: normalSorter, display:true}
 		}
 	}
 };
@@ -149,6 +168,25 @@ x01Stats.db.getPlayerStats = function(game, set, leg, player, callback)	{
 	var legTotalScore = 0;
 	var legTotalDart = 0;
 
+	var zone0 = 0;
+	var zone1 = 0;
+	var zone2 = 0;
+	var zone3 = 0;
+	var zone4 = 0;
+	var zone5 = 0;
+	var zone6 = 0;
+	var zone7 = 0;
+	var zone8 = 0;
+	var zone9 = 0;
+	var zone10 = 0;
+	var zone11 = 0;
+	var zone12 = 0;
+	var zone13 = 0;
+	var zone14 = 0;
+	var zone15 = 0;
+	var zone16 = 0;
+	var zone17 = 0;
+
 	for (var i=0; i< sessionStorage.length; i++) {
 		var key = sessionStorage.key(i);
 		if (key!==null && key.startsWith("x01Stats-")) {
@@ -180,13 +218,28 @@ x01Stats.db.getPlayerStats = function(game, set, leg, player, callback)	{
 					}
 
 					// Range
-					if (score>60 && score<100) {
-						plus60++;
-					} else if (score>100 && score<140) {
-						plus100++;
-					} else if (score>140) {
-						plus140++;
-					}
+					plus60 += incrRange(score,60,100);
+					plus100 += incrRange(score,100,140);
+					plus140 += incrRange(score,140,181);
+
+					zone0 += incrRange(score, 0, 10);
+					zone1 += incrRange(score, 10, 20);
+					zone2 += incrRange(score, 20, 30);
+					zone3 += incrRange(score, 30, 40);
+					zone4 += incrRange(score, 40, 50);
+					zone5 += incrRange(score, 50, 60);
+					zone6 += incrRange(score, 60, 70);
+					zone7 += incrRange(score, 70, 80);
+					zone8 += incrRange(score, 80, 90);
+					zone9 += incrRange(score, 90, 100);
+					zone10 += incrRange(score, 100, 110);
+					zone11 += incrRange(score, 110, 120);
+					zone12 += incrRange(score, 120, 130);
+					zone13 += incrRange(score, 130, 140);
+					zone14 += incrRange(score, 140, 150);
+					zone15 += incrRange(score, 150, 160);
+					zone16 += incrRange(score, 160, 170);
+					zone17 += incrRange(score, 170, 181);
 
 					// Win
 					if (entry.status==="win") {
@@ -234,7 +287,26 @@ x01Stats.db.getPlayerStats = function(game, set, leg, player, callback)	{
 		avg3Dart: isNaN(avgDart)?"-":avg3Dart.toFixed(1),
 		avgLeg: isNaN(avgLeg)?"-":avgLeg.toFixed(1),
 		bestLeg: (typeof bestLeg==="number")?bestLeg:"-",
-		bestOut: (typeof bestOut==="number")?bestOut:"-"
+		bestOut: (typeof bestOut==="number")?bestOut:"-",
+
+		zone0: zone0,
+		zone1: zone1,
+		zone2: zone2,
+		zone3: zone3,
+		zone4: zone4,
+		zone5: zone5,
+		zone6: zone6,
+		zone7: zone7,
+		zone8: zone8,
+		zone9: zone9,
+		zone10: zone10,
+		zone11: zone11,
+		zone12: zone12,
+		zone13: zone13,
+		zone14: zone14,
+		zone15: zone15,
+		zone16: zone16,
+		zone17: zone17
 	};
 
 	var setAvgDart = (setTotalScore/setTotalDart);
@@ -261,6 +333,15 @@ x01Stats.db.getPlayerStats = function(game, set, leg, player, callback)	{
 		setStats: setStats,
 		legStats: legStats
 	});
+};
+
+
+var incrRange = function(score, min, max) {
+	if (score>=min && score<max) {
+		return 1;
+	} else {
+		return 0;
+	}
 };
 
 ////////////////////////////////////////

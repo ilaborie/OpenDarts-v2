@@ -8,6 +8,8 @@ GET     /admin                      controllers.Application.admin()
 GET     /doc                        controllers.Application.doc()
 GET     /faq                        controllers.Application.faq()
 
+GET     /charts                     controllers.Application.charts()
+
 # x01
 POST	/x01/ComputerPlayer			controllers.GameX01.getComputerPlayerThrow()
 

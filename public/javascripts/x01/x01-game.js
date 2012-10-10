@@ -122,7 +122,8 @@ function GameX01(options) {
 		$gameContent.append($("<div/>").addClass("row-fluid")
 			.append($("<div/>").addClass("span8")
 				.append($("<h1/>").append(this.getName()))
-				.append(this.getSetsDetail()))
+				.append(this.getSetsDetail())
+				.append(this.getPlayersCharts()))
 			.append($("<div/>").addClass("span4").append(this.getTableStats())));
 		$content.append($gameContent);
 
@@ -195,6 +196,13 @@ function GameX01(options) {
 
 		$("#history").empty().append($history);
 
+		// Display charts
+		var p;
+		for (var m=0; m< options.players.length; m++) {
+			p = options.players[m];
+			diplayPie("#" + this.getPlayerChartId(p),p, this);
+		}
+
 		//  Activation
 		$("#history ul li:first-child").children("a").click();
 		$("#history").show();
@@ -250,6 +258,21 @@ function GameX01(options) {
 		$table.append($head).append($body);
 		return $table;
 	};
+	this.getPlayersCharts = function() {
+		var $res = $("<div/>").addClass("chartGroup");
+		var p;
+		for (var i=0; i<options.players.length; i++) {
+			p = options.players[i];
+			$res.append($("<span/>").attr("id", this.getPlayerChartId(p)));
+		}
+		return $res;
+	};
+	this.getPlayerChartId = function(player) {
+		return "chart-p-" +player.uuid;
+	};
+	this.getStats = function(key, player) {
+		return stats[key][player.uuid];
+	};
 	this.getTableStats = function() {
 		var $table = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
 		var $head = $("<thead/>").append("<tr/>");
@@ -280,39 +303,41 @@ function GameX01(options) {
 		var $bestCells = [];
 		var comp;
 		for(var key in stats) {
-			clazz = "textRight";
-			$row = $("<tr/>");
-			$bestCells = [];
-			bestValue = null;
-			for (var k=0; k<options.players.length; k++) {
-				player  = options.players[k];
-				if (k%2===1) {
-					clazz = "textLeft";
-					$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.game, key)));
-				}
-				$currentCell = $("<td/>").addClass(clazz);
-				currentValue = +stats[key][player.uuid];
-
-				// compare
-				comp = x01.stats.game.contents[key].sorter(currentValue, bestValue);
-				if (comp >= 0) {
-					if (comp>0) {
-						$bestCells = [];
-						bestValue = currentValue;
+			if (x01.stats.game.contents[key].display) {
+				clazz = "textRight";
+				$row = $("<tr/>");
+				$bestCells = [];
+				bestValue = null;
+				for (var k=0; k<options.players.length; k++) {
+					player  = options.players[k];
+					if (k%2===1) {
+						clazz = "textLeft";
+						$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.game, key)));
 					}
-					$bestCells.push($currentCell);
+					$currentCell = $("<td/>").addClass(clazz);
+					currentValue = +stats[key][player.uuid];
+
+					// compare
+					comp = x01.stats.game.contents[key].sorter(currentValue, bestValue);
+					if (comp >= 0) {
+						if (comp>0) {
+							$bestCells = [];
+							bestValue = currentValue;
+						}
+						$bestCells.push($currentCell);
+					}
+
+					$row.append($currentCell.append(getStatsDisplayValue(currentValue)));
+				}
+				// Display best
+				if ($bestCells.length>0) {
+					for (var j=0; j<$bestCells.length; j++) {
+						$bestCells[j].addClass("best");
+					}
 				}
 
-				$row.append($currentCell.append(getStatsDisplayValue(currentValue)));
+				$body.append($row);
 			}
-			// Display best
-			if ($bestCells.length>0) {
-				for (var j=0; j<$bestCells.length; j++) {
-					$bestCells[j].addClass("best");
-				}
-			}
-
-			$body.append($row);
 		}
 		$table.append($head).append($body);
 		return $("<p/>").append($table).html();
