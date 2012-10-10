@@ -72,6 +72,7 @@ function GameX01(options) {
 		var $set = currentSet.display();
 		$("#game").empty().append($set);
 		tuningSize();
+		msg.apply($set);
 
 		// go ahead
 		this.next();
