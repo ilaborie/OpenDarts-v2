@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package controllers;
 
 import static play.libs.Json.toJson;
@@ -69,6 +69,7 @@ public class GameX01 extends Controller {
 				}
 				ComputerPlayerThrow playerThrow = new ComputerPlayerThrow(throwRequest);
 				ComputerThrow comThrow = playerThrow.getComputerThrow();
+				comThrow.setComKey(throwRequest.getComKey());
 				if (logger.isDebugEnabled()) {
 					logger.debug("Done: " + comThrow);
 				}

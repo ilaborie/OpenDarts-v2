@@ -28,6 +28,9 @@ public class ComputerThrowRequest {
 
 	/** The type. */
 	private String type;
+	
+	/** The com key. */
+	private int comKey;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -81,6 +84,24 @@ public class ComputerThrowRequest {
 	 * @param type the new type */
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	/**
+	 * Gets the com key.
+	 *
+	 * @return the com key
+	 */
+	public int getComKey() {
+		return this.comKey;
+	}
+
+	/**
+	 * Sets the com key.
+	 *
+	 * @param comKey the new com key
+	 */
+	public void setComKey(int comKey) {
+		this.comKey = comKey;
 	}
 
 }
