@@ -1,18 +1,27 @@
 #!/bin/bash
 
+DIST_PATH=dist/opendarts-2.0-SNAPSHOT.zip
+
+# Build application
+rm $DIST_PATH
+play dist
+
 # Github
 git push origin master
+git push origin develop
 
-# Heroku
+# Deploy on Heroku
 git push heroku master
 
-# CloudBees
-# git push cloudbees master 
+# Deploy on CouldFoundry
+vmc update opendarts --path=$DIST_PATH
 
-# Jelastic
+# Deploy on CloudBees
+git push cloudbees master 
+#bees app:deploy -ep eu -a ilaborie/opendarts2-2 -t play2 $DIST_PATH
+play cloudbees-deploy
 
-# Google App Engine
+# TODO Deploy onJelastic
 
-# CouldFoundry
-play dist
-vmc update opendarts --path=dist/opendarts-2.0-SNAPSHOT.zip
+# TODO Google App Engine
+
