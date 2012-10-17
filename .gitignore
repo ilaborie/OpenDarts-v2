@@ -1,10 +1,10 @@
 logs
+dist
 project/project
 project/target
 target
 tmp
 .history
-dist
 tmp/
 .project
 .classpath
