@@ -1,6 +1,7 @@
 import sbt._
 import Keys._
 import PlayProject._
+import cloudbees.Plugin._
 
 object ApplicationBuild extends Build {
 
@@ -12,8 +13,10 @@ object ApplicationBuild extends Build {
       // Not yet compatible: "com.google.guava" % "guava" % "13.0.1"
   )
 
-  val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA).settings(
-    lessEntryPoints <<= baseDirectory(customLessEntryPoints))
+  val main = PlayProject(appName, appVersion, appDependencies, mainLang = JAVA)
+    .settings(lessEntryPoints <<= baseDirectory(customLessEntryPoints))
+    .settings(cloudBeesSettings :_*)
+    .settings(CloudBees.applicationId := Some("ilaborie/opendarts2-2"))
 
   // Only compile the bootstrap bootstrap.less file and any other *.less file in the stylesheets directory
   def customLessEntryPoints(base: File): PathFinder = (

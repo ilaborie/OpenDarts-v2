@@ -12,7 +12,7 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-*/
+ */
 package models.x01;
 
 import java.util.List;
@@ -31,6 +31,8 @@ public class ComputerThrow {
 
 	/** The status. */
 	private Status status;
+	/** The com key. */
+	private int comKey;
 
 	/*
 	 * (non-Javadoc)
@@ -44,7 +46,7 @@ public class ComputerThrow {
 				.add("status", this.status)
 				.toString();
 	}
-	
+
 	public List<ComputerDart> getDarts() {
 		return this.darts;
 	}
@@ -76,4 +78,24 @@ public class ComputerThrow {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
+
+	/**
+	 * Gets the com key.
+	 *
+	 * @return the com key
+	 */
+	public int getComKey() {
+		return this.comKey;
+	}
+
+	/**
+	 * Sets the com key.
+	 *
+	 * @param comKey the new com key
+	 */
+	public void setComKey(int comKey) {
+		this.comKey = comKey;
+	}
+	
+	
 }

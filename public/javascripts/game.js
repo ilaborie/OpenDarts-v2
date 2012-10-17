@@ -37,7 +37,7 @@ $.postJSON = function(url, data, callback, onError) {
         timeout: 3000,
 		tryCount : 0,
 		retryLimit : 3,
-        onError: fun
+        error: fun
     });
 };
 
@@ -56,7 +56,7 @@ $.deleteJSON = function(url, data, callback, onError) {
         timeout: 3000,
 		tryCount : 0,
 		retryLimit : 3,
-        onError: fun
+        error: fun
     });
 };
 

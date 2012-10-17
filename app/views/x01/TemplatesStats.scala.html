@@ -6,9 +6,11 @@
         <h5><%=msg.get(stats.title)%></h5>
         <div class="row-fluid statsEntries <%=stats.key%>">
     <%  for(var key in stats.contents) {%>
+    <%      if (stats.contents[key].display) { %>
             <div class="stat span6">
                 <label data-i18n="<%=stats.contents[key].label%>"></label><span class="<%=key%>"> - </span>
             </div>
+    <%      } %>
     <%  } %>
         </div>
     </div>

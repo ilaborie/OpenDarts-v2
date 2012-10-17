@@ -33,6 +33,7 @@ function EntryX01(parentLeg, index) {
 	var stats = {};
 	this.nbDart = null;
 	var winner = null;
+	this.comKey = 0;
 
 	for (var i=0; i<players.length; i++) {
 		var p = players[i];
@@ -124,6 +125,7 @@ function EntryX01(parentLeg, index) {
 		}
 		var score = parent.getPlayerScore(lastPlayer);
 
+		this.comKey += 1;
 		// Open Dialog
 		var msgTitle = msg.get("dia.x01.computer.throw.title", {
 			name: lastPlayer.getName(),
@@ -135,12 +137,17 @@ function EntryX01(parentLeg, index) {
 		$("#computerThrowDialog").off("shown").on("shown", function() {
 			// Call to server
 			$.postJSON("/x01/ComputerPlayer", {
+				comKey: entry.comKey,
 				left: score,
 				lvl: lastPlayer.comLevel,
 				type: lastPlayer.comTarget
 			}, function(json) {
-				entry.nbDart = json.darts.length;
-				entry.showDart(entry, json, 0, callback);
+				if (entry.comKey===json.comKey) {
+					entry.nbDart = json.darts.length;
+					entry.showDart(entry, json, 0, callback);
+				} else {
+					console.log("Skipped entry");
+				}
 			}, function(xhr, textStatus, errorThrown) {
 				if(textStatus==="timeout") {
 					this.tryCount++;
@@ -150,6 +157,8 @@ function EntryX01(parentLeg, index) {
 						$("#computerThrowDialog .wished").empty();
 						$.ajax(this);
 						return;
+					} else {
+						alert("Oops, server do not answer in time :((");
 					}
 				}
 				doOnError(xhr, textStatus, errorThrown);
@@ -327,7 +336,8 @@ function EntryX01(parentLeg, index) {
 			x01Stats.db.getPlayerStats(statEntry.game, statEntry.set, statEntry.leg, player, function(json) {
 				entry.updateStats(player, json);
 				if (callback!==null && $.isFunction(callback)) {
-					callback();
+					// delay callback
+					setTimeout(callback, 100);
 				}
 			});
 		});
