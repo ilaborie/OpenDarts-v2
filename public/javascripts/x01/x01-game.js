@@ -38,10 +38,10 @@ function GameX01(options) {
 
 	// GameX01 next
 	this.next= function() {
-		if (!currentSet.isFinished()) {
+		if (currentSet && !currentSet.isFinished()) {
 			// Continue set
 			currentSet.next();
-		} else {
+		} else if (currentSet) {
 			finishedSets.push(currentSet);
 			$("#"+currentSet.uuid).hide();
 

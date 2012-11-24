@@ -53,8 +53,8 @@ function SetX01(parentGame) {
 
 	// SetX01 next
 	this.next= function() {
-		if (!currentLeg.isFinished()) {
-			if (!currentLeg.isStarted()) {
+		if (currentLeg && !currentLeg.isFinished()) {
+			if (currentLeg && !currentLeg.isStarted()) {
 				// Request Stats
 				for (var i=0; i< players.length; i++) {
 					var pl = players[i];
@@ -70,7 +70,7 @@ function SetX01(parentGame) {
 
 			// Continue leg
 			currentLeg.next();
-		} else {
+		} else if (currentLeg) {
 			finishedlegs.push(currentLeg);
 			$("#"+currentLeg.uuid).hide();
 
