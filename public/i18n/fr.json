@@ -5,6 +5,7 @@
 	"btn.create": "Créer",
 	"btn.select": "Choisir",
 	"btn.quit": "Quitter",
+	"btn.cancel": "Annuler",
 	"btn.launch": "<i class=\"icon-play icon-white\"></i> Lancer",
 
 	"label.game": "Partie",

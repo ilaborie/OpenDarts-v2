@@ -480,15 +480,20 @@ function GameX01(options) {
 	// GameX01 close
 	this.close = function(callback) {
 		var game = this;
-		openModalDialog(msg.get("dia.game.close.title"), msg.get("dia.game.close.msg"), {
-			text: '<i class="icon-white icon-stop"></i> ' + msg.get("btn.quit"),
-			"class" : "btn-warning",
-			click: function() {
-				x01.currentGame = null;
-				$("#modalDialog").unbind("hidden").on("hidden", callback);
-				$("#modalDialog").modal("hide");
+		openModalDialog(msg.get("dia.game.close.title"), msg.get("dia.game.close.msg"),[ {
+				text: msg.get("btn.cancel"),
+				click: function() {
+					$("#modalDialog").modal("hide");
+				}
+			}, {
+				text: '<i class="icon-white icon-stop"></i> ' + msg.get("btn.quit"),
+				"class" : "btn-warning",
+				click: function() {
+					x01.currentGame = null;
+					$("#modalDialog").unbind("hidden").on("hidden", callback);
+					$("#modalDialog").modal("hide");
 			}
-		});
+		}]);
 	};
 
 	// GameX01 display
