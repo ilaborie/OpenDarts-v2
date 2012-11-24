@@ -4,6 +4,7 @@
 	"btn.close": "Close",
 	"btn.create": "Create",
 	"btn.select": "Select",
+	"btn.cancel": "Cancel",
 	"btn.quit": "Quit",
 	"btn.launch": "<i class=\"icon-play icon-white\"></i> Launch",
 
@@ -11,7 +12,7 @@
 	"label.set": "Set",
 	"label.leg": "Leg",
 
-	"dia.game.close.title": "Close game",
+	"dia.game.close.title": "Close Game",
 	"dia.game.close.msg": "Do you want to quit this game ?",
 
 	"abbrv.lvl": "Lvl.",
@@ -77,7 +78,7 @@
 	"dia.about.title": "About OpenDarts v2",
 	"dia.about.author": "This application has been created by <em>Igor Laborie</em>.",
 	"dia.about.follow": "Follow @@ilaborie",
-	"dia.about.contribute.title": "Contributions are welcome",
+	"dia.about.contribute.title": "Contributions are Welcome",
 	"dia.about.contribute.p": 
 		"<li>Give me thanks, or fresh beer</li><li>Report Bugs</li><li>Speaking about the application</li><li>Improvements and new Feature suggestions</li><li>Fix Spelling mistakes</li><li>Writing documentations</li><li>Translation</li><li>Graphical contribution (icons,  ...)</li><li>Writing code</li>",
 	"dia.about.thanks.title": "Thanks",
@@ -88,7 +89,7 @@
 	"dia.x01.nbdart.3": "Three Darts",
 	"dia.x01.nbdart.broken": "Broken",
 
-	"dia.x01.computer.throw.title": "$name require $score",
+	"dia.x01.computer.throw.title": "$name Require $score",
 
 	"dia.x01.leg.finish.title": "$name Finished !",
 	"dia.x01.leg.finish.next": "Next Leg",

@@ -197,12 +197,11 @@ function EntryX01(parentLeg, index) {
 		$input.unbind("input").on("input",validatePlayerThrow);
 
 		// Enter
-		$input.parent().unbind("submit").submit(function(e) {
+		$input.parent().unbind("submit").submit(function(event) {
 			if (this.checkValidity()) {
 				entry.processInput(entry, callback);
 			}
-			e.preventDefault();
-			return false;
+			return stopEvent(event);
 		});
 		// Shortcuts
 		$input.keyup(function(e) {
@@ -210,8 +209,7 @@ function EntryX01(parentLeg, index) {
 			var fun = shortcuts[k];
 			if ($.isFunction(fun)) {
 				fun(entry,callback);
-				e.preventDefault();
-				return false;
+				return stopEvent(e);
 			} else if (isInteger(fun)) {
 				$input.val(fun);
 				e.target.setCustomValidity(status);
@@ -291,14 +289,12 @@ function EntryX01(parentLeg, index) {
 				.keyup(function(e) {
 					if (e.which==13) { // Enter pressed
 						entry.onEditedValue($(this), player);
-						e.preventDefault();
-						return false;
+						return stopEvent(e);
 					}
 					return true;
 				}).blur(function(e) { // Focus Out
 					entry.onEditedValue($(this), player);
-					e.preventDefault();
-					return false;
+					return stopEvent(e);
 				});
 		}
 		// Push stats
