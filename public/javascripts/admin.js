@@ -47,7 +47,7 @@ var loadPlayer = function() {
 					.append('<i class="icon-white icon-trash"></i>')
 					.click(function() {
 						players.deletePlayer(player);
-						loadPlayer();				
+						loadPlayer();
 					})))
 			);
 	});

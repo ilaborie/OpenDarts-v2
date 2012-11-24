@@ -22,6 +22,18 @@ if (typeof String.prototype.startsWith != "function") {
 	};
 }
 
+// JQuery end event
+var stopEvent = function(event) {
+	if (event) {
+		if ($.isFunction(event.stopPropagation)) event.stopPropagation();
+		if ($.isFunction(event.stopImmediatePropagation)) event.stopImmediatePropagation();
+		if ($.isFunction(event.preventDefault)) event.preventDefault();
+	}
+	return false;
+}
+
+
+// JQuery post JSON
 $.postJSON = function(url, data, callback, onError) {
 	var fun = doOnError;
 	if (onError && $.isFunction(onError)) {
@@ -41,6 +53,7 @@ $.postJSON = function(url, data, callback, onError) {
     });
 };
 
+// JQuery delete JSON
 $.deleteJSON = function(url, data, callback, onError) {
 	var fun = doOnError;
 	if (onError && $.isFunction(onError)) {
@@ -436,6 +449,5 @@ var doCreatePlayer = function(event, callback) {
 		callback(player);
 	}
 
-	event.preventDefault();
-	return false;
+	return stopEvent(event);
 };

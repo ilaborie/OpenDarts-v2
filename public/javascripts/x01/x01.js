@@ -140,8 +140,7 @@ var showNewX01 = function(event) {
 		x01.currentGame.close(function() {
 			showNewX01(event);
 		});
-		event.preventDefault();
-		return false;
+		return stopEvent(event);
 	}
 
 	// Cleaning the space
@@ -200,8 +199,7 @@ var showNewX01 = function(event) {
 			$("#newX01Dialog .players tbody").append($row);
 			updatePlayersTableField();
 		});
-		event.preventDefault();
-		return false;
+		return stopEvent(event);
 	});
 	$("#btnX01CreatePlayer").unbind("click").click(function(event) {
 		createPlayer(function(player) {
@@ -210,8 +208,7 @@ var showNewX01 = function(event) {
 			$("#newX01Dialog .players tbody").append($row);
 			updatePlayersTableField();
 		});
-		event.preventDefault();
-		return false;
+		return stopEvent(event);
 	});
 
 	// Bind Click
@@ -221,8 +218,7 @@ var showNewX01 = function(event) {
 	$("#newX01Dialog").show();
 	$("#startScore").focus();
 
-	event.preventDefault();
-	return false;
+	return stopEvent(event);
 };
 
 // Set player in dialog
@@ -256,24 +252,21 @@ var updatePlayersTableField = function() {
 			var $row = $(this).parent().parent();
 			$row.remove();
 			updatePlayersTableField();
-			e.preventDefault();
-			return false;
+			return stopEvent(event);
 		});
 		// Bind up
 		$tr.find("a.up").click(function(e) {
 			var $row = $(this).parent().parent();
 			$row.prev().before($row);
 			updatePlayersTableField();
-			e.preventDefault();
-			return false;
+			return stopEvent(event);
 		});
 		// Bind down
 		$tr.find("a.down").click(function(e) {
 			var $row = $(this).parent().parent();
 			$row.next().after($row);
 			updatePlayersTableField();
-			e.preventDefault();
-			return false;
+			return stopEvent(event);
 		});
 	});
 };
@@ -305,8 +298,7 @@ var quickLaunch = function(event) {
 		game.start();
 	}
 	
-	event.preventDefault();
-	return false;
+	return stopEvent(event);
 };
 
 var checkQuickLaunch= function() {
@@ -352,8 +344,7 @@ var launchX01 = function(event) {
 					kind: "error",
 					message: msg.get("error.invalid.handicap", {handicap: hd})
 				});
-				event.preventDefault();
-				return false;
+				return stopEvent(event);
 			}
 		}
 	});
@@ -363,11 +354,8 @@ var launchX01 = function(event) {
 			kind: "error",
 			message: msg.get("error.invalid.nb.player")
 		});
-		event.preventDefault();
-		return false;
+		return stopEvent(event);
 	}
-
-
 
 	$("#newX01Dialog").hide();
 	newX01Options.stats = x01.options.stats;
@@ -382,8 +370,7 @@ var launchX01 = function(event) {
 	// Start
 	game.start();
 	
-	event.preventDefault();
-	return false;
+	return stopEvent(event);
 };
 
 // Validate Input
@@ -489,36 +476,35 @@ var getNbDart = function(score, func) {
 	$("#btnBroken").off("click").on("click",{
 		status: "broken"
 	}, callback);
-
+	
+	$defaultButton.focus();
+	
 	// Open Dialog
 	$("#nbDartDialog").off("shown").on("shown", function() {
-		$defaultButton.focus();
-
 		// Handle shortcuts
-		$("#nbDartDialog .btn").off("keypress").on("keypress",function(e) {
+		$("#nbDartDialog .btn").off("keydown").on("keydown",function(e) {
 			var key = e.which;
 			switch(key) {
-				case 48:
+				case 48: // 0s
 				case 96:
 					$("#btnBroken").click();
 					break;
-				case 49:
+				case 49: // 1s
 				case 97:
 					if (couldFinish(score,1)) $("#btnOneDart").click();
 					break;
-				case 50:
+				case 50: // 2s
 				case 98:
 					if (couldFinish(score,2)) $("#btnTwoDarts").click();
 					break;
-				case 51:
+				case 51: // 3s
 				case 99:
 					if (couldFinish(score,3)) $("#btnThreeDarts").click();
 					break;
 				default:
 					return true;
 			}
-			e.preventDefault();
-			return false;
+			return stopEvent(event);
 		});
 	}).modal("show");
 };
