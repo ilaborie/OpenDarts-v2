@@ -53,13 +53,13 @@ function LegX01(parentSet) {
 
 	// LegX01 next
 	this.next= function() {
-		if (!currentEntry.isFinished()) {
+		if (currentEntry && !currentEntry.isFinished()) {
 			// Continue entry
 			var leg = this;
 			currentEntry.next(function() {
 				leg.afterEntryNext();
 			});
-		} else {
+		} else if (currentEntry) {
 			// Create a new Entry
 			currentEntry.close();
 			currentEntry = new EntryX01(this,currentEntry.index+1);

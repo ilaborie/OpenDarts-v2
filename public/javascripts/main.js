@@ -36,7 +36,6 @@ $(function() {
   $("#switchLang a").click(function(e){
     var lang = $(this).attr("href");
     switchLang(lang);
-    e.preventDefault();
-    return false;
+    return stopEvent(e);
   });
 });
