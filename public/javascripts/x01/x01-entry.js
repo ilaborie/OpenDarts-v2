@@ -34,6 +34,7 @@ function EntryX01(parentLeg, index) {
 	this.nbDart = null;
 	var winner = null;
 	this.comKey = 0;
+	this.procesing = false;
 
 	for (var i=0; i<players.length; i++) {
 		var p = players[i];
@@ -134,7 +135,7 @@ function EntryX01(parentLeg, index) {
 		$("#computerThrowDialog .done").empty();
 		$("#computerThrowDialog .wished").empty();
 		$("#computerThrowDialog h3").html(msgTitle);
-		$("#computerThrowDialog").off("shown").on("shown", function() {
+		$("#computerThrowDialog").one("shown", function() {
 			// Call to server
 			$.postJSON("/x01/ComputerPlayer", {
 				comKey: entry.comKey,
@@ -142,6 +143,7 @@ function EntryX01(parentLeg, index) {
 				lvl: lastPlayer.comLevel,
 				type: lastPlayer.comTarget
 			}, function(json) {
+
 				if (entry.comKey===json.comKey) {
 					entry.nbDart = json.darts.length;
 					entry.showDart(entry, json, 0, callback);
@@ -182,7 +184,7 @@ function EntryX01(parentLeg, index) {
 				entry.showDart(entry, json, idx+1, callback);
 			},1000);
 		} else {
-			$("#computerThrowDialog").unbind("hidden").on("hidden",function() {
+			$("#computerThrowDialog").one("hidden", "hidden",function() {
 				entry.handleNewInput(json.status, json.score, callback);
 			}).modal("hide");
 		}
@@ -197,8 +199,10 @@ function EntryX01(parentLeg, index) {
 		$input.unbind("input").on("input",validatePlayerThrow);
 
 		// Enter
+		this.procesing = false;
 		$input.parent().unbind("submit").submit(function(event) {
-			if (this.checkValidity()) {
+			if (this.checkValidity() && !entry.procesing) {
+				entry.procesing = true; // prevent multi submit
 				entry.processInput(entry, callback);
 			}
 			return stopEvent(event);
@@ -213,7 +217,8 @@ function EntryX01(parentLeg, index) {
 			} else if (isInteger(fun)) {
 				$input.val(fun);
 				e.target.setCustomValidity(status);
-				$("#"+entry.getParent().getSubmitPlayer(player)).click();
+				setTimeout(function() {$("#"+entry.getParent().getSubmitPlayer(player)).click();}, 10);
+				return stopEvent(e);
 			}
 			return true;
 		});
@@ -236,6 +241,13 @@ function EntryX01(parentLeg, index) {
 		var entry = this;
 		var player = lastPlayer;
 		var status = analyseInputX01(this, value, left, function(status, nbDart) {
+			if (!status) {
+				// the user cancel the input
+				entry.procesing = false;
+				$input.focus();
+				return;
+			}
+
 			$input.unbind("blur").unbind("keyup");
 			if (nbDart) {
 				entry.nbDart = nbDart;
