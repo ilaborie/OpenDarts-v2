@@ -483,6 +483,7 @@ function GameX01(options) {
 		bootbox.confirm(msg.get("dia.game.close.title"), msg.get("btn.cancel"), msg.get("btn.quit"), function(result) {
 			if (result) {
 				x01.currentGame = null;
+				callback();
 			}
 		});
 	};

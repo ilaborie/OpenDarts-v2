@@ -2,6 +2,7 @@ import sbt._
 import Keys._
 import PlayProject._
 import cloudbees.Plugin._
+import com.github.play2war.plugin._
 
 object ApplicationBuild extends Build {
 
@@ -17,6 +18,8 @@ object ApplicationBuild extends Build {
     .settings(lessEntryPoints <<= baseDirectory(customLessEntryPoints))
     .settings(cloudBeesSettings :_*)
     .settings(CloudBees.applicationId := Some("ilaborie/opendarts2-2"))
+    .settings(Play2WarKeys.servletVersion := "3.0")
+    .settings(Play2WarPlugin.play2WarSettings: _*)
 
   // Only compile the bootstrap bootstrap.less file and any other *.less file in the stylesheets directory
   def customLessEntryPoints(base: File): PathFinder = (
