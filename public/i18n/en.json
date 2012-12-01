@@ -84,6 +84,7 @@
 	"dia.about.thanks.title": "Thanks",
 
 	"dia.x01.nbdart.title": "How many dart(s) ?",
+	"dia.x01.nbdart.message": "How many dart(s) played for $score ?",
 	"dia.x01.nbdart.1": "One Dart",
 	"dia.x01.nbdart.2": "Two Darts",
 	"dia.x01.nbdart.3": "Three Darts",

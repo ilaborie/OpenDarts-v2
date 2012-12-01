@@ -26,4 +26,5 @@ object ApplicationBuild extends Build {
     (base / "app" / "assets" / "stylesheets" / "bootstrap" / "bootstrap.less") +++
     (base / "app" / "assets" / "stylesheets" / "bootstrap" / "bootstrap-responsive.less") +++
     (base / "app" / "assets" / "stylesheets" * "*.less"))
+
 }

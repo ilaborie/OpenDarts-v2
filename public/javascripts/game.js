@@ -113,7 +113,7 @@ var openModalDialog = function(title, message, buttons) {
 	} else {
 		$buttonsBar.append(createButton(buttons));
 	}
-	$("#modalDialog").unbind("shown").on("shown",function(){
+	$("#modalDialog").one("shown",function(){
 		$("#modalDialog .modal-footer button:last-child").focus();
 	}).modal("show");
 };
@@ -405,10 +405,10 @@ var createPlayer = function(callback) {
 		$(".humanPlayer").show();
 	}
 	
-	$("#diaPlayerCreation .btn-success").unbind("click").click(function(event){
+	$("#diaPlayerCreation .btn-success").one("click", function(event){
 		doCreatePlayer(event, callback);
 	});
-	$("#diaPlayerCreation form").unbind("submit").submit(function(event){
+	$("#diaPlayerCreation form").one("submit", function(event){
 		doCreatePlayer(event, callback);
 	});
 	$("#diaPlayerCreation").modal("show");

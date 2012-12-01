@@ -5,7 +5,7 @@
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+		http://www.apache.org/licenses/LICENSE-2.0
 
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
@@ -454,75 +454,110 @@ var validatePlayerValue = function(value) {
 
 // get NbDarts to finish
 var getNbDart = function(score, func) {
-	//console.log("getNbDart for " + score);
-	var $defaultButton = null;
+	var buttons = [];
 
-	var callback = function(event) {
-		$("#nbDartDialog").modal("hide");
-		func(event.data.status, event.data.nbDart);
-	};
-
-	var btns = ["#btnThreeDarts", "#btnTwoDarts", "#btnOneDart"];
-	var $btn;
-	var tmp;
-	for (var i=0; i<btns.length; i++) {
-		$btn = $(btns[i]);
-		tmp = handleNbDartsButton($btn, score, 3-i, callback);
-		if (tmp) {
-			$defaultButton = tmp;
-		}
-	}
 	// Broken
-	$("#btnBroken").off("click").on("click",{
-		status: "broken"
-	}, callback);
-	
-	$defaultButton.focus();
-	
-	// Open Dialog
-	$("#nbDartDialog").off("shown").on("shown", function() {
-		// Handle shortcuts
-		$("#nbDartDialog .btn").off("keydown").on("keydown",function(e) {
-			var key = e.which;
-			switch(key) {
-				case 48: // 0s
-				case 96:
-					$("#btnBroken").click();
-					break;
-				case 49: // 1s
-				case 97:
-					if (couldFinish(score,1)) $("#btnOneDart").click();
-					break;
-				case 50: // 2s
-				case 98:
-					if (couldFinish(score,2)) $("#btnTwoDarts").click();
-					break;
-				case 51: // 3s
-				case 99:
-					if (couldFinish(score,3)) $("#btnThreeDarts").click();
-					break;
-				default:
-					return true;
-			}
-			return stopEvent(event);
+	$(document).bind("keypress.0", function() {
+		$(document).unbind("keypress.0");
+		$(document).unbind("keypress.1");
+		$(document).unbind("keypress.2");
+		$(document).unbind("keypress.3");
+		bootbox.hideAll();
+		setTimeout(function() {func("broken");}, 100);
+	});
+	buttons.push({
+		label : msg.get("dia.x01.nbdart.broken"),
+		"class" : "btn-danger btn-broken",
+		callback: function() {
+			$(document).unbind("keypress.0");
+			$(document).unbind("keypress.1");
+			$(document).unbind("keypress.2");
+			$(document).unbind("keypress.3");
+			setTimeout(function() {func("broken");}, 100);
+		}
+	});
+
+	// do in 3 darts
+	$(document).bind("keypress.3", function() {
+		$(document).unbind("keypress.0");
+		$(document).unbind("keypress.1");
+		$(document).unbind("keypress.2");
+		$(document).unbind("keypress.3");
+		bootbox.hideAll();
+		setTimeout(function() {func("win",3);}, 100);
+	});
+	buttons.push({
+		label : msg.get("dia.x01.nbdart.3"),
+		"class" : "btn-success btn-three",
+		callback: function() {
+			$(document).unbind("keypress.0");
+			$(document).unbind("keypress.1");
+			$(document).unbind("keypress.2");
+			$(document).unbind("keypress.3");
+			setTimeout(function() {func("win", 3);}, 100);
+		}
+	});
+	// do in 2 darts
+	if (couldFinish(score,2)) {
+		$(document).bind("keypress.2", function() {
+			$(document).unbind("keypress.0");
+			$(document).unbind("keypress.1");
+			$(document).unbind("keypress.2");
+			$(document).unbind("keypress.3");
+			bootbox.hideAll();
+			setTimeout(function() {func("win",2);}, 100);
 		});
-	}).modal("show");
-};
-
-var handleNbDartsButton = function($btn, score, nb, callback) {
-	$btn.off("click");
-
-	if (couldFinish(score,nb)) {
-		$btn.removeAttr("disabled");
-		$btn.on("click", {
-			status: "win",
-			nbDart: nb
-		}, callback);
-		return $btn;
-	} else {
-		$btn.attr("disabled", "disabled");
-		return null;
+		buttons.push({
+			label : msg.get("dia.x01.nbdart.2"),
+			"class" : "btn-success btn-two",
+			callback: function() {
+			$(document).unbind("keypress.0");
+			$(document).unbind("keypress.1");
+			$(document).unbind("keypress.2");
+			$(document).unbind("keypress.3");
+				setTimeout(function() {func("win", 2);}, 100);
+			}
+		});
 	}
+	// do in 1 darts
+	if (couldFinish(score,1)) {
+		$(document).bind("keypress.1", function() {
+			$(document).unbind("keypress.0");
+			$(document).unbind("keypress.1");
+			$(document).unbind("keypress.2");
+			$(document).unbind("keypress.3");
+			bootbox.hideAll();
+			setTimeout(function() {func("win",1);}, 100);
+		});
+		buttons.push({
+			label : msg.get("dia.x01.nbdart.1"),
+			"class" : "btn-success btn-two",
+			callback: function() {
+			$(document).unbind("keypress.0");
+			$(document).unbind("keypress.1");
+			$(document).unbind("keypress.2");
+			$(document).unbind("keypress.3");
+				setTimeout(function() {func("win", 1);}, 100);
+			}
+		});
+	}
+	// Cancel
+	buttons.push({
+		label : msg.get("btn.cancel"),
+		callback: function() {
+		$(document).unbind("keypress.0");
+		$(document).unbind("keypress.1");
+		$(document).unbind("keypress.2");
+		$(document).unbind("keypress.3");
+			setTimeout(function() {func();}, 100);
+		}
+	});
+
+	var dia = bootbox.dialog(msg.get("dia.x01.nbdart.message",{"score":score}), buttons, {
+		animate: false,
+		header: msg.get("dia.x01.nbdart.title"),
+		headerCloseButton: ""
+	});
 };
 
 // Could finish
@@ -541,5 +576,5 @@ var couldFinish = function (score, nbDart) {
 };
 
 var isSpecial = function(left) {
-	return (left%111===0);
+	return (left!==0) && (left%111===0);
 }

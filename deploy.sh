@@ -3,6 +3,7 @@
 DIST_PATH=dist/opendarts-2.0-SNAPSHOT.zip
 
 # Build application
+echo "Build Application"
 rm $DIST_PATH
 play dist
 
@@ -12,6 +13,7 @@ echo "Push to Github"
 git push origin master
 git push origin develop
 
+# Deploy on Heroku
 # https://dashboard.heroku.com/apps/opendarts
 echo "Push & Deploy to Heroku"
 git push heroku master
@@ -43,4 +45,3 @@ echo "Heroku: http://opendarts.herokuapp.com/"
 echo "CouldFoundry: http://opendarts.cloudfoundry.com/"
 echo "CloudBees: http://opendarts2-2.ilaborie.cloudbees.net/"
 echo "Jelastic: should deploy manualy at https://app.jelastic.dogado.eu/"
-

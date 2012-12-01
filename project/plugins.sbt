@@ -11,6 +11,8 @@ resolvers += "Play2war plugins release" at "http://repository-play-war.forge.clo
 resolvers += "Sonatype OSS Snasphots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
 // Use the Play sbt plugin for Play projects
+
+// addSbtPlugin("play" % "sbt-plugin" % "2.0.3")
 addSbtPlugin("play" % "sbt-plugin" % "2.0.4")
 
 // Use the Cloudbees plugin
