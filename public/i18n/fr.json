@@ -84,6 +84,7 @@
 	"dia.about.thanks.title": "Remerciments",
 
 	"dia.x01.nbdart.title": "Combien de fléchette(s) ?",
+	"dia.x01.nbdart.message": "Combien de fléchette(s) joué(s) pour $score ?",
 	"dia.x01.nbdart.1": "Une",
 	"dia.x01.nbdart.2": "Deux",
 	"dia.x01.nbdart.3": "Trois",
