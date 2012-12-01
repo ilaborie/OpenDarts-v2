@@ -180,13 +180,10 @@ function EntryX01(parentLeg, index) {
 			var $badgeDone = $("<div/>").addClass("span4").addClass(dart.color).append(dart.done);
 			$("#computerThrowDialog .done").append($badgeDone);
 
-			setTimeout(function() {
-				entry.showDart(entry, json, idx+1, callback);
-			},1000);
+			setTimeout(function() { entry.showDart(entry, json, idx+1, callback);},1000);
 		} else {
-			$("#computerThrowDialog").one("hidden", "hidden",function() {
-				entry.handleNewInput(json.status, json.score, callback);
-			}).modal("hide");
+			setTimeout(function() {entry.handleNewInput(json.status, json.score, callback);}, 100);
+			$("#computerThrowDialog").modal("hide");
 		}
 	};
 
