@@ -11,3 +11,4 @@ tmp/
 .settings/
 .target/
 .cache
+.worksheet/

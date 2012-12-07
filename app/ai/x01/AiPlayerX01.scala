@@ -1,3 +1,18 @@
+/*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 package ai.x01
 
 import dart._
@@ -5,15 +20,15 @@ import dart.Dart._
 import scala.collection.Set
 import scala.util.Random
 
-class AiPlayerX01 {
+object AiPlayerX01 {
 
 	/**
-	 * @param score
-	 * @param dartLeft
-	 * @param request
-	 * @return
+	 * Throw three darts
+	 * @param score the initial score 
+	 * @param request the request
+	 * @return the result
 	 */
-	def playTurn(score: Int, dartLeft: Int, request: PlayerRequest): (Status, List[Dart]) = playTurnAux(score, dartLeft, request, Normal, Nil)
+	def playTurn(score: Int, request: PlayerRequest): (Status, List[Dart]) = playTurnAux(score, 3, request, Normal, Nil)
 
 	private def playTurnAux(score: Int, dartLeft: Int, request: PlayerRequest, currentStatus: Status, playedDarts: List[Dart]): (Status, List[Dart]) = {
 		currentStatus match {

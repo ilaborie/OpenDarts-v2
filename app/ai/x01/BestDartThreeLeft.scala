@@ -1,3 +1,18 @@
+/*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 package ai.x01
 
 import scala.collection.Set
@@ -9,11 +24,28 @@ import dart.SemiBull
 object BestDartThreeLeft extends BestDart {
 
 	private val bestDarts3: Map[Int, DartChoice] = Map(
+
+		// 21x
+		217 -> AlwaysDart(T18),
+		214 -> AlwaysDart(T18),
+
+		// 19x
+		195 -> AlwaysDart(T19),
+
+		// 18x
+		189 -> AlwaysDart(T19),
+		188 -> AlwaysDart(T18),
+		186 -> AlwaysDart(T19),
+		185 -> AlwaysDart(DoubleBull),
+		183 -> AlwaysDart(T19),
+		182 -> AlwaysDart(T18),
+
 		// 17x
 		170 -> AlwaysDart(T20),
 
 		// 16x
 		167 -> OrDart(T20, T19),
+		168 -> PreferedDartBut(T16, T20, T19),
 		164 -> OrDart(T20, T19),
 		161 -> AlwaysDart(T20),
 		160 -> AlwaysDart(T20),

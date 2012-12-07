@@ -141,7 +141,9 @@ function EntryX01(parentLeg, index) {
 				comKey: entry.comKey,
 				left: score,
 				lvl: lastPlayer.comLevel,
-				type: lastPlayer.comTarget
+				type: lastPlayer.comTarget,
+				onPressure: false,
+				noPressure: false
 			}, function(json) {
 
 				if (entry.comKey===json.comKey) {

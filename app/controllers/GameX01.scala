@@ -13,15 +13,24 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-package models.x01;
+package controllers
 
-/** The Enum Status. */
-public enum Status {
+import play.api.mvc._
+import play.api.libs.json._
+import ai.x01._
+import ai.x01.ComputerThrowRequest._
 
-	/** The normal. */
-	normal,
-	/** The broken. */
-	broken,
-	/** The win. */
-	win;
+object GameX01 extends Controller {
+
+	def computerPlayerThrow = Action(parse.json) { request =>
+		/*
+		val requestJson: JsValue = request.body
+		val computerRequest = requestJson.as[ComputerThrowRequest]
+
+		val computerResult = AiPlayerX01.processComputerRequest(computerRequest)
+
+		Ok(Json.toJson(computerResult))
+		*/
+		Ok("")
+	}
 }

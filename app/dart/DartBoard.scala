@@ -1,3 +1,18 @@
+/*
+   Copyright 2012 Igor Laborie
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
 package dart
 
 import scala.math._
@@ -31,20 +46,23 @@ object DartBoard {
 	private val bigZone = tripleZone + 53
 	private val doubleZone = bigZone + 10
 
-	private val sectorAngle: Map[Sector, Int] = {
-		{
-			// Sector from angle 0 with reverse clockwise
-			val sectors = List(6, 13, 4, 18, 1, 20, 5, 12, 9, 14, 11, 8, 16, 7, 19, 3, 17, 2, 15, 10)
-			for (i <- 0 until sectors.size) yield Sector(sectors(i)) -> (i * 18)
-		} toMap
+	private val angles = {
+		// Sector from angle 0 with reverse clockwise
+		val sectors = List(6, 13, 4, 18, 1, 20, 5, 12, 9, 14, 11, 8, 16, 7, 19, 3, 17, 2, 15, 10)
+		for (i <- 0 until sectors.size) yield (Sector(sectors(i)), (i * 18))
 	}
+	val sectorAngleList: List[(Sector, Int)] = angles toList
+	val sectorAngleMap: Map[Sector, Int] = angles toMap
 
 	/**
 	 * Get the dart position in the dart board
 	 * @param dart the dart
 	 * @return the central position
 	 */
-	def getDartPosition(dart: Dart): Position = (getDartX(dart), getDartY(dart))
+	def getDartPosition(dart: Dart): Position = {
+		val position = (getDartX(dart), getDartY(dart))
+		position
+	}
 
 	/**
 	 * Return the x position of a dart
@@ -92,13 +110,15 @@ object DartBoard {
 	def getDart(position: Position): Dart = {
 		val distance = getDistance(position)
 
-		if (distance > doubleZone) NoDart
+		val dart = if (distance > doubleZone) NoDart
 		else if (distance > bigZone) NormalDart(getSector(position), Double)
 		else if (distance > tripleZone) NormalDart(getSector(position), Single)
 		else if (distance > smallSimpleZone) NormalDart(getSector(position), Triple)
 		else if (distance > simpleBullZone) NormalDart(getSector(position), Single)
 		else if (distance > doubleBullZone) SemiBull
 		else DoubleBull
+
+		dart
 	}
 	/**
 	 * Get the dart from position
@@ -113,11 +133,14 @@ object DartBoard {
 	 * @param position the position
 	 * @return the sector
 	 */
-	private def getSector(position: Position): Sector = {
+	def getSector(position: Position): Sector = {
 		val angle = getAngle(position) - 9 // offset half a sector angle (e.g. 6 in [-9, 9])
-		val sec: Option[(Sector, Int)] = sectorAngle.find(sa => (angle > sa._2))
-		// Take the sector of fail
-		sec.getOrElse(throw new Error("WTF: the angle "+angle+"seems invalid"))._1
+		val sec: Option[(Sector, Int)] = sectorAngleList.find(sa => (angle < sa._2))
+		// Take the sector 
+		sec match {
+			case Some((sec, _)) => sec
+			case _ => Sector(6)
+		}
 	}
 
 	/**
@@ -161,7 +184,7 @@ object DartBoard {
 	 * @return the angle (always >= 0)
 	 */
 	private def getAngle(sector: Sector): Double = {
-		sectorAngle(sector)
+		sectorAngleMap(sector)
 	} ensuring (_ >= 0)
 
 }

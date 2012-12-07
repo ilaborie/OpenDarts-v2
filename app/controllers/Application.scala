@@ -13,25 +13,29 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import org.junit.Test;
-import play.mvc.Result;
+package controllers
 
-import static play.test.Helpers.*;
-import static org.fest.assertions.Assertions.*;
+import play.api.mvc.{Action, Controller}
 
-public class RoutesTest {
+object Application extends Controller {
+  
+  def index = Action {
+    Ok(views.html.index("OpenDarts v2"))
+  }
 
-    @Test
-    public void testNotices() {
-        Result result = routeAndCall(fakeRequest(GET, "/notices"));
-        assertThat(result).isNotNull();
-    }
-    
-    @Test
-    public void testDialog() {
-        Result result = routeAndCall(fakeRequest(GET, "/dialog"));
-        assertThat(result).isNotNull();
-    }
+  def admin = Action {
+    Ok(views.html.admin("Admin"))
+  }
 
+  def charts = Action {
+    Ok(views.html.charts("Charts"))
+  }
+
+  def faq = Action {
+    Ok(views.html.faq())
+  }
+  def doc = Action {
+    Ok(views.html.doc())
+  }
 
 }
