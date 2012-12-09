@@ -141,9 +141,8 @@ function EntryX01(parentLeg, index) {
 				comKey: entry.comKey,
 				left: score,
 				lvl: lastPlayer.comLevel,
-				type: lastPlayer.comTarget,
-				onPressure: false,
-				noPressure: false
+				type: lastPlayer.comTarget
+				// FIXME send modifiers (pressure)
 			}, function(json) {
 
 				if (entry.comKey===json.comKey) {

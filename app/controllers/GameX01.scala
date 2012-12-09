@@ -23,14 +23,11 @@ import ai.x01.ComputerThrowRequest._
 object GameX01 extends Controller {
 
 	def computerPlayerThrow = Action(parse.json) { request =>
-		/*
 		val requestJson: JsValue = request.body
-		val computerRequest = requestJson.as[ComputerThrowRequest]
+		val computerRequest = Json.fromJson(requestJson)(ComputerThrowRequestsFormat)
 
 		val computerResult = AiPlayerX01.processComputerRequest(computerRequest)
 
-		Ok(Json.toJson(computerResult))
-		*/
-		Ok("")
+		Ok(Json.toJson(computerResult)(ComputerThrowResultWrites))
 	}
 }

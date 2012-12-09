@@ -22,8 +22,18 @@ sealed abstract class Dart {
 	def color: DartColor
 	def sector: DartSector
 	def zone: DartZone
-	def score: Int = {
-		sector.value * zone.coef
+	def score: Int = sector.value * zone.coef
+
+	override def toString = this match {
+		case UnluckyDart => ":("
+		case NoDart => "ø"
+		case SemiBull => "25"
+		case DoubleBull => "50"
+		case NormalDart(sector, zone) => zone match {
+			case Triple => "T"+sector.value
+			case Double => "D"+sector.value
+			case _ => String.valueOf(sector.value)
+		}
 	}
 }
 case object UnluckyDart extends Dart {

@@ -20,15 +20,27 @@ class PlayerRequestTest extends Specification {
 			(json \ "comKey").as[Int] === 3
 		}
 
-		"be read from JSON" in {
+		"be read from JsValue" in {
 			val json: JsValue = JsObject(Seq(
 				"comKey" -> JsNumber(3),
-				"score" -> JsNumber(501),
-				"level" -> JsNumber(6),
-				"default" -> JsString("T20")))
+				"left" -> JsNumber(501),
+				"lvl" -> JsNumber(6),
+				"type" -> JsString("T20")))
 			val request = Json.fromJson(json)(ComputerThrowRequestsFormat)
 
-			request.comKey  === 3
+			request.comKey === 3
+		}
+
+		"be read from JSON" in {
+			val json = """ {
+					"comKey": 69,
+					"left": 301,
+					"lvl": 7,
+					"type": "T20"
+				} """
+			val value = Json.parse(json)
+			val request = Json.fromJson(value)(ComputerThrowRequestsFormat)
+			request.comKey === 69
 		}
 	}
 

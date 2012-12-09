@@ -30,7 +30,7 @@ object PlayX01 {
 			case Win => ResultX01(nbPlayed + darts.size, scoreLeft)
 			case Broken => playAux(scoreLeft, lvl, nbPlayed + 3)
 			case Normal => {
-				val left = darts.foldLeft(scoreLeft)((x: Int, d: Dart) => x - d.score)
+				val left = darts.foldLeft(scoreLeft)((x: Int, d: (Dart, Dart)) => x - d._2.score)
 				playAux(left, lvl, nbPlayed + 3)
 			}
 		}

@@ -20,19 +20,21 @@ import play.api.libs.json._
 import dart.Level
 import dart.Dart
 
-case class ComputerThrowRequest(comKey: Int, score: Int, level: Int, default: String)
+case class ComputerThrowRequest(comKey: Int, score: Int, level: Int, default: String) {
 
+}
 object ComputerThrowRequestsFormat extends Format[ComputerThrowRequest] {
 	def reads(json: JsValue): ComputerThrowRequest = ComputerThrowRequest(
 		(json \ "comKey").as[Int],
-		(json \ "score").as[Int],
-		(json \ "level").as[Int],
-		(json \ "default").as[String])
+		(json \ "left").as[Int],
+		(json \ "lvl").as[Int],
+		(json \ "type").as[String])
+		
 	def writes(request: ComputerThrowRequest) = JsObject(Seq(
 		"comKey" -> JsNumber(request.comKey),
-		"score" -> JsNumber(request.score),
-		"level" -> JsNumber(request.level),
-		"default" -> JsString(request.default)))
+		"left" -> JsNumber(request.score),
+		"lvl" -> JsNumber(request.level),
+		"type" -> JsString(request.default)))
 }
 
 case class PlayerRequest(level: Level, defaultDart: Dart, modifiers: Set[Modifier])

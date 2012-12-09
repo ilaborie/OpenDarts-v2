@@ -288,7 +288,7 @@ function Player(name, surname) {
 
 	this.com = false;
 	this.comLevel = 0;
-	this.comTarget = 20;
+	this.comTarget = "T20";
 
 	// Name
 	this.getName = function() {
