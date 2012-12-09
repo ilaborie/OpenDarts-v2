@@ -67,7 +67,7 @@ class DartChoiceTest extends Specification {
 		"have a good repartition with Two elements" in {
 			val dart1: Dart = T20
 			val dart2: Dart = T19
-			val choice = OrDart(dart1, dart2)
+			val choice = (dart1 or dart2)
 			val modifiers: Set[Modifier] = Set()
 
 			val size = 10000
@@ -86,7 +86,7 @@ class DartChoiceTest extends Specification {
 			val dart1: Dart = T20
 			val dart2: Dart = T19
 			val dart3: Dart = T18
-			val choice = OrDart(dart1, dart2, dart3)
+			val choice = (dart1 or dart2 or dart3)
 			val modifiers: Set[Modifier] = Set()
 
 			val size = 10000
@@ -104,31 +104,66 @@ class DartChoiceTest extends Specification {
 			// Test ≤ 5%
 			max(ratio12, max(ratio13, ratio23)) must be_<=(5.0)
 		}
+
+		"Can apply LikeDart modifier" in {
+			val dart1: Dart = T20
+			val dart2: Dart = T19
+			val choice = OrDart(dart1, dart2)
+			val modifiers: Set[Modifier] = Set(LikeDart(T20))
+
+			val dartWeight = choice.getDartWeight(T20, modifiers)
+			// Test 
+			dartWeight._2 === 2
+		}
+
+		"Take care of LikeDart modifier" in {
+			val dart1: Dart = T20
+			val dart2: Dart = T19
+			val choice = (dart1 or dart2)
+			val modifiers: Set[Modifier] = Set(LikeDart(T20))
+
+			val size = 10000
+			// Make choices
+			val darts = PlayX01.playChoiceStream(choice, modifiers) take size
+
+			val nbDart1 = darts.count(_ == dart1)
+			val nbDart2 = darts.count(_ == dart2)
+
+			val ratio = (nbDart1 - nbDart2).toDouble * 100 / size
+
+			// Test ≤ 5%
+			ratio must be_>=(20.0)
+		}
+
+		"Take care of Aggressif modifier" in {
+			val dart1: Dart = D20
+			val dart2: Dart = T19
+			val choice = (dart1 or dart2)
+			val modifiers: Set[Modifier] = Set(Aggressive)
+
+			val size = 10000
+			// Make choices
+			val darts = PlayX01.playChoiceStream(choice, modifiers) take size
+
+			val nbDart1 = darts.count(_ == dart1)
+			val nbDart2 = darts.count(_ == dart2)
+
+			val ratio = (nbDart1 - nbDart2).toDouble * 100 / size
+
+			// Test ≤ 5%
+			ratio must be_>=(20.0)
+		}
 	}
 
 	/**
 	 * PreferedDartBut
 	 */
 	"PreferedDartBut" should {
-		"comport like AlwaysDart with One element" in {
-			val dart: Dart = T20
-			val choice = PreferedDartBut(dart)
-			val modifiers: Set[Modifier] = Set()
-
-			val size = 10000
-			// Make choices
-			val darts = PlayX01.playChoiceStream(choice, modifiers) take size
-
-			val nbDart = darts.count(_ == dart)
-
-			// Test
-			nbDart === size
-		}
 
 		"can be groovy with Two element" in {
 			val dart1: Dart = T20
 			val dart2: Dart = T19
-			val choice = PreferedDartBut(dart1, dart2)
+			val choice = dart1 butSometime dart2
 			val modifiers: Set[Modifier] = Set()
 
 			val size = 1000
@@ -147,7 +182,7 @@ class DartChoiceTest extends Specification {
 		"prefer the dart with Two element" in {
 			val dart1: Dart = T20
 			val dart2: Dart = T19
-			val choice = PreferedDartBut(dart1, dart2)
+			val choice = dart1 butSometime dart2
 			val modifiers: Set[Modifier] = Set()
 
 			val size = 1000
@@ -167,7 +202,7 @@ class DartChoiceTest extends Specification {
 			val dart1: Dart = T20
 			val dart2: Dart = T19
 			val dart3: Dart = T18
-			val choice = PreferedDartBut(dart1, dart2, dart3)
+			val choice = dart1 butSometime (dart2 or dart3)
 			val modifiers: Set[Modifier] = Set()
 
 			val size = 1000
@@ -188,7 +223,7 @@ class DartChoiceTest extends Specification {
 			val dart1: Dart = T20
 			val dart2: Dart = T19
 			val dart3: Dart = T18
-			val choice = PreferedDartBut(dart1, dart2, dart3)
+			val choice = dart1 butSometime (dart2 or dart3)
 			val modifiers: Set[Modifier] = Set()
 
 			val size = 1000

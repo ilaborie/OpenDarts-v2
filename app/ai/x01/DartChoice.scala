@@ -29,35 +29,20 @@ sealed abstract class DartChoice {
 	 */
 	def chooseDart(modifiers: Set[Modifier]): Dart
 
-	/**
-	 * Choose a dart into a weighted list
-	 * @param wDarts the  weighted list
-	 * @return the chosen dart
-	 */
-	protected def choose(wDarts: Seq[(Dart, Int)]): Dart = {
-		val allDarts = for {
-			(dart, weight) <- wDarts
-			i <- 0 to weight
-		} yield dart
-
-		val index = Random.nextInt(allDarts size)
-		allDarts(index)
-	}
-
-	/**
-	 * Create a weighted dart
-	 * @param dart the dart
-	 * @param modifiers the modifiers
-	 * @param weight the weight if the modifier is OK
-	 * @return the weighted dart
-	 */
-	protected def createWeight(dart: Dart, modifiers: Set[Modifier], weight: Int): (Dart, Int) = {
-		if (modifiers contains LikeDart(dart)) (dart, weight)
-		else (dart, 1) // Default weight
-	}
+	// Helpers
+	def or(choice: DartChoice): DartChoice = OrChoice(this, choice)
+	def butSometime(choice: DartChoice): DartChoice = PreferedDartBut(this, choice)
+	def withPressureOtherwise(choice: DartChoice): DartChoice = OnPressureDart(this, choice)
+	def withoutPressureOtherwise(choice: DartChoice): DartChoice = NoPressureAtAllDart(this, choice)
+	def toBreakOtherwise(choice: DartChoice): DartChoice = PlayBroken(this, choice)
 }
-object DartChoice {
-	implicit def Dart2DartChoice(dart: Dart) = AlwaysDart(dart)
+
+case class OrChoice(dartChoices: DartChoice*) extends DartChoice {
+	def chooseDart(modifiers: Set[Modifier]): Dart = {
+		val choice = dartChoices(Random.nextInt(dartChoices size))
+		choice chooseDart modifiers
+	}
+	override def or(choice: DartChoice): DartChoice = OrChoice((choice :: dartChoices.toList): _*)
 }
 
 /** No choice, use the only darts */
@@ -67,45 +52,56 @@ case class AlwaysDart(dart: Dart) extends DartChoice {
 
 /** Basic choice */
 case class OrDart(darts: Dart*) extends DartChoice {
-	def chooseDart(modifiers: Set[Modifier]): Dart = {
-		val size = darts.size
-		val wDarts = darts map ((dart: Dart) => createWeight(dart, modifiers, size))
-		choose(wDarts)
-	}
-}
+	val size = darts.size
 
-/** There is a prefered choice, but modifier can change the deal */
-case class PreferedDartBut(preferedDart: Dart, otherDarts: Dart*) extends DartChoice {
-	private val groovyFactor = 15
-
-	def chooseDart(modifiers: Set[Modifier]): Dart = {
-		if (otherDarts isEmpty) preferedDart
-		else {
-			val size = otherDarts.size
-			val wOtherDarts = otherDarts map ((dart: Dart) => createWeight(dart, modifiers, size))
-			choose((preferedDart, size * groovyFactor) :: wOtherDarts.toList)
+	override def or(choice: DartChoice): DartChoice = {
+		choice match {
+			case OrDart(others @ _*) => OrDart((darts.toList ++ others): _*)
+			case AlwaysDart(dart) => OrDart((dart :: darts.toList): _*)
+			case _ => OrChoice(this, choice)
 		}
 	}
+
+	def chooseDart(modifiers: Set[Modifier]): Dart = {
+		val allDarts = for {
+			(dart, weight) <- getDartsWeight(modifiers)
+			i <- 0 to weight
+		} yield dart
+
+		allDarts(Random.nextInt(allDarts size))
+	}
+
+	def getDartsWeight(modifiers: Set[Modifier]): Seq[(Dart, Int)] = darts map (getDartWeight(_, modifiers))
+
+	def getDartWeight(dart: Dart, modifiers: Set[Modifier]): (Dart, Int) = {
+		// Handle LikeDart and Aggressive
+		val base = if (modifiers contains LikeDart(dart)) size else 1
+		val w = if ((modifiers contains Aggressive) && dart.zone == Double) base + size else base
+		(dart, w)
+	}
 }
 
 /** There is a prefered choice, but modifier can change the deal */
-case class OnPressureDart(onPressureChoice: DartChoice, otherChoice: DartChoice) extends DartChoice {
+case class PreferedDartBut(preferedChoice: DartChoice, otherChoice: DartChoice) extends DartChoice {
+	private val groovyFactor = 15
+
+	override def chooseDart(modifiers: Set[Modifier]): Dart = {
+		if (Random.nextInt(groovyFactor) == 0) otherChoice chooseDart modifiers
+		else preferedChoice chooseDart modifiers
+	}
+}
+/** If a modifier is present or another choice */
+abstract class OnModifierDartsChoice(modifier: Modifier, onModifierChoice: DartChoice, elseChoice: DartChoice) extends DartChoice {
 	def chooseDart(modifiers: Set[Modifier]): Dart = {
-		val choice = if (modifiers contains OnPressure) onPressureChoice else otherChoice
+		val choice = if (modifiers contains modifier) onModifierChoice else elseChoice
 		choice chooseDart modifiers
 	}
 }
+/** There is a prefered choice, but modifier can change the deal */
+case class OnPressureDart(onPressureChoice: DartChoice, otherChoice: DartChoice) extends OnModifierDartsChoice(OnPressure, onPressureChoice, otherChoice)
 
 /** There is a prefered choice, but modifier can change the deal */
-case class NoPressureAtAllDart(noPressureChoice: DartChoice, otherChoice: DartChoice) extends DartChoice {
-	def chooseDart(modifiers: Set[Modifier]): Dart = {
-		val choice = if (modifiers contains NoPressureAtAll) noPressureChoice else otherChoice
-		choice chooseDart modifiers
-	}
-}
-case class PlayBroken(breakChoice: DartChoice, otherChoice: DartChoice) extends DartChoice {
-	def chooseDart(modifiers: Set[Modifier]): Dart = {
-		val choice = if (modifiers contains GoodDouble) breakChoice else otherChoice
-		choice chooseDart modifiers
-	}
-}
+case class NoPressureAtAllDart(noPressureChoice: DartChoice, otherChoice: DartChoice) extends OnModifierDartsChoice(NoPressureAtAll, noPressureChoice, otherChoice)
+
+/** Maybe choose to break */
+case class PlayBroken(breakChoice: DartChoice, otherChoice: DartChoice) extends OnModifierDartsChoice(GoodDouble, breakChoice, otherChoice)

@@ -139,6 +139,6 @@ case object Win extends Status
 sealed abstract class Modifier
 case object OnPressure extends Modifier // opponent might finish
 case object NoPressureAtAll extends Modifier // try the best double
-case object GoodDouble extends Modifier // good double (40,32,16,24,20,8)
-case object Agressive extends Modifier // play double
-case class LikeDart(dart:Dart) extends Modifier // player like T20, T19, Bull
+case object GoodDouble extends Modifier // good double (32,40,16,24,36,20,8)
+case object Aggressive extends Modifier // play double
+case class LikeDart(dart:Dart) extends Modifier // player like T20, T19, Bull, ...

@@ -15,6 +15,8 @@
 */
 package dart
 
+import ai.x01._
+
 /**
  * Dart model
  */
@@ -35,6 +37,13 @@ sealed abstract class Dart {
 			case _ => String.valueOf(sector.value)
 		}
 	}
+	// Choosing helper
+	def or(that: Dart): DartChoice = OrDart(this, that)
+	def or(choice: DartChoice): DartChoice = AlwaysDart(this) or choice
+	def butSometime(choice: DartChoice): DartChoice = PreferedDartBut(AlwaysDart(this), choice)
+	def withPressureOtherwise(choice: DartChoice): DartChoice = OnPressureDart(AlwaysDart(this), choice)
+	def withoutPressureOtherwise(choice: DartChoice): DartChoice = NoPressureAtAllDart(AlwaysDart(this), choice)
+	def toBreakOtherwise(choice: DartChoice): DartChoice = PlayBroken(AlwaysDart(this), choice)
 }
 case object UnluckyDart extends Dart {
 	val color = NoColor
@@ -67,10 +76,11 @@ case class NormalDart(val sector: Sector, val zone: DartZone) extends Dart {
 			case _ => if (baseColor == White) Green else Red
 		}
 	}
+
 }
 
 object Dart {
-
+	/** Build from String */
 	def apply(s: String): Dart = {
 		if (s.isEmpty()) throw new IllegalArgumentException("Invalid Dart format: "+s)
 		try {
@@ -92,6 +102,9 @@ object Dart {
 			case _ => throw new IllegalArgumentException("Invalid Dart format: "+s)
 		}
 	}
+
+	/** Implicit conversion Dart -> DartChoice */
+	implicit def Dart2DartChoice(dart: Dart) = AlwaysDart(dart)
 
 	// Triple
 	val T20 = NormalDart(Sector(20), Triple)
