@@ -22,7 +22,7 @@ import dart.DoubleBull
 import dart.SemiBull
 
 object BestDartOneLeft extends BestDart {
-
+	// FIXME NoPressureAtAllDart, PlayBroken
 	val bestDarts1: Map[Int, DartChoice] = Map(
 
 		// 12x
@@ -32,8 +32,8 @@ object BestDartOneLeft extends BestDart {
 
 		// 11x
 		116 -> PreferedDartBut(T20, T19),
-		115 -> AlwaysDart(T20),
-		114 -> AlwaysDart(T20),
+		115 -> T20,
+		114 -> T20,
 		110 -> OrDart(T20, T19),
 
 		// 10x
@@ -43,14 +43,14 @@ object BestDartOneLeft extends BestDart {
 
 		// 9x
 		95 -> OrDart(DoubleBull, T19),
-		94 -> AlwaysDart(T18),
-		93 -> AlwaysDart(T19),
-		92 -> AlwaysDart(T20),
-		91 -> AlwaysDart(T17),
+		94 -> T18,
+		93 -> T19,
+		92 -> T20,
+		91 -> T17,
 		90 -> OrDart(DoubleBull, T20, T18),
 
 		// 8x
-		81 -> AlwaysDart(T19),
+		81 -> T19,
 		80 -> PreferedDartBut(T20, T16),
 
 		// 7x
@@ -61,7 +61,7 @@ object BestDartOneLeft extends BestDart {
 		69 -> OrDart(T19, T11),
 		68 -> PreferedDartBut(T20, T16, T18),
 		67 -> PreferedDartBut(T17, T9),
-		64 -> AlwaysDart(T16),
+		64 -> T16,
 		62 -> PreferedDartBut(T10, T12),
 		61 -> PreferedDartBut(SemiBull, T7),
 
@@ -80,7 +80,7 @@ object BestDartOneLeft extends BestDart {
 		// 1x
 
 		// 0x
-		6 -> AlwaysDart(D3))
+		6 -> D3)
 
 	override def getBestDart(score: Int, defaultDart: Dart): DartChoice = bestDarts1.getOrElse(score, BestDartThreeLeft.getBestDart(score, defaultDart))
 

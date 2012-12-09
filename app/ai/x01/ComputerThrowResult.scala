@@ -19,6 +19,7 @@ import scala.collection.immutable.Set
 import play.api.libs.json._
 import dart.Level
 import dart._
+import ai.x01.AiPlayerX01._
 
 /**
  * Dart Result
@@ -26,26 +27,26 @@ import dart._
 case class DartResult(wished: String, done: String, color: String)
 object DartResult {
 	def apply(wished: Dart, done: Dart): DartResult = {
-			val color = done.color match {
+		val color = done.color match {
 			case Red => "red"
 			case Green => "green"
 			case Black => "black"
 			case _ => "white"
-			}
-			DartResult(wished.toString, done.toString, color)
+		}
+		DartResult(wished.toString, done.toString, color)
 	}
 }
 object DartResultWrites extends Writes[DartResult] {
 	def writes(result: DartResult) = JsObject(Seq(
-			"wished" -> JsString(result.wished),
-			"done" -> JsString(result.done),
-			"color" -> JsString(result.color)))
+		"wished" -> JsString(result.wished),
+		"done" -> JsString(result.done),
+		"color" -> JsString(result.color)))
 }
 
 /**
  * Computer Throw Result
  */
-case class ComputerThrowResult(comKey: Int, darts: List[(Dart, Dart)], status: Status, score: Int)
+case class ComputerThrowResult(comKey: Int, darts: List[WishedDone], status: Status, scoreDone: Int)
 
 object ComputerThrowResultWrites extends Writes[ComputerThrowResult] {
 
@@ -56,11 +57,11 @@ object ComputerThrowResultWrites extends Writes[ComputerThrowResult] {
 			case Normal => "normal"
 		}
 
-		val darts: List[JsValue] = result.darts.map((x: (Dart, Dart)) => DartResultWrites.writes(DartResult(x._1, x._2)))
+		val darts: List[JsValue] = result.darts.map((x: WishedDone) => DartResultWrites.writes(DartResult(x._1, x._2)))
 
 		JsObject(Seq(
 			"comKey" -> JsNumber(result.comKey),
-			"score" -> JsNumber(result.score),
+			"score" -> JsNumber(result.scoreDone),
 			"status" -> JsString(status),
 			"darts" -> JsArray(darts)))
 	}

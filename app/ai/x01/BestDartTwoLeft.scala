@@ -37,36 +37,36 @@ object BestDartTwoLeft extends BestDart {
 		// 11x
 		115 -> PreferedDartBut(T20, T19, DoubleBull),
 		114 -> PreferedDartBut(T20, T19, T18),
-		110 -> AlwaysDart(T20),
+		110 -> T20,
 
 		// 10x
 		108 -> OrDart(T19, T20, T16),
-		104 -> AlwaysDart(T18),
-		101 -> AlwaysDart(T17),
+		104 -> T18,
+		101 -> T17,
 
 		// 9x
 		95 -> OrDart(DoubleBull, T19),
-		94 -> AlwaysDart(T18),
-		93 -> AlwaysDart(T19),
-		92 -> AlwaysDart(T20),
-		91 -> AlwaysDart(T17),
+		94 -> T18,
+		93 -> T19,
+		92 -> T20,
+		91 -> T17,
 		90 -> OrDart(T20, T18),
 
 		// 8x
 		88 -> OrDart(T20, T16),
-		85 -> AlwaysDart(T15),
-		84 -> AlwaysDart(T20),
-		83 -> AlwaysDart(T17),
+		85 -> T15,
+		84 -> T20,
+		83 -> T17,
 		82 -> OrDart(T14),
 		81 -> OrDart(T19),
-		80 -> AlwaysDart(T20),
+		80 -> T20,
 
 		// 7x
 		79 -> OrDart(T19, T13),
 		78 -> OrDart(T18, T14),
-		76 -> AlwaysDart(T20),
-		75 -> AlwaysDart(T17),
-		72 -> AlwaysDart(T16),
+		76 -> T20,
+		75 -> T17,
+		72 -> T16,
 		71 -> OrDart(T13, T19),
 		70 -> PreferedDartBut(T20, T18, T10),
 
@@ -107,7 +107,7 @@ object BestDartTwoLeft extends BestDart {
 		// 1x
 
 		// 0x
-		6 -> AlwaysDart(D3))
+		6 -> D3)
 
 	override def getBestDart(score: Int, defaultDart: Dart): DartChoice = bestDarts2.getOrElse(score, BestDartThreeLeft.getBestDart(score, defaultDart))
 

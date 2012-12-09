@@ -12,3 +12,4 @@ tmp/
 .target/
 .cache
 .worksheet/
+bin/

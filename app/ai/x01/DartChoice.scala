@@ -21,7 +21,43 @@ import scala.collection.Set
 import scala.util.Random
 
 sealed abstract class DartChoice {
+
+	/**
+	 * Choose the darts
+	 * @param modifiers some modifiers
+	 * @return the chosen dart
+	 */
 	def chooseDart(modifiers: Set[Modifier]): Dart
+
+	/**
+	 * Choose a dart into a weighted list
+	 * @param wDarts the  weighted list
+	 * @return the chosen dart
+	 */
+	protected def choose(wDarts: Seq[(Dart, Int)]): Dart = {
+		val allDarts = for {
+			(dart, weight) <- wDarts
+			i <- 0 to weight
+		} yield dart
+
+		val index = Random.nextInt(allDarts size)
+		allDarts(index)
+	}
+
+	/**
+	 * Create a weighted dart
+	 * @param dart the dart
+	 * @param modifiers the modifiers
+	 * @param weight the weight if the modifier is OK
+	 * @return the weighted dart
+	 */
+	protected def createWeight(dart: Dart, modifiers: Set[Modifier], weight: Int): (Dart, Int) = {
+		if (modifiers contains LikeDart(dart)) (dart, weight)
+		else (dart, 1) // Default weight
+	}
+}
+object DartChoice {
+	implicit def Dart2DartChoice(dart: Dart) = AlwaysDart(dart)
 }
 
 /** No choice, use the only darts */
@@ -32,42 +68,44 @@ case class AlwaysDart(dart: Dart) extends DartChoice {
 /** Basic choice */
 case class OrDart(darts: Dart*) extends DartChoice {
 	def chooseDart(modifiers: Set[Modifier]): Dart = {
-		// FIXME take care of Modifier
-
-		val allDarts: List[Dart] = darts toList
-		val index = Random.nextInt(allDarts size)
-		allDarts(index)
+		val size = darts.size
+		val wDarts = darts map ((dart: Dart) => createWeight(dart, modifiers, size))
+		choose(wDarts)
 	}
 }
 
 /** There is a prefered choice, but modifier can change the deal */
 case class PreferedDartBut(preferedDart: Dart, otherDarts: Dart*) extends DartChoice {
-	private val groovyFactor = 10
+	private val groovyFactor = 15
 
 	def chooseDart(modifiers: Set[Modifier]): Dart = {
-		// FIXME take care of Modifier
-
-		if (Random.nextInt(groovyFactor) != 0) preferedDart
+		if (otherDarts isEmpty) preferedDart
 		else {
-			val allDarts: List[Dart] = otherDarts toList
-			val index = Random.nextInt(allDarts size)
-			allDarts(index)
+			val size = otherDarts.size
+			val wOtherDarts = otherDarts map ((dart: Dart) => createWeight(dart, modifiers, size))
+			choose((preferedDart, size * groovyFactor) :: wOtherDarts.toList)
 		}
 	}
 }
 
 /** There is a prefered choice, but modifier can change the deal */
-case class OnPressureDart(onPressureDart: Dart, otherChoice: DartChoice) extends DartChoice {
+case class OnPressureDart(onPressureChoice: DartChoice, otherChoice: DartChoice) extends DartChoice {
 	def chooseDart(modifiers: Set[Modifier]): Dart = {
-		if (modifiers contains OnPressure) onPressureDart
-		else otherChoice.chooseDart(modifiers)
+		val choice = if (modifiers contains OnPressure) onPressureChoice else otherChoice
+		choice chooseDart modifiers
 	}
 }
 
 /** There is a prefered choice, but modifier can change the deal */
-case class NoPressureAtAllDart(noPressureDart: Dart, otherChoice: DartChoice) extends DartChoice {
+case class NoPressureAtAllDart(noPressureChoice: DartChoice, otherChoice: DartChoice) extends DartChoice {
 	def chooseDart(modifiers: Set[Modifier]): Dart = {
-		if (modifiers contains NoPressureAtAll) noPressureDart
-		else otherChoice.chooseDart(modifiers)
+		val choice = if (modifiers contains NoPressureAtAll) noPressureChoice else otherChoice
+		choice chooseDart modifiers
+	}
+}
+case class PlayBroken(breakChoice: DartChoice, otherChoice: DartChoice) extends DartChoice {
+	def chooseDart(modifiers: Set[Modifier]): Dart = {
+		val choice = if (modifiers contains GoodDouble) breakChoice else otherChoice
+		choice chooseDart modifiers
 	}
 }

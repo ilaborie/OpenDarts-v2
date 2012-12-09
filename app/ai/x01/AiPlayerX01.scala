@@ -22,6 +22,8 @@ import scala.collection.immutable.Set
 
 object AiPlayerX01 {
 
+	type WishedDone = (Dart, Dart)
+
 	/**
 	 * Process Computer Request
 	 * @param request the request
@@ -30,20 +32,20 @@ object AiPlayerX01 {
 	def processComputerRequest(request: ComputerThrowRequest): ComputerThrowResult = {
 		val score = request.score
 		val level = Level(request.level)
-		val modifiers: Set[Modifier] = Set() // FIXME use
+		val modifiers: Set[Modifier] = Set() // FIXME create
 		val dart = Dart(request.default)
 
 		val req = PlayerRequest(level, dart, modifiers)
 
 		val (status, darts) = playTurn(score, req)
 
-		val scoreLeft = status match {
+		val scoreDone = status match {
 			case Win => 0
 			case Broken => score
-			case _ => darts.foldLeft(score)((x: Int, d: (Dart, Dart)) => x - d._2.score)
+			case _ => darts.foldLeft(0)((x: Int, d: WishedDone) => x + d._2.score)
 		}
 
-		ComputerThrowResult(request.comKey, darts, status, scoreLeft)
+		ComputerThrowResult(request.comKey, darts, status, scoreDone)
 	}
 
 	/**
@@ -52,9 +54,9 @@ object AiPlayerX01 {
 	 * @param request the request
 	 * @return the result
 	 */
-	def playTurn(score: Int, request: PlayerRequest): (Status, List[(Dart, Dart)]) = playTurnAux(score, 3, request, Normal, Nil)
+	def playTurn(score: Int, request: PlayerRequest): (Status, List[WishedDone]) = playTurnAux(score, 3, request, Normal, Nil)
 
-	private def playTurnAux(score: Int, dartLeft: Int, request: PlayerRequest, currentStatus: Status, playedDarts: List[(Dart, Dart)]): (Status, List[(Dart, Dart)]) = {
+	private def playTurnAux(score: Int, dartLeft: Int, request: PlayerRequest, currentStatus: Status, playedDarts: List[WishedDone]): (Status, List[WishedDone]) = {
 		currentStatus match {
 			case Win => (currentStatus, playedDarts)
 			case Broken => (currentStatus, playedDarts)
@@ -88,7 +90,7 @@ object AiPlayerX01 {
 	 * @param modifiers some modifier
 	 * @return the played dart
 	 */
-	def playDart(score: Int, dartLeft: Int, request: PlayerRequest): (Dart, Dart) = {
+	def playDart(score: Int, dartLeft: Int, request: PlayerRequest): WishedDone = {
 		require(dartLeft > 0 && dartLeft < 4)
 
 		val bestDart = getBestDart(score, dartLeft, request.defaultDart, request.modifiers)
@@ -137,11 +139,6 @@ case object Win extends Status
 sealed abstract class Modifier
 case object OnPressure extends Modifier // opponent might finish
 case object NoPressureAtAll extends Modifier // try the best double
-case object Agressive extends Modifier // play double
 case object GoodDouble extends Modifier // good double (40,32,16,24,20,8)
-case object LikeBull extends Modifier // player like bull
-case object LikeT20 extends Modifier // player like T20
-case object LikeT19 extends Modifier // player like T19
-case object LikeT18 extends Modifier // player like T18
-case object LikeT17 extends Modifier // player like T17
-case object LikeT16 extends Modifier // player like T16
+case object Agressive extends Modifier // play double
+case class LikeDart(dart:Dart) extends Modifier // player like T20, T19, Bull
