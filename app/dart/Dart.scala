@@ -28,7 +28,7 @@ sealed abstract class Dart {
 
 	override def toString = this match {
 		case UnluckyDart => ":("
-		case NoDart => "ø"
+		case NoDart => "Out"
 		case SemiBull => "25"
 		case DoubleBull => "50"
 		case NormalDart(sector, zone) => zone match {

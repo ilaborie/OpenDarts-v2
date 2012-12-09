@@ -19,10 +19,13 @@ import dart._
 import dart.Dart._
 import scala.util.Random
 import scala.collection.immutable.Set
+import play.api.Logger
 
 object AiPlayerX01 {
 
 	type WishedDone = (Dart, Dart)
+
+	val log = Logger("ai.x01")
 
 	/**
 	 * Process Computer Request
@@ -32,20 +35,20 @@ object AiPlayerX01 {
 	def processComputerRequest(request: ComputerThrowRequest): ComputerThrowResult = {
 		val score = request.score
 		val level = Level(request.level)
-		val modifiers: Set[Modifier] = Set() // FIXME create
 		val dart = Dart(request.default)
+		val modifiers: List[Modifier] = Modifier.fromRequest(request)
 
-		val req = PlayerRequest(level, dart, modifiers)
+		log.debug("#%s>  %s - %s [%s] - %s".format(request.comKey, score, level, dart, modifiers))
+		val req = PlayerRequest(level, dart, modifiers.toSet)
 
 		val (status, darts) = playTurn(score, req)
-
 		val scoreDone = status match {
 			case Win => 0
 			case Broken => score
 			case _ => darts.foldLeft(0)((x: Int, d: WishedDone) => x + d._2.score)
 		}
 
-		ComputerThrowResult(request.comKey, darts, status, scoreDone)
+		ComputerThrowResult(request.comKey, darts.reverse, status, scoreDone)
 	}
 
 	/**
@@ -94,7 +97,11 @@ object AiPlayerX01 {
 		require(dartLeft > 0 && dartLeft < 4)
 
 		val bestDart = getBestDart(score, dartLeft, request.defaultDart, request.modifiers)
-		(bestDart, ComputerDart.throwDart(request.level, bestDart))
+		log.trace("%s in % darts choose %s".format(score, dartLeft, bestDart))
+		val done = ComputerDart.throwDart(request.level, bestDart)
+		log.trace("...done %s".format(done))
+
+		(bestDart, done)
 	}
 
 	/**
@@ -106,7 +113,6 @@ object AiPlayerX01 {
 	 * @return the best dart
 	 */
 	private def getBestDart(score: Int, dartLeft: Int, defaultDart: Dart, modifiers: Set[Modifier]): Dart = {
-
 		val bestDartChooser: BestDart = dartLeft match {
 			case 1 => BestDartOneLeft
 			case 2 => BestDartTwoLeft
@@ -136,9 +142,35 @@ case object Win extends Status
 /**
  * Modifier
  */
-sealed abstract class Modifier
-case object OnPressure extends Modifier // opponent might finish
-case object NoPressureAtAll extends Modifier // try the best double
-case object GoodDouble extends Modifier // good double (32,40,16,24,36,20,8)
-case object Aggressive extends Modifier // play double
-case class LikeDart(dart:Dart) extends Modifier // player like T20, T19, Bull, ...
+sealed abstract class Modifier {
+	def shouldApply(request: ComputerThrowRequest): Boolean
+}
+object Modifier {
+	def fromRequest(request: ComputerThrowRequest): List[Modifier] = {
+		val base: List[Modifier] = List(OnPressure, NoPressureAtAll, GoodDouble, Aggressive)
+		LikeDart(Dart(request.default)) :: (base filter (_.shouldApply(request)))
+	}
+}
+
+/** Opponent might finish */
+case object OnPressure extends Modifier {
+	def shouldApply(request: ComputerThrowRequest): Boolean = request.opponent <= 1.5
+}
+/** Have time to better placement */
+case object NoPressureAtAll extends Modifier {
+	def shouldApply(request: ComputerThrowRequest): Boolean = request.opponent > 4
+}
+/** Start with a good Double */
+case object GoodDouble extends Modifier {
+	val goodDouble = List(32, 40, 16, 24, 36, 20, 8)
+	def shouldApply(request: ComputerThrowRequest): Boolean = goodDouble contains request.score
+}
+/** Play all doubles */
+case object Aggressive extends Modifier {
+	def shouldApply(request: ComputerThrowRequest): Boolean = request.decisive
+}
+/** Choose prefered dart */
+case class LikeDart(dart: Dart) extends Modifier {
+	def shouldApply(request: ComputerThrowRequest): Boolean = (dart == Dart(request.default))
+} 
+

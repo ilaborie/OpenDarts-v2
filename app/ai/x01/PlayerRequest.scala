@@ -20,31 +20,25 @@ import play.api.libs.json._
 import dart.Level
 import dart.Dart
 
-case class ComputerThrowRequest(comKey: Int, score: Int, level: Int, default: String) {
+case class ComputerThrowRequest(comKey: Int, score: Int, level: Int, default: String, opponent: Double, decisive: Boolean)
 
-}
 object ComputerThrowRequestsFormat extends Format[ComputerThrowRequest] {
 	def reads(json: JsValue): ComputerThrowRequest = ComputerThrowRequest(
 		(json \ "comKey").as[Int],
 		(json \ "left").as[Int],
 		(json \ "lvl").as[Int],
-		(json \ "type").as[String])
+		(json \ "type").as[String],
+		(json \ "opponent").as[Double],
+		(json \ "decisive").as[Boolean])
+		
 		
 	def writes(request: ComputerThrowRequest) = JsObject(Seq(
 		"comKey" -> JsNumber(request.comKey),
 		"left" -> JsNumber(request.score),
 		"lvl" -> JsNumber(request.level),
-		"type" -> JsString(request.default)))
+		"type" -> JsString(request.default),
+		"opponent" -> JsNumber(request.opponent),
+		"decisive" -> JsBoolean(request.decisive)))
 }
 
 case class PlayerRequest(level: Level, defaultDart: Dart, modifiers: Set[Modifier])
-object PlayerRequest {
-	def apply(request: ComputerThrowRequest): PlayerRequest = {
-		val level = Level(request.level)
-		val defaultDart: Dart = Dart(request.default)
-		val modifiers: Set[Modifier] = Set();
-		// FIXME build modifiers
-
-		PlayerRequest(level, defaultDart, modifiers)
-	}
-}

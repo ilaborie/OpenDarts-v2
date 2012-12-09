@@ -436,7 +436,7 @@ var doCreatePlayer = function(event, callback) {
 	if (isComputer) {
 		player = players.getPlayerByNameSurname(name, surname);
 		player.com = true;
-		player.comLevel = $("#playerLevel").val();
+		player.comLevel = parseInt($("#playerLevel").val());
 		player.comTarget = $("#diaPlayerCreation .btnTarget .active").html();
 		players.update(player);
 	} else {

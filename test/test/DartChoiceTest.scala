@@ -131,8 +131,8 @@ class DartChoiceTest extends Specification {
 
 			val ratio = (nbDart1 - nbDart2).toDouble * 100 / size
 
-			// Test ≤ 5%
-			ratio must be_>=(20.0)
+			// Test ≥ 15%
+			ratio must be_>=(15.0)
 		}
 
 		"Take care of Aggressif modifier" in {
@@ -150,7 +150,7 @@ class DartChoiceTest extends Specification {
 
 			val ratio = (nbDart1 - nbDart2).toDouble * 100 / size
 
-			// Test ≤ 5%
+			// Test ≥ 20%
 			ratio must be_>=(20.0)
 		}
 	}

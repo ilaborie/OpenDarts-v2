@@ -136,13 +136,15 @@ function EntryX01(parentLeg, index) {
 		$("#computerThrowDialog .wished").empty();
 		$("#computerThrowDialog h3").html(msgTitle);
 		$("#computerThrowDialog").one("shown", function() {
+			var nbTurnToFinish = entry.getParent().getNbTurnToFinish(lastPlayer);
 			// Call to server
 			$.postJSON("/x01/ComputerPlayer", {
 				comKey: entry.comKey,
 				left: score,
 				lvl: lastPlayer.comLevel,
-				type: lastPlayer.comTarget
-				// FIXME send modifiers (pressure)
+				type: lastPlayer.comTarget,
+				opponent: nbTurnToFinish,
+				decisive: entry.getParent().isDecisive()
 			}, function(json) {
 
 				if (entry.comKey===json.comKey) {

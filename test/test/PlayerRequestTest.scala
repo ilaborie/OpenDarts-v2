@@ -23,13 +23,14 @@ import dart._
 import dart.Dart._
 import ai.x01._
 import ai.x01.ComputerThrowRequest._
+import scala.math
 
 class PlayerRequestTest extends Specification {
 
 	"The request" should {
 
 		"be write to JSON" in {
-			val request = ComputerThrowRequest(3, 501, 6, "T20")
+			val request = ComputerThrowRequest(3, 501, 6, "T20", 65.42d, false)
 			val json: JsValue = Json.toJson(request)(ComputerThrowRequestsFormat)
 
 			(json \ "comKey").as[Int] === 3
@@ -40,7 +41,10 @@ class PlayerRequestTest extends Specification {
 				"comKey" -> JsNumber(3),
 				"left" -> JsNumber(501),
 				"lvl" -> JsNumber(6),
-				"type" -> JsString("T20")))
+				"type" -> JsString("T20"),
+				"opponent" -> JsNumber(35.45),
+				"decisive" -> JsBoolean(false)
+				))
 			val request = Json.fromJson(json)(ComputerThrowRequestsFormat)
 
 			request.comKey === 3
@@ -48,14 +52,16 @@ class PlayerRequestTest extends Specification {
 
 		"be read from JSON" in {
 			val json = """ {
-					"comKey": 69,
-					"left": 301,
-					"lvl": 7,
-					"type": "T20"
-				} """
+				"comKey": 19,
+				"left": 501,
+				"lvl": 6, 
+				"type": "T19",
+				"opponent": 7.35,
+				"decisive": false
+			} """
 			val value = Json.parse(json)
 			val request = Json.fromJson(value)(ComputerThrowRequestsFormat)
-			request.comKey === 69
+			request.comKey === 19
 		}
 	}
 

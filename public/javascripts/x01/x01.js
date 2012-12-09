@@ -18,7 +18,7 @@
  */
 
 var Philou = players.getPlayerByNameSurname("Philou", "The Failure");
-var HAL = players.getPlayerByNameSurname("Ishur #7","20");
+var HAL = players.getPlayerByNameSurname("Ishur #7","T20");
 HAL.com = true;
 HAL.comLevel = 7;
 players.update(HAL);

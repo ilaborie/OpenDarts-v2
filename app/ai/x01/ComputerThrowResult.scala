@@ -30,8 +30,9 @@ object DartResult {
 		val color = done.color match {
 			case Red => "red"
 			case Green => "green"
+			case White => "white"
 			case Black => "black"
-			case _ => "white"
+			case _ => "none"
 		}
 		DartResult(wished.toString, done.toString, color)
 	}
