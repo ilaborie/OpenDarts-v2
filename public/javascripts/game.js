@@ -275,10 +275,39 @@ var players = {
 		localStorage.setItem("players", JSON.stringify(players.db));
 	}
 };
+// Migration to v1
+var upgradeToV1 = function() {
+	var p;
+	var level;
+	var target;
+	for (var i=0; i< players.db.length;i++) {
+		p = players.db[i];
+		if (p.com) {
+			level = p.comLevel;
+			target = p.comTarget;
+			if (typeof level === "string") {
+				p.comLevel = parseInt(level,10);
+			}
+			if (target === "20") {
+				p.comTarget = "T20";
+			} else if (target === "19") {
+				p.comTarget = "T19";
+			}
+		}
+	}
+	localStorage.setItem("players", JSON.stringify(players.db));
+	localStorage.setItem("version", "1");
+};
+
 // Load to DB
 var playersDB = localStorage.getItem("players");
 if (playersDB !== null) {
 	players.db = JSON.parse(playersDB);
+
+	var version = localStorage.getItem("version");
+	if (!version) {
+		upgradeToV1();
+	}
 }
 
 function Player(name, surname) {
@@ -436,7 +465,7 @@ var doCreatePlayer = function(event, callback) {
 	if (isComputer) {
 		player = players.getPlayerByNameSurname(name, surname);
 		player.com = true;
-		player.comLevel = parseInt($("#playerLevel").val());
+		player.comLevel = parseInt($("#playerLevel").val(),10);
 		player.comTarget = $("#diaPlayerCreation .btnTarget .active").html();
 		players.update(player);
 	} else {
