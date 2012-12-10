@@ -24,22 +24,22 @@ object ComputerDart {
 	 * Level coefficient
 	 */
 	private val levelCoefficient: Map[Level, Double] = Map(
-		Level(0) -> 39.00, // about 52
-		Level(1) -> 32.80, // about 45 
-		Level(2) -> 28.80, // about 39
-		Level(3) -> 21.15, // about 36
-		Level(4) -> 19.27, // about 33
-		Level(5) -> 17.75, // about 30
-		Level(6) -> 16.60, // about 28
-		Level(7) -> 15.30, // about 26
-		Level(8) -> 14.15, // about 24
-		Level(9) -> 12.80, // about 22
-		Level(10) -> 11.8, // about 20.5
-		Level(11) -> 10.7, // about 19
-		Level(12) -> 9.67, // about 17.5
-		Level(13) -> 8.40, // about 16
-		Level(14) -> 7.12, // about 14.5
-		Level(15) -> 5.80) // about 13
+		Level(0) -> 31.55, // about 52
+		Level(1) -> 27.60, // about 45 
+		Level(2) -> 24.08, // about 39
+		Level(3) -> 22.32, // about 36
+		Level(4) -> 20.55, // about 33
+		Level(5) -> 18.60, // about 30
+		Level(6) -> 17.30, // about 28
+		Level(7) -> 15.95, // about 26
+		Level(8) -> 14.55, // about 24
+		Level(9) -> 12.85, // about 22
+		Level(10) -> 11.75, // about 20.5
+		Level(11) -> 10.50, // about 19
+		Level(12) -> 8.67, // about 17.5
+		Level(13) -> 7.60, // about 16
+		Level(14) -> 6.21, // about 14.5
+		Level(15) -> 4.90) // about 13
 
 	/**
 	 * Unlucky stats (1 on value)
