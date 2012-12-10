@@ -95,6 +95,35 @@ function LegX01(parentSet) {
 			this.next();
 		}
 	};
+	// if the leg is decisive
+	this.isDecisive = function() {
+		var nbPlayer = players.length;
+		var nbLegToWin = this.getParent().getNbLegToWin();
+		var nbFinishedLeg = this.getParent().getNbFinishedLegs();
+		return (nbPlayer*(nbLegToWin-1))==nbFinishedLeg;
+	};
+
+	this.getNbTurnToFinish = function(player) {
+		var min = 500;
+		var p;
+		var avg;
+		var score;
+		var current;
+		for (var i=0; i<players.length; i++) {
+			p= players[i];
+			if (p.uuid!=player.uuid) {
+				avg = parseFloat($("#"+this.getStatsPlayerId(p)+" .setStats .avg3Dart").html());
+				if (!isNaN(avg) && avg>0) {
+					score =playersScore[p.uuid];
+					current = score / avg;
+					if (current<min) {
+						min = current;
+					}
+				}
+			}
+		}
+		return min;
+	};
 
 	this.applyChange=function(entry, player) {
 		var score = parent.getOption().score;

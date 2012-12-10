@@ -1,1 +1,1 @@
-web: target/start -Dhttp.port=${PORT} -Dplay.version=2.0.3 ${JAVA_OPTS}
+web: target/start -Dhttp.port=${PORT} -Dplay.version=2.0.4 ${JAVA_OPTS}

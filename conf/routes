@@ -3,15 +3,16 @@
 # ~~~~
 
 # Basic page
-GET     /                           controllers.Application.index()
-GET     /admin                      controllers.Application.admin()
-GET     /doc                        controllers.Application.doc()
-GET     /faq                        controllers.Application.faq()
-
-GET     /charts                     controllers.Application.charts()
+GET     /                           controllers.Application.index
+GET     /admin                      controllers.Application.admin
+GET     /doc                        controllers.Application.doc
+GET     /faq                        controllers.Application.faq
 
 # x01
-POST	/x01/ComputerPlayer			controllers.GameX01.getComputerPlayerThrow()
+POST	/x01/ComputerPlayer			controllers.GameX01.computerPlayerThrow
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
+# Debug
+GET     /charts                     controllers.Application.charts
