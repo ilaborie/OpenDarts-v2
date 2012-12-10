@@ -89,6 +89,14 @@ function SetX01(parentGame) {
 		}
 	};
 
+	this.getNbLegToWin = function() {
+		return parent.getOption().nbLegs;
+	};
+
+	this.getNbFinishedLegs = function(){
+		return finishedlegs.lenght;
+	};
+
 	// SetX01 displayFinished
 	this.displayFinished = function() {
 		var title = msg.get("dia.x01.set.finish.title", {name: this.getName()});
