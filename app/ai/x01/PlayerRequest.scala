@@ -17,7 +17,7 @@ package ai.x01
 
 import scala.collection.immutable.Set
 import play.api.libs.json._
-import dart.Level
+import ai.Level
 import dart.Dart
 
 case class ComputerThrowRequest(comKey: Int, score: Int, level: Int, default: String, opponent: Double, decisive: Boolean)

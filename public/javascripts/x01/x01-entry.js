@@ -16,6 +16,7 @@
 /**
  * EntryX01
  */
+var comKey = 0;
 function EntryX01(parentLeg, index) {
 	this.uuid = createUuid();
 	this.index = index;
@@ -33,7 +34,6 @@ function EntryX01(parentLeg, index) {
 	var stats = {};
 	this.nbDart = null;
 	var winner = null;
-	this.comKey = 0;
 	this.procesing = false;
 
 	for (var i=0; i<players.length; i++) {
@@ -126,7 +126,7 @@ function EntryX01(parentLeg, index) {
 		}
 		var score = parent.getPlayerScore(lastPlayer);
 
-		this.comKey += 1;
+		comKey += 1;
 		// Open Dialog
 		var msgTitle = msg.get("dia.x01.computer.throw.title", {
 			name: lastPlayer.getName(),
@@ -139,7 +139,7 @@ function EntryX01(parentLeg, index) {
 			var nbTurnToFinish = entry.getParent().getNbTurnToFinish(lastPlayer);
 			// Call to server
 			$.postJSON("/x01/ComputerPlayer", {
-				comKey: entry.comKey,
+				comKey: comKey,
 				left: score,
 				lvl: lastPlayer.comLevel,
 				type: lastPlayer.comTarget,
@@ -147,7 +147,7 @@ function EntryX01(parentLeg, index) {
 				decisive: entry.getParent().isDecisive()
 			}, function(json) {
 
-				if (entry.comKey===json.comKey) {
+				if (comKey===json.comKey) {
 					entry.nbDart = json.darts.length;
 					entry.showDart(entry, json, 0, callback);
 				} else {

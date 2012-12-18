@@ -17,6 +17,7 @@ package ai.x01
 
 import dart._
 import dart.Dart._
+import ai.Level
 import scala.util.Random
 import scala.collection.immutable.Set
 import play.api.Logger
