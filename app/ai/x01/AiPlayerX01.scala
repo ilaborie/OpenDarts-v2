@@ -17,7 +17,7 @@ package ai.x01
 
 import dart._
 import ai.Level
-import scala.collection.immutable.Set
+import scala.collection.immutable._
 import play.api.Logger
 
 object AiPlayerX01 {
@@ -94,11 +94,27 @@ object AiPlayerX01 {
     require(dartLeft > 0 && dartLeft < 4)
 
     val bestDart = getBestDart(score, dartLeft, request.defaultDart, request.modifiers)
-    log.trace("%s in % darts choose %s".format(score, dartLeft, bestDart))
+    log.trace("%s in %s darts choose %s".format(score, dartLeft, bestDart))
     val done = ComputerDart.throwDart(request.level, bestDart)
     log.trace("...done %s".format(done))
 
     (bestDart, done)
+  }
+
+  /**
+   * Get Finish
+   * @param score the score
+   * @return all defined finish
+   */
+  def getFinish(score: Int): List[Finish] = {
+    val defaultDart = Dart.T20
+    val res = for {
+      (dart1, modifiers1) <- bestDartChooser(3).getBestDart(score, defaultDart).allDarts
+      (dart2, modifiers2) <- bestDartChooser(2).getBestDart(score - dart1.score, defaultDart).allDarts
+      (dart3, modifiers3) <- bestDartChooser(1).getBestDart(score - dart1.score - dart2.score, defaultDart).allDarts
+      if score == (dart1.score + dart2.score + dart3.score)
+    } yield Finish(dart1, dart2, dart3, (modifiers1 ++ modifiers2 ++ modifiers3))
+    res.toList
   }
 
   /**
@@ -110,17 +126,18 @@ object AiPlayerX01 {
    * @return the best dart
    */
   private def getBestDart(score: Int, dartLeft: Int, defaultDart: Dart, modifiers: Set[Modifier]): Dart = {
-    val bestDartChooser: BestDart = dartLeft match {
-      case 1 => BestDartOneLeft
-      case 2 => BestDartTwoLeft
-      case _ => BestDartThreeLeft
-    }
-
+    val dartChooser = bestDartChooser(dartLeft)
     // Get all choices
-    val dartChoices: DartChoice = bestDartChooser.getBestDart(score, defaultDart)
+    val dartChoices: DartChoice = dartChooser.getBestDart(score, defaultDart)
 
     // Choose
     dartChoices.chooseDart(modifiers)
+  }
+
+  private def bestDartChooser(dartLeft: Int): BestDart = dartLeft match {
+    case 1 => BestDartOneLeft
+    case 2 => BestDartTwoLeft
+    case _ => BestDartThreeLeft
   }
 }
 
@@ -138,45 +155,3 @@ case object Normal extends Status
 case object Broken extends Status
 
 case object Win extends Status
-
-/**
- * Modifier
- */
-sealed abstract class Modifier {
-  def shouldApply(request: ComputerThrowRequest): Boolean
-}
-
-object Modifier {
-  def fromRequest(request: ComputerThrowRequest): List[Modifier] = {
-    val base: List[Modifier] = List(OnPressure, NoPressureAtAll, GoodDouble, Aggressive)
-    LikeDart(Dart(request.default)) :: (base filter (_.shouldApply(request)))
-  }
-}
-
-/** Opponent might finish */
-case object OnPressure extends Modifier {
-  def shouldApply(request: ComputerThrowRequest): Boolean = request.opponent <= 1.5
-}
-
-/** Have time to better placement */
-case object NoPressureAtAll extends Modifier {
-  def shouldApply(request: ComputerThrowRequest): Boolean = request.opponent > 4
-}
-
-/** Start with a good Double */
-case object GoodDouble extends Modifier {
-  val goodDouble = List(32, 40, 16, 24, 36, 20, 8)
-
-  def shouldApply(request: ComputerThrowRequest): Boolean = goodDouble contains request.score
-}
-
-/** Play all doubles */
-case object Aggressive extends Modifier {
-  def shouldApply(request: ComputerThrowRequest): Boolean = request.decisive
-}
-
-/** Choose prefered dart */
-case class LikeDart(dart: Dart) extends Modifier {
-  def shouldApply(request: ComputerThrowRequest): Boolean = (dart == Dart(request.default))
-} 
-

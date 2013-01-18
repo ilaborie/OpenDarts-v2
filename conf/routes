@@ -9,7 +9,9 @@ GET     /doc                        controllers.Application.doc
 GET     /faq                        controllers.Application.faq
 
 # x01
-POST	/x01/ComputerPlayer			controllers.GameX01.computerPlayerThrow
+POST    /x01/ComputerPlayer         controllers.GameX01.computerPlayerThrow
+GET     /allFinish                  controllers.GameX01.allFinish
+GET     /x01/finish/:score          controllers.GameX01.finish(score:Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

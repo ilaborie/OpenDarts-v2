@@ -61,7 +61,7 @@
 	<%			} %>
 				<td colspan="2" class="cell cellInput control-group">
 					<form action="#game">
-						<input id="<%=leg.getInputPlayerId(player)%>" class="input-medium playerInput" 
+						<input id="<%=leg.getInputPlayerId(player)%>" class="input-medium playerInput"
 							type="text" pattern="[0-9DTdt+]*" required  disabled/>
 						<button id="<%=leg.getSubmitPlayer(player)%>" type="submit" class="btn btn-success hide">
 							<i class="icon-white icon-play"></i>
@@ -104,4 +104,15 @@
 		</div>
 	<% 	} %>
 	</div>
+</script>
+
+@*
+leg: current leg
+player: the player
+*@
+<script id="LegFinishHelperPlayer" type="text/html">
+    <div id="<%=leg.getFinishHelperId(player)%>" class="player-finish<%=player.com?" hide":""%>">
+        <h5><span class="finishTitle">&nbsp;</span><button class="close pull-right">&times;</button></h5>
+        <p class="finishBody">&nbsp;</p>
+    </div>
 </script>

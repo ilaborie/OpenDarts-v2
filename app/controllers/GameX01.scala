@@ -18,15 +18,36 @@ package controllers
 import play.api.mvc._
 import play.api.libs.json._
 import ai.x01._
+import collection.SortedMap
 
 object GameX01 extends Controller {
 
-	def computerPlayerThrow = Action(parse.json) { request =>
-		val requestJson: JsValue = request.body
-		val computerRequest = Json.fromJson(requestJson)(ComputerThrowRequestsFormat)
+  def computerPlayerThrow = Action(parse.json) {
+    request =>
+      val requestJson: JsValue = request.body
+      val computerRequest = Json.fromJson(requestJson)(ComputerThrowRequestsFormat)
 
-		val computerResult = AiPlayerX01.processComputerRequest(computerRequest.get)
+      val computerResult = AiPlayerX01.processComputerRequest(computerRequest.get)
+      Ok(Json.toJson(computerResult))
+  }
 
-		Ok(Json.toJson(computerResult)(ComputerThrowResultWrites))
-	}
+  def finish(score: Int) = Action {
+    request =>
+      val finishs = AiPlayerX01.getFinish(score)
+      Ok(Json.toJson(finishs))
+  }
+
+  def allFinish() = Action {
+    request =>
+      val finish = for {
+        score <- 170 to 2 by -1
+      } yield (score, AiPlayerX01.getFinish(score))
+
+      val f: Map[Int, List[Finish]] = finish.toMap
+
+      val sortedFinish = SortedMap[Int, List[Finish]]()(Ordering.Int.reverse) ++ f
+      // (Ordering.Int.reverse)
+
+      Ok(views.html.finish(sortedFinish))
+  }
 }

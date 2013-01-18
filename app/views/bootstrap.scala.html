@@ -13,7 +13,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 *@
-@(title: String, full: Boolean= false)(content: Html)
+@(title: String, full: Boolean= false, scripts: Html = Html(""))(content: Html)
 
 <!DOCTYPE html>
 
@@ -81,5 +81,7 @@
         @* Dialog x01 *@
         @x01.DialogComputerThrow()
     }
+
+    @scripts
 </body>
 </html>

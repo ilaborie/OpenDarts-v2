@@ -1,41 +1,41 @@
 /*
-   Copyright 2012 Igor Laborie
+ Copyright 2012 Igor Laborie
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 // Initialize
-$(function() {
-	// TODO Check configuration
+$(function () {
+    // TODO Check configuration
 
-  // AJAX configuration
-  $.ajaxSetup({
-    cache: false,
-    error: doOnError
-  });
+    // AJAX configuration
+    $.ajaxSetup({
+        cache: false,
+        error: doOnError
+    });
 
-	// Navbar button
-	$("#btnNewX01").click(showNewX01);
+    // Navbar button
+    $("#btnNewX01").click(showNewX01);
 
-  // XXX for bootstrap dropdown (waiting for next release)
-  $(".dropdown-menu").on("touchstart.dropdown.data-api", function (e) {
-    e.stopPropagation();
-  });
+    // XXX for bootstrap dropdown (waiting for next release)
+    $(".dropdown-menu").on("touchstart.dropdown.data-api", function (e) {
+        e.stopPropagation();
+    });
 
-  // i18n
-  i18n();
-  $("#switchLang a").click(function(e){
-    var lang = $(this).attr("href");
-    switchLang(lang);
-    return stopEvent(e);
-  });
+    // i18n
+    i18n();
+    $("#switchLang a").click(function (e) {
+        var lang = $(this).attr("href");
+        switchLang(lang);
+        return stopEvent(e);
+    });
 });
