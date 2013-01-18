@@ -17,15 +17,12 @@ package test
 
 import scala.math._
 import org.specs2.mutable._
-import play.api.test._
-import play.api.test.Helpers._
 import dart._
 import dart.Dart._
-import ai._
 import ai.x01._
-import ai.x01.AiPlayerX01._
 import test.x01._
 import ai.x01.Modifier
+
 class DartChoiceTest extends Specification {
 	/**
 	 * AlwaysDart
@@ -52,7 +49,7 @@ class DartChoiceTest extends Specification {
 	"OrDart" should {
 		"comport like AlwaysDart with One element" in {
 			val dart: Dart = T20
-			val choice = OrDart(dart)
+			val choice = OrDart(dart,dart)
 			val modifiers: Set[Modifier] = Set()
 
 			val size = 100
@@ -209,12 +206,10 @@ class DartChoiceTest extends Specification {
 			// Make choices
 			val darts = PlayX01.playChoiceStream(choice, modifiers) take size
 
-			val nbDart1 = darts.count(_ == dart1)
 			val nbDart2 = darts.count(_ == dart2)
 			val nbDart3 = darts.count(_ == dart3)
 
-			val ratio123 = (nbDart1 - (nbDart2 + nbDart3)).toDouble * 100 / size
-			val ratio23 = (nbDart2 - nbDart3).toDouble * 100 / size
+      val ratio23 = (nbDart2 - nbDart3).toDouble * 100 / size
 
 			// Test
 			ratio23 must be_<=(5.0)
@@ -246,7 +241,6 @@ class DartChoiceTest extends Specification {
 	"OnPressureDart" should {
 		"Act normaly without pressure" in {
 			val dart1: Dart = T20
-			val dart2: Dart = T19
 			val choice = OnPressureDart(T20, AlwaysDart(T19))
 			val modifiers: Set[Modifier] = Set()
 
@@ -261,8 +255,7 @@ class DartChoiceTest extends Specification {
 		}
 		"Use special dart with pressure" in {
 			val dart1: Dart = T20
-			val dart2: Dart = T19
-			val choice = OnPressureDart(T20, AlwaysDart(T19))
+      val choice = OnPressureDart(T20, AlwaysDart(T19))
 			val modifiers: Set[Modifier] = Set(OnPressure)
 
 			val size = 100
@@ -281,8 +274,7 @@ class DartChoiceTest extends Specification {
 	"NoPressureAtAllDart" should {
 		"Act normaly" in {
 			val dart1: Dart = T20
-			val dart2: Dart = T19
-			val choice = NoPressureAtAllDart(AlwaysDart(T20), AlwaysDart(T19))
+      val choice = NoPressureAtAllDart(AlwaysDart(T20), AlwaysDart(T19))
 			val modifiers: Set[Modifier] = Set()
 
 			val size = 100
@@ -296,8 +288,7 @@ class DartChoiceTest extends Specification {
 		}
 		"Use special choice without no pressure" in {
 			val dart1: Dart = T20
-			val dart2: Dart = T19
-			val choice = NoPressureAtAllDart(AlwaysDart(T20), AlwaysDart(T19))
+      val choice = NoPressureAtAllDart(AlwaysDart(T20), AlwaysDart(T19))
 			val modifiers: Set[Modifier] = Set(NoPressureAtAll)
 
 			val size = 100
@@ -316,8 +307,7 @@ class DartChoiceTest extends Specification {
 	"PlayBroken" should {
 		"Act normaly" in {
 			val dart1: Dart = T20
-			val dart2: Dart = T19
-			val choice = PlayBroken(AlwaysDart(T20), AlwaysDart(T19))
+      val choice = PlayBroken(AlwaysDart(T20), AlwaysDart(T19))
 			val modifiers: Set[Modifier] = Set()
 
 			val size = 100
@@ -331,8 +321,7 @@ class DartChoiceTest extends Specification {
 		}
 		"Use special choice without no pressure" in {
 			val dart1: Dart = T20
-			val dart2: Dart = T19
-			val choice = PlayBroken(AlwaysDart(T20), AlwaysDart(T19))
+      val choice = PlayBroken(AlwaysDart(T20), AlwaysDart(T19))
 			val modifiers: Set[Modifier] = Set(GoodDouble)
 
 			val size = 100

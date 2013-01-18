@@ -65,7 +65,7 @@ case object DoubleBull extends Dart {
 	val sector = Bull
 	val zone = Double
 }
-case class NormalDart(val sector: Sector, val zone: DartZone) extends Dart {
+case class NormalDart(sector: Sector, zone: DartZone) extends Dart {
 	require(zone.coef > 0)
 	val color: DartColor = {
 		val whiteList = Set(1, 4, 6, 15, 17, 19, 16, 11, 9, 5)
@@ -82,7 +82,7 @@ case class NormalDart(val sector: Sector, val zone: DartZone) extends Dart {
 object Dart {
 	/** Build from String */
 	def apply(s: String): Dart = {
-		if (s.isEmpty()) throw new IllegalArgumentException("Invalid Dart format: "+s)
+		if (s.isEmpty) throw new IllegalArgumentException("Invalid Dart format: "+s)
 		try {
 			s.toUpperCase match {
 				case "DB" => DoubleBull
@@ -99,7 +99,7 @@ object Dart {
 					}
 			}
 		} catch {
-			case _ => throw new IllegalArgumentException("Invalid Dart format: "+s)
+			case _ : Throwable => throw new IllegalArgumentException("Invalid Dart format: "+s)
 		}
 	}
 
@@ -198,7 +198,7 @@ case object OutOfBoard extends DartSector {
 case object Bull extends DartSector {
 	def value: Int = 25
 }
-case class Sector(val value: Int) extends DartSector {
+case class Sector(value: Int) extends DartSector {
 	require(value > 0)
 	require(value < 21)
 }

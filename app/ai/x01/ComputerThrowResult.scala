@@ -15,9 +15,7 @@
 */
 package ai.x01
 
-import scala.collection.immutable.Set
 import play.api.libs.json._
-import ai.Level
 import dart._
 import ai.x01.AiPlayerX01._
 

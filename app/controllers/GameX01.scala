@@ -18,7 +18,6 @@ package controllers
 import play.api.mvc._
 import play.api.libs.json._
 import ai.x01._
-import ai.x01.ComputerThrowRequest._
 
 object GameX01 extends Controller {
 
@@ -26,7 +25,7 @@ object GameX01 extends Controller {
 		val requestJson: JsValue = request.body
 		val computerRequest = Json.fromJson(requestJson)(ComputerThrowRequestsFormat)
 
-		val computerResult = AiPlayerX01.processComputerRequest(computerRequest)
+		val computerResult = AiPlayerX01.processComputerRequest(computerRequest.get)
 
 		Ok(Json.toJson(computerResult)(ComputerThrowResultWrites))
 	}

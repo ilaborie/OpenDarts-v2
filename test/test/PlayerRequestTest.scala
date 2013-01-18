@@ -16,14 +16,8 @@
 package test
 
 import org.specs2.mutable._
-import play.api.test._
-import play.api.test.Helpers._
 import play.api.libs.json._
-import dart._
-import dart.Dart._
 import ai.x01._
-import ai.x01.ComputerThrowRequest._
-import scala.math
 
 class PlayerRequestTest extends Specification {
 
@@ -47,7 +41,7 @@ class PlayerRequestTest extends Specification {
 				))
 			val request = Json.fromJson(json)(ComputerThrowRequestsFormat)
 
-			request.comKey === 3
+			request.get.comKey === 3
 		}
 
 		"be read from JSON" in {
@@ -61,7 +55,7 @@ class PlayerRequestTest extends Specification {
 			} """
 			val value = Json.parse(json)
 			val request = Json.fromJson(value)(ComputerThrowRequestsFormat)
-			request.comKey === 19
+			request.get.comKey === 19
 		}
 	}
 

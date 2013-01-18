@@ -1,6 +1,6 @@
 package ai
 
-sealed case class Level(val value: Int) {
+sealed case class Level(value: Int) {
 
 	lazy val coefficient = Level.levelCoefficient(value)
 }

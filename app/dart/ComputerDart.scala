@@ -47,10 +47,10 @@ object ComputerDart {
 		// Test unLucky
 		if (nextInt(unluckyFactor) == 0) UnluckyDart
 		else {
-			val coeff = level.coefficient;
-			val expectedPosition = DartBoard.getDartPosition(expected);
-			
-			// Throw on x and y
+			val coeff = level.coefficient
+			val expectedPosition = DartBoard.getDartPosition(expected)
+
+      // Throw on x and y
 			val x = randomPosition(expectedPosition._1, coeff * xCorrect)
 			val y = randomPosition(expectedPosition._2, coeff * yCorrect)
 
@@ -62,7 +62,6 @@ object ComputerDart {
 	 * Get a position (x or y)
 	 * @param expected the expected position
 	 * @param coeff the random coefficient
-	 * @param unlucky the unlucky factor
 	 * @return the random position
 	 */
 	private def randomPosition(expected: Double, coeff: Double): Double = expected + (nextGaussian * coeff)

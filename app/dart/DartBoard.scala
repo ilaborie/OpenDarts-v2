@@ -51,8 +51,8 @@ object DartBoard {
 		val sectors = List(6, 13, 4, 18, 1, 20, 5, 12, 9, 14, 11, 8, 16, 7, 19, 3, 17, 2, 15, 10)
 		for (i <- 0 until sectors.size) yield (Sector(sectors(i)), (i * 18))
 	}
-	val sectorAngleList: List[(Sector, Int)] = angles toList
-	val sectorAngleMap: Map[Sector, Int] = angles toMap
+	val sectorAngleList: List[(Sector, Int)] = angles.toList
+	val sectorAngleMap: Map[Sector, Int] = angles.toMap
 
 	/**
 	 * Get the dart position in the dart board
@@ -74,10 +74,10 @@ object DartBoard {
 			case DoubleBull => 0
 			case SemiBull => (doubleBullZone + simpleBullZone) / 2
 			case NormalDart(sector, zone) => {
-				val dist = getDistance(zone);
-				val deg = getAngle(sector);
-				val rad = (deg * Pi) / 180;
-				dist * cos(rad);
+				val dist = getDistance(zone)
+				val deg = getAngle(sector)
+				val rad = (deg * Pi) / 180
+				dist * cos(rad)
 			}
 			case _ => getDistance(NoZone)
 		}
@@ -93,11 +93,11 @@ object DartBoard {
 			case DoubleBull => 0
 			case SemiBull => (doubleBullZone + simpleBullZone) / 2
 			case NormalDart(sector, zone) => {
-				val dist = getDistance(zone);
-				val deg = getAngle(sector);
-				val rad = (deg * Pi) / 180;
-				dist * sin(rad);
-			}
+				val dist = getDistance(zone)
+				val deg = getAngle(sector)
+				val rad = (deg * Pi) / 180
+        dist * sin(rad)
+      }
 			case _ => getDistance(NoZone)
 		}
 	}
@@ -138,7 +138,7 @@ object DartBoard {
 		val sec: Option[(Sector, Int)] = sectorAngleList.find(sa => (angle < sa._2))
 		// Take the sector 
 		sec match {
-			case Some((sec, _)) => sec
+			case Some((sector, _)) => sector
 			case _ => Sector(6)
 		}
 	}

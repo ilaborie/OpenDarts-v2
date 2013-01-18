@@ -15,14 +15,13 @@
 */
 package ai.x01
 
-import scala.collection.Set
 import dart.Dart
 import dart.Dart._
 import dart.DoubleBull
 import dart.SemiBull
 
 object BestDartOneLeft extends BestDart {
-	// FIXME NoPressureAtAllDart, PlayBroken
+
 	val bestDarts1: Map[Int, DartChoice] = Map(
 
 		// 12x
