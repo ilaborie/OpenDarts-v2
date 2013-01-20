@@ -19,7 +19,7 @@ class TestingLevel extends Specification {
     result.avg must beCloseTo(expected, diff)
   }
 
-  def test(level: Int, expected: Double) = testDiff(level, expected, 0.5)
+  def test(level: Int, expected: Double) = testDiff(level, expected, 0.2)
 
   "Level 0" should {
     "play around 52 darts" in testDiff(0, 52, 2)
@@ -84,4 +84,5 @@ class TestingLevel extends Specification {
   "Level 15" should {
     "play around 13 darts" in test(15, 13)
   }
+
 }

@@ -21,7 +21,7 @@ git push heroku master
 # Deploy on CouldFoundry
 # http://blog.cloudfoundry.com/2012/05/31/cloud-foundry-now-supports-play/
 echo "Deploy on CouldFoundry (need a vmc login before)"
-vmc update opendarts --path=$DIST_PATH
+vmc push opendarts --path=$DIST_PATH
 
 # Deploy on CloudBees
 # https://run.cloudbees.com/a/ilaborie#app-manage/development:ilaborie/opendarts2-2
