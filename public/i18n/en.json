@@ -110,5 +110,12 @@
 	"x01.new.players.handicap": "Handicap",
 	"x01.new.players.actions": "Actions",
 
+    "x01.finish.noFinish": "No finish !",
+    "x01.finish.title": "Finish for $score",
+    "x01.finish.avoid": "Avoid",
+    "x01.finish.pressure": "On pressure",
+    "x01.finish.noPressure": "No pressure",
+    "x01.finish.aggressive": "Aggressive",
+
 	"end": "fin"
 }

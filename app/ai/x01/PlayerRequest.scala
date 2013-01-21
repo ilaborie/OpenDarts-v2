@@ -17,19 +17,19 @@ package ai.x01
 
 import scala.collection.immutable.Set
 import play.api.libs.json._
-import dart.Level
+import ai.Level
 import dart.Dart
 
 case class ComputerThrowRequest(comKey: Int, score: Int, level: Int, default: String, opponent: Double, decisive: Boolean)
 
 object ComputerThrowRequestsFormat extends Format[ComputerThrowRequest] {
-	def reads(json: JsValue): ComputerThrowRequest = ComputerThrowRequest(
+	def reads(json: JsValue): JsResult[ComputerThrowRequest] = JsSuccess(ComputerThrowRequest(
 		(json \ "comKey").as[Int],
 		(json \ "left").as[Int],
 		(json \ "lvl").as[Int],
 		(json \ "type").as[String],
 		(json \ "opponent").as[Double],
-		(json \ "decisive").as[Boolean])
+		(json \ "decisive").as[Boolean]))
 		
 		
 	def writes(request: ComputerThrowRequest) = JsObject(Seq(

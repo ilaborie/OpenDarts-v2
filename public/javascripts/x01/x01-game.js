@@ -1,509 +1,512 @@
 /*
-   Copyright 2012 Igor Laborie
+ Copyright 2012 Igor Laborie
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-*/
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 /**
  * GameX01 Object
  */
 function GameX01(options) {
-	this.uuid = createUuid();
-	var id = 0;
-	var option = options;
-	
-	var currentSet = null;
-	var finishedSets = [];
+    this.uuid = createUuid();
+    var id = 0;
+    var option = options;
 
-	// Status
-	var winner = null;
-	var stats = {};
+    var currentSet = null;
+    var finishedSets = [];
 
-	if (x01.currentGame) {
-		id = x01.currentGame.getId() +1;
-	} // else 0
+    // Status
+    var winner = null;
+    var stats = {};
 
-	this.isStarted = function() {
-		return currentSet.isStarted();
-	};
+    if (x01.currentGame) {
+        id = x01.currentGame.getId() + 1;
+    } // else 0
 
-	// GameX01 next
-	this.next= function() {
-		if (currentSet && !currentSet.isFinished()) {
-			// Continue set
-			currentSet.next();
-		} else if (currentSet) {
-			finishedSets.push(currentSet);
-			$("#"+currentSet.uuid).hide();
+    this.isStarted = function () {
+        return currentSet.isStarted();
+    };
 
-			// check Winner
-			var toWin = option.nbSets;
-			var p = currentSet.getWinner();
-			if(toWin===this.getPlayerWin(p)) {
-				// Winner
-				winner = p;
-				currentSet = null;
-				x01.finishedGames.push(this);
-				x01.currentGame = null;
-				this.displayFinished();
+    // GameX01 next
+    this.next = function () {
+        if (currentSet && !currentSet.isFinished()) {
+            // Continue set
+            currentSet.next();
+        } else if (currentSet) {
+            finishedSets.push(currentSet);
+            $("#" + currentSet.uuid).hide();
 
-				return;
-			}
-			
-			currentSet.displayFinished();
-		}
-	};
+            // check Winner
+            var toWin = option.nbSets;
+            var p = currentSet.getWinner();
+            if (toWin === this.getPlayerWin(p)) {
+                // Winner
+                winner = p;
+                currentSet = null;
+                x01.finishedGames.push(this);
+                x01.currentGame = null;
+                this.displayFinished();
 
-	this.startNewSet = function() {
-		// Create a new Set
-		currentSet = new SetX01(this);
-		currentSet.start();
+                return;
+            }
 
-		// Display new set
-		var $set = currentSet.display();
-		$("#game").empty().append($set);
-		tuningSize();
-		msg.apply($set);
+            currentSet.displayFinished();
+        }
+    };
 
-		// go ahead
-		this.next();
-	};
+    this.startNewSet = function () {
+        // Create a new Set
+        currentSet = new SetX01(this);
+        currentSet.start();
 
-	// GameX01 displayFinished
-	this.displayFinished = function() {
-		$("#game").empty();
-		this.displayHistory();
-	};
-	this.displayHistory = function() {
-		var $list = $("<ul/>").addClass("nav").addClass("nav-tabs");
-		// Add Game
-		var $gameNav = $("<a/>", {
-				"href": "#" + this.uuid,
-				"data-toggle": "tab",
-				"class": "navGame"
-			}).append('<i class="icon-chevron-right"></i>')
-				.append($("<span/>").addClass("badge badge-inverse").append(msg.get("label.game")))
-				.append(" ")
-				.append(this.getName());
-		$list.append($("<li/>")
-			.append($gameNav));
+        // Display new set
+        var $set = currentSet.display();
+        $("#game").empty().append($set);
+        tuningSize();
+        msg.apply($set);
 
-		// Add Sets
-		var set;
-		var leg;
-		var $setNav;
-		for (var i=0; i<this.getSets().length; i++) {
-			set = this.getSets()[i];
-			$setNav = $("<a/>", {
-					"href": "#" + set.uuid,
-					"data-toggle": "tab",
-					"class": "navSet"
-				}).append('<i class="icon-chevron-right"></i>')
-					.append($("<span/>").addClass("badge badge-primary").append(msg.get("label.set")))
-					.append(" ")
-					.append(set.getName());
-			$list.append($("<li/>")
-				.append($setNav));
-		}
+        // go ahead
+        this.next();
+    };
 
-		var $content = $("<div/>").addClass("tab-content");
-		
-		// Add Game
-		var $gameContent = $("<div/>").addClass("tab-pane").attr("id", this.uuid);
-		$gameContent.append($("<div/>").addClass("row-fluid")
-			.append($("<div/>").addClass("span8")
-				.append($("<h1/>").append(this.getName()))
-				.append(this.getSetsDetail())
-				.append(this.getPlayersCharts()))
-			.append($("<div/>").addClass("span4").append(this.getTableStats())));
-		$content.append($gameContent);
+    // GameX01 displayFinished
+    this.displayFinished = function () {
+        $("#game").empty();
+        this.displayHistory();
+    };
+    this.displayHistory = function () {
+        var $list = $("<ul/>").addClass("nav").addClass("nav-tabs");
+        // Add Game
+        var $gameNav = $("<a/>", {
+            "href": "#" + this.uuid,
+            "data-toggle": "tab",
+            "class": "navGame"
+        }).append('<i class="icon-chevron-right"></i>')
+            .append($("<span/>").addClass("badge badge-inverse").append(msg.get("label.game")))
+            .append(" ")
+            .append(this.getName());
+        $list.append($("<li/>")
+            .append($gameNav));
 
-		var $setContent;
+        // Add Sets
+        var set;
+        var leg;
+        var $setNav;
+        for (var i = 0; i < this.getSets().length; i++) {
+            set = this.getSets()[i];
+            $setNav = $("<a/>", {
+                "href": "#" + set.uuid,
+                "data-toggle": "tab",
+                "class": "navSet"
+            }).append('<i class="icon-chevron-right"></i>')
+                .append($("<span/>").addClass("badge badge-primary").append(msg.get("label.set")))
+                .append(" ")
+                .append(set.getName());
+            $list.append($("<li/>")
+                .append($setNav));
+        }
 
-		var $legNav;
-		var $legPill;
+        var $content = $("<div/>").addClass("tab-content");
 
-		var $legContent;
-		var $legDetail;
-		for (var k=0; k< this.getSets().length; k++) {
-			set = this.getSets()[k];
-			// Add Set
-			$setDetail = $("<h2/>").append(set.getName());
+        // Add Game
+        var $gameContent = $("<div/>").addClass("tab-pane").attr("id", this.uuid);
+        $gameContent.append($("<div/>").addClass("row-fluid")
+            .append($("<div/>").addClass("span8")
+                .append($("<h1/>").append(this.getName()))
+                .append(this.getSetsDetail())
+                .append(this.getPlayersCharts()))
+            .append($("<div/>").addClass("span4").append(this.getTableStats())));
+        $content.append($gameContent);
 
-			$setContent = $("<div/>").addClass("tab-pane").attr("id", set.uuid);
-			$setContent.append($("<div/>").addClass("row-fluid")
-				.append($("<div/>").addClass("span8")
-					.append($("<h2/>").append(set.getName()))
-					.append(set.getLegsDetail()))
-				.append($("<div/>").addClass("span4").append(set.getTableStats())));
+        var $setContent;
 
-			$legNav = $("<ul/>").addClass("nav").addClass("nav-tabs");
-			$legContent = $("<div/>").addClass("tab-content");
-			// Leg detail
-			for (var l = 0; l < set.getLegs().length; l++) {
-				leg = set.getLegs()[l];
+        var $legNav;
+        var $legPill;
 
-				// Nav
-				$legPill = $("<li/>");
-				if (l===0) {
-					$legPill.addClass("active");
-				}
-				$legPill.append(
-					$("<a/>", {
-						"href": "#" + leg.uuid,
-						"data-toggle": "tab",
-						"class": "navLeg"
-					}).append(leg.getNameWinner())
-				);
+        var $legContent;
+        var $legDetail;
+        for (var k = 0; k < this.getSets().length; k++) {
+            set = this.getSets()[k];
+            // Add Set
+            $setDetail = $("<h2/>").append(set.getName());
 
-				$legNav.append($legPill);
+            $setContent = $("<div/>").addClass("tab-pane").attr("id", set.uuid);
+            $setContent.append($("<div/>").addClass("row-fluid")
+                .append($("<div/>").addClass("span8")
+                    .append($("<h2/>").append(set.getName()))
+                    .append(set.getLegsDetail()))
+                .append($("<div/>").addClass("span4").append(set.getTableStats())));
 
-				// Content
-				$legDetail = $("<div/>").addClass("tab-pane").attr("id", leg.uuid);
-				if (l===0) {
-					$legDetail.addClass("active");
-				}
-				$legDetail.append($("<div/>").addClass("row-fluid")
-					.append($("<div/>").addClass("span8")
-						.append($("<h3/>").append(leg.getName()))
-						.append(leg.getTableScore(this.getPlayers(), false)))
-					.append($("<div/>").addClass("span4").append(leg.getTableStats())));
-				$content.append($legDetail);
-				$legContent.append($legDetail);
-			}
+            $legNav = $("<ul/>").addClass("nav").addClass("nav-tabs");
+            $legContent = $("<div/>").addClass("tab-content");
+            // Leg detail
+            for (var l = 0; l < set.getLegs().length; l++) {
+                leg = set.getLegs()[l];
 
-			$setContent.append(
-				$("<div/>").addClass("tabbable").addClass("SetLegDetail")
-					.append($legNav)
-					.append($legContent)
-			);
+                // Nav
+                $legPill = $("<li/>");
+                if (l === 0) {
+                    $legPill.addClass("active");
+                }
+                $legPill.append(
+                    $("<a/>", {
+                        "href": "#" + leg.uuid,
+                        "data-toggle": "tab",
+                        "class": "navLeg"
+                    }).append(leg.getNameWinner())
+                );
 
-			$content.append($setContent);
-		}
+                $legNav.append($legPill);
 
-		var $history = $("<div>").addClass("tabtable tabs-left")
-			.append($list)
-			.append($content);
+                // Content
+                $legDetail = $("<div/>").addClass("tab-pane").attr("id", leg.uuid);
+                if (l === 0) {
+                    $legDetail.addClass("active");
+                }
+                $legDetail.append($("<div/>").addClass("row-fluid")
+                    .append($("<div/>").addClass("span8")
+                        .append($("<h3/>").append(leg.getName()))
+                        .append(leg.getTableScore(this.getPlayers(), false)))
+                    .append($("<div/>").addClass("span4").append(leg.getTableStats())));
+                $content.append($legDetail);
+                $legContent.append($legDetail);
+            }
 
-		$("#history").empty().append($history);
+            $setContent.append(
+                $("<div/>").addClass("tabbable").addClass("SetLegDetail")
+                    .append($legNav)
+                    .append($legContent)
+            );
 
-		// Display charts
-		var p;
-		for (var m=0; m< options.players.length; m++) {
-			p = options.players[m];
-			diplayPie("#" + this.getPlayerChartId(p),p, this);
-		}
+            $content.append($setContent);
+        }
 
-		//  Activation
-		$("#history ul li:first-child").children("a").click();
-		$("#history").show();
-	};
-	this.getSetsDetail = function() {
-		var $table = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
-		var $head = $("<thead/>").append("<tr/>");
-		var $body = $("<tbody/>");
-		var player;
-		var clazz;
-		for (var i=0; i< options.players.length; i++) {
-			player = options.players[i];
-			clazz = "textRight";
-			if (i!==0) {
-				if (i<(options.players.length-1)) {
-					clazz = "textCenter";
-				} else {
-					clazz = "textLeft";
-				}
-				$head.append(
-					$("<td/>").addClass("textCenter").append(
-						this.getPlayerWin(options.players[i-1]) + " - "  + this.getPlayerWin(player)
-				));
-			}
-			if (winner.uuid === player.uuid) {
-				$head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
-			} else {
-				$head.append($("<td/>").addClass(clazz).append(player.getName()));
-			}
-		}
-		var $row;
-		var set;
-		for (var j=0; j<this.getSets().length; j++) {
-			set = this.getSets()[j];
-			clazz = "textRight";
-			$row = $("<tr/>");
-			for (var k=0; k<options.players.length; k++) {
-				player = options.players[k];
-				if (k!==0) {
-					if (k<(options.players.length-1)) {
-						clazz = "textCenter";
-					} else {
-						clazz = "textLeft";
-					}
-					$row.append(
-						$("<td/>").addClass("textCenter").append(" "));
-				}
-				$row.append($("<td/>").addClass(clazz).append(set.getPlayerWin(player)));
-			}
-			$body.append($row);
-		}
+        var $historyDiv = $("#history");
+        var $history = $("<div>").addClass("tabtable tabs-left")
+            .append($list)
+            .append($content);
 
-		$table.append($head).append($body);
-		return $table;
-	};
-	this.getPlayersCharts = function() {
-		var $res = $("<div/>").addClass("chartGroup");
-		var p;
-		for (var i=0; i<options.players.length; i++) {
-			p = options.players[i];
-			$res.append($("<span/>").attr("id", this.getPlayerChartId(p)));
-		}
-		return $res;
-	};
-	this.getPlayerChartId = function(player) {
-		return "chart-p-" +player.uuid;
-	};
-	this.getStats = function(key, player) {
-		return stats[key][player.uuid];
-	};
-	this.getTableStats = function() {
-		var $table = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
-		var $head = $("<thead/>").append("<tr/>");
-		var $body = $("<tbody/>");
-		var player;
-		var clazz;
-		for (var i=0; i< options.players.length; i++) {
-			player = options.players[i];
-			clazz = "textRight";
-			if (i%2===1) {
-				clazz = "textLeft";
-				$head.append(
-					$("<td/>").addClass("textCenter").append(
-						this.getPlayerWin(options.players[i-1]) + " - "  + this.getPlayerWin(player)
-				));
-			}
-			if (winner.uuid === player.uuid) {
-				$head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
-			} else {
-				$head.append($("<td/>").addClass(clazz).append(player.getName()));
-			}
-		}
-		var $row;
+        $historyDiv.empty().append($history);
 
-		var currentValue = null;
-		var bestValue = null;
-		var $currentCell = null;
-		var $bestCells = [];
-		var comp;
-		for(var key in stats) {
-			if (x01.stats.game.contents[key].display) {
-				clazz = "textRight";
-				$row = $("<tr/>");
-				$bestCells = [];
-				bestValue = null;
-				for (var k=0; k<options.players.length; k++) {
-					player  = options.players[k];
-					if (k%2===1) {
-						clazz = "textLeft";
-						$row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.game, key)));
-					}
-					$currentCell = $("<td/>").addClass(clazz);
-					currentValue = +stats[key][player.uuid];
+        // Display charts
+        var p;
+        for (var m = 0; m < options.players.length; m++) {
+            p = options.players[m];
+            diplayPie("#" + this.getPlayerChartId(p), p, this);
+        }
 
-					// compare
-					comp = x01.stats.game.contents[key].sorter(currentValue, bestValue);
-					if (comp >= 0) {
-						if (comp>0) {
-							$bestCells = [];
-							bestValue = currentValue;
-						}
-						$bestCells.push($currentCell);
-					}
+        //  Activation
+        $historyDiv.find("ul li:first-child").children("a").click();
+        $historyDiv.show();
+    };
+    this.getSetsDetail = function () {
+        var $table = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
+        var $head = $("<thead/>").append("<tr/>");
+        var $body = $("<tbody/>");
+        var player;
+        var clazz;
+        for (var i = 0; i < options.players.length; i++) {
+            player = options.players[i];
+            clazz = "textRight";
+            if (i !== 0) {
+                if (i < (options.players.length - 1)) {
+                    clazz = "textCenter";
+                } else {
+                    clazz = "textLeft";
+                }
+                $head.append(
+                    $("<td/>").addClass("textCenter").append(
+                        this.getPlayerWin(options.players[i - 1]) + " - " + this.getPlayerWin(player)
+                    ));
+            }
+            if (winner.uuid === player.uuid) {
+                $head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
+            } else {
+                $head.append($("<td/>").addClass(clazz).append(player.getName()));
+            }
+        }
+        var $row;
+        var set;
+        for (var j = 0; j < this.getSets().length; j++) {
+            set = this.getSets()[j];
+            clazz = "textRight";
+            $row = $("<tr/>");
+            for (var k = 0; k < options.players.length; k++) {
+                player = options.players[k];
+                if (k !== 0) {
+                    if (k < (options.players.length - 1)) {
+                        clazz = "textCenter";
+                    } else {
+                        clazz = "textLeft";
+                    }
+                    $row.append(
+                        $("<td/>").addClass("textCenter").append(" "));
+                }
+                $row.append($("<td/>").addClass(clazz).append(set.getPlayerWin(player)));
+            }
+            $body.append($row);
+        }
 
-					$row.append($currentCell.append(getStatsDisplayValue(currentValue)));
-				}
-				// Display best
-				if ($bestCells.length>0) {
-					for (var j=0; j<$bestCells.length; j++) {
-						$bestCells[j].addClass("best");
-					}
-				}
+        $table.append($head).append($body);
+        return $table;
+    };
+    this.getPlayersCharts = function () {
+        var $res = $("<div/>").addClass("chartGroup");
+        var p;
+        for (var i = 0; i < options.players.length; i++) {
+            p = options.players[i];
+            $res.append($("<span/>").attr("id", this.getPlayerChartId(p)));
+        }
+        return $res;
+    };
+    this.getPlayerChartId = function (player) {
+        return "chart-p-" + player.uuid;
+    };
+    this.getStats = function (key, player) {
+        return stats[key][player.uuid];
+    };
+    this.getTableStats = function () {
+        var $table = $("<table/>").addClass("table").addClass("table-striped").addClass("table-condensed");
+        var $head = $("<thead/>").append("<tr/>");
+        var $body = $("<tbody/>");
+        var player;
+        var clazz;
+        for (var i = 0; i < options.players.length; i++) {
+            player = options.players[i];
+            clazz = "textRight";
+            if (i % 2 === 1) {
+                clazz = "textLeft";
+                $head.append(
+                    $("<td/>").addClass("textCenter").append(
+                        this.getPlayerWin(options.players[i - 1]) + " - " + this.getPlayerWin(player)
+                    ));
+            }
+            if (winner.uuid === player.uuid) {
+                $head.append($("<td/>").addClass(clazz).append($("<strong/>").append(player.getName())));
+            } else {
+                $head.append($("<td/>").addClass(clazz).append(player.getName()));
+            }
+        }
+        var $row;
 
-				$body.append($row);
-			}
-		}
-		$table.append($head).append($body);
-		return $("<p/>").append($table).html();
-	};
-	// Update stats
-	this.updateStats = function(player, json) {
-		// Update values
-		for (var key in json.gameStats) {
-			if (!stats[key]) {
-				stats[key] = {};
-			}
-			stats[key][player.uuid] = json.gameStats[key];
-		}
+        var currentValue = null;
+        var bestValue = null;
+        var $currentCell = null;
+        var $bestCells = [];
+        var comp;
+        for (var key in stats) {
+            if (x01.stats.game.contents[key].display) {
+                clazz = "textRight";
+                $row = $("<tr/>");
+                $bestCells = [];
+                bestValue = null;
+                for (var k = 0; k < options.players.length; k++) {
+                    player = options.players[k];
+                    if (k % 2 === 1) {
+                        clazz = "textLeft";
+                        $row.append($("<td/>").addClass("textCenter").append(getStatLabel(x01.stats.game, key)));
+                    }
+                    $currentCell = $("<td/>").addClass(clazz);
+                    currentValue = +stats[key][player.uuid];
 
-		var set = currentSet;
-		if (set===null) {
-			var len = finishedlegs.length;
-			set = finishedlegs[len-1];
-		}
-		var leg = set.getCurrentLeg();
+                    // compare
+                    comp = x01.stats.game.contents[key].sorter(currentValue, bestValue);
+                    if (comp >= 0) {
+                        if (comp > 0) {
+                            $bestCells = [];
+                            bestValue = currentValue;
+                        }
+                        $bestCells.push($currentCell);
+                    }
 
-		// Display best
-		var bestSpan = [];
-		var currentSpan;
-		var bestValue = null;
-		var currentValue;
-		var comp;
-		var p;
-		for (var stk in stats) {
-			bestSpan = [];
-			bestValue = null;
+                    $row.append($currentCell.append(getStatsDisplayValue(currentValue)));
+                }
+                // Display best
+                if ($bestCells.length > 0) {
+                    for (var j = 0; j < $bestCells.length; j++) {
+                        $bestCells[j].addClass("best");
+                    }
+                }
 
-			for (var i=0; i< options.players.length; i++) {
-				p = options.players[i];
-				currentValue = +stats[stk][p.uuid]; // as Number
-				currentSpan = $("#"+leg.getStatsPlayerId(p)+" ."+x01.stats.game.key+" ." + stk);
-				
-				// clear stats
-				currentSpan.removeClass("best");
+                $body.append($row);
+            }
+        }
+        $table.append($head).append($body);
+        return $("<p/>").append($table).html();
+    };
+    // Update stats
+    this.updateStats = function (player, json) {
+        // Update values
+        for (var key in json.gameStats) {
+            if (!stats[key]) {
+                stats[key] = {};
+            }
+            stats[key][player.uuid] = json.gameStats[key];
+        }
 
-				// compare
-				comp = x01.stats.game.contents[stk].sorter(currentValue, bestValue);
-				if (comp >= 0) {
-					if (comp>0) {
-						bestSpan = [];
-						bestValue = currentValue;
-					}
-					bestSpan.push(currentSpan);
-				}
-			}
-			if (bestSpan.length>0) {
-				for (var j=0; j<bestSpan.length; j++) {
-					bestSpan[j].addClass("best");
-				}
-			}
-		}
-	};
+        var set = currentSet;
+        if (set === null) {
+            var len = finishedlegs.length;
+            set = finishedlegs[len - 1];
+        }
+        var leg = set.getCurrentLeg();
 
-	// GameX01 getPlayers
-	this.getPlayers = function() {
-		return option.players;
-	};
+        // Display best
+        var bestSpan = [];
+        var currentSpan;
+        var bestValue = null;
+        var currentValue;
+        var comp;
+        var p;
+        for (var stk in stats) {
+            bestSpan = [];
+            bestValue = null;
 
-	// GameX01 getWinner
-	this.getWinner = function() {
-		return winner;
-	};
+            for (var i = 0; i < options.players.length; i++) {
+                p = options.players[i];
+                currentValue = +stats[stk][p.uuid]; // as Number
+                currentSpan = $("#" + leg.getStatsPlayerId(p) + " ." + x01.stats.game.key + " ." + stk);
 
-	// GameX01 isFinished
-	this.isFinished = function() {
-		return (winner!==null);
-	};
+                // clear stats
+                currentSpan.removeClass("best");
 
-	// GameX01 getPlayerWin
-	this.getPlayerWin = function(player) {
-		var res = 0;
-		for (var i=0; i<finishedSets.length; i++) {
-			if (player===finishedSets[i].getWinner()) {
-				res++;
-			}
-		}
-		return res;
-	};
+                // compare
+                comp = x01.stats.game.contents[stk].sorter(currentValue, bestValue);
+                if (comp >= 0) {
+                    if (comp > 0) {
+                        bestSpan = [];
+                        bestValue = currentValue;
+                    }
+                    bestSpan.push(currentSpan);
+                }
+            }
+            if (bestSpan.length > 0) {
+                for (var j = 0; j < bestSpan.length; j++) {
+                    bestSpan[j].addClass("best");
+                }
+            }
+        }
+    };
 
-	// GameX01 getCurrentLeg
-	this.getCurrentSet = function() {
-		return currentSet;
-	};
+    // GameX01 getPlayers
+    this.getPlayers = function () {
+        return option.players;
+    };
 
-	// GameX01 getLegs
-	this.getSets = function() {
-		var res = [];
-		for (var i=0; i<finishedSets.length; i++) {
-			res.push(finishedSets[i]);
-		}
-		if (currentSet!==null) {
-			res.push(currentSet);
-		}
-		return res;
-	};
+    // GameX01 getWinner
+    this.getWinner = function () {
+        return winner;
+    };
 
-	// GameX01 getOption
-	this.getOption = function() {
-		return option;
-	};
+    // GameX01 isFinished
+    this.isFinished = function () {
+        return (winner !== null);
+    };
 
-	// GameX01 getId
-	this.getId = function() {
-		return id;
-	};
+    // GameX01 getPlayerWin
+    this.getPlayerWin = function (player) {
+        var res = 0;
+        for (var i = 0; i < finishedSets.length; i++) {
+            if (player === finishedSets[i].getWinner()) {
+                res++;
+            }
+        }
+        return res;
+    };
 
-	// GameX01 getName
-	this.getName = function() {
-		var res =  msg.get("label.game") + " #"+ (id+1) +" <small>" ;
-		$.each(this.getPlayers(),function(index, p){
-			if (index!==0) {
-				res += ", ";
-			}
-			res += p.name;
-		});
+    // GameX01 getCurrentLeg
+    this.getCurrentSet = function () {
+        return currentSet;
+    };
 
-		return res + "</small>";
-	};
+    // GameX01 getLegs
+    this.getSets = function () {
+        var res = [];
+        for (var i = 0; i < finishedSets.length; i++) {
+            res.push(finishedSets[i]);
+        }
+        if (currentSet !== null) {
+            res.push(currentSet);
+        }
+        return res;
+    };
 
-	// GameX01 start
-	this.start = function() {
-		x01.currentGame = this;
+    // GameX01 getOption
+    this.getOption = function () {
+        return option;
+    };
 
-		// Create set
-		currentSet = new SetX01(this);
-		currentSet.start();
+    // GameX01 getId
+    this.getId = function () {
+        return id;
+    };
 
-		x01Stats.db.clear();
-		this.display();
+    // GameX01 getName
+    this.getName = function () {
+        var res = msg.get("label.game") + " #" + (id + 1) + " <small>";
+        $.each(this.getPlayers(), function (index, p) {
+            if (index !== 0) {
+                res += ", ";
+            }
+            res += p.name;
+        });
+
+        return res + "</small>";
+    };
+
+    // GameX01 start
+    this.start = function () {
+        x01.currentGame = this;
+
+        // Create set
+        currentSet = new SetX01(this);
+        currentSet.start();
+
+        x01Stats.db.clear();
+        this.display();
 
 
-		this.next();
-	};
+        this.next();
+    };
 
-	// GameX01 close
-	this.close = function(callback) {
-		var game = this;
-		bootbox.confirm(msg.get("dia.game.close.title"), msg.get("btn.cancel"), msg.get("btn.quit"), function(result) {
-			if (result) {
-				x01.currentGame = null;
-				callback();
-			}
-		});
-	};
+    // GameX01 close
+    this.close = function (callback) {
+        var game = this;
+        bootbox.confirm(msg.get("dia.game.close.title"), msg.get("btn.cancel"), msg.get("btn.quit"), function (result) {
+            if (result) {
+                $(".popover").remove();
+                $(".tooltip").remove();
+                x01.currentGame = null;
+                callback();
+            }
+        });
+    };
 
-	// GameX01 display
-	this.display = function() {
-		var $game = $("#game");
-		// Clean old game
-		$game.empty();
+    // GameX01 display
+    this.display = function () {
+        var $game = $("#game");
+        // Clean old game
+        $game.empty();
 
-		// Create Sets
-		$.each(this.getSets(), function(index, set){
-			// Create Set
-			var $set = set.display();
+        // Create Sets
+        $.each(this.getSets(), function (index, set) {
+            // Create Set
+            var $set = set.display();
 
-			// Append to Game
-			$game.append($set);
+            // Append to Game
+            $game.append($set);
 
-		});
-		tuningSize();
-		msg.apply($game);
-	};
+        });
+        tuningSize();
+        msg.apply($game);
+    };
 }

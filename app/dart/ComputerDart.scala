@@ -16,30 +16,10 @@
 package dart
 
 import scala.util.Random._
+import ai.Level
 
-sealed case class Level(val value: Int)
 
 object ComputerDart {
-	/**
-	 * Level coefficient
-	 */
-	private val levelCoefficient: Map[Level, Double] = Map(
-		Level(0) -> 31.55, // about 52
-		Level(1) -> 27.60, // about 45 
-		Level(2) -> 24.08, // about 39
-		Level(3) -> 22.32, // about 36
-		Level(4) -> 20.55, // about 33
-		Level(5) -> 18.60, // about 30
-		Level(6) -> 17.30, // about 28
-		Level(7) -> 15.95, // about 26
-		Level(8) -> 14.55, // about 24
-		Level(9) -> 12.85, // about 22
-		Level(10) -> 11.75, // about 20.5
-		Level(11) -> 10.50, // about 19
-		Level(12) -> 8.67, // about 17.5
-		Level(13) -> 7.60, // about 16
-		Level(14) -> 6.21, // about 14.5
-		Level(15) -> 4.90) // about 13
 
 	/**
 	 * Unlucky stats (1 on value)
@@ -67,10 +47,10 @@ object ComputerDart {
 		// Test unLucky
 		if (nextInt(unluckyFactor) == 0) UnluckyDart
 		else {
-			val coeff = levelCoefficient(level);
-			val expectedPosition = DartBoard.getDartPosition(expected);
-			
-			// Throw on x and y
+			val coeff = level.coefficient
+			val expectedPosition = DartBoard.getDartPosition(expected)
+
+      // Throw on x and y
 			val x = randomPosition(expectedPosition._1, coeff * xCorrect)
 			val y = randomPosition(expectedPosition._2, coeff * yCorrect)
 
@@ -82,7 +62,6 @@ object ComputerDart {
 	 * Get a position (x or y)
 	 * @param expected the expected position
 	 * @param coeff the random coefficient
-	 * @param unlucky the unlucky factor
 	 * @return the random position
 	 */
 	private def randomPosition(expected: Double, coeff: Double): Double = expected + (nextGaussian * coeff)

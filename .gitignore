@@ -13,3 +13,6 @@ tmp/
 .cache
 .worksheet/
 bin/
+.idea/
+.idea_modules/
+*.iml

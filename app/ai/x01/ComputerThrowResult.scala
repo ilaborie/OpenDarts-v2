@@ -15,33 +15,35 @@
 */
 package ai.x01
 
-import scala.collection.immutable.Set
 import play.api.libs.json._
-import dart.Level
 import dart._
 import ai.x01.AiPlayerX01._
+import scala.collection.immutable._
 
 /**
  * Dart Result
  */
 case class DartResult(wished: String, done: String, color: String)
+
 object DartResult {
-	def apply(wished: Dart, done: Dart): DartResult = {
-		val color = done.color match {
-			case Red => "red"
-			case Green => "green"
-			case White => "white"
-			case Black => "black"
-			case _ => "none"
-		}
-		DartResult(wished.toString, done.toString, color)
-	}
-}
-object DartResultWrites extends Writes[DartResult] {
-	def writes(result: DartResult) = JsObject(Seq(
-		"wished" -> JsString(result.wished),
-		"done" -> JsString(result.done),
-		"color" -> JsString(result.color)))
+  def apply(wished: Dart, done: Dart): DartResult = {
+    val color = done.color match {
+      case Red => "red"
+      case Green => "green"
+      case White => "white"
+      case Black => "black"
+      case _ => "none"
+    }
+    DartResult(wished.toString, done.toString, color)
+  }
+
+  implicit object DartResultWrites extends Writes[DartResult] {
+    def writes(result: DartResult) = JsObject(Seq(
+      "wished" -> JsString(result.wished),
+      "done" -> JsString(result.done),
+      "color" -> JsString(result.color)))
+  }
+
 }
 
 /**
@@ -49,21 +51,26 @@ object DartResultWrites extends Writes[DartResult] {
  */
 case class ComputerThrowResult(comKey: Int, darts: List[WishedDone], status: Status, scoreDone: Int)
 
-object ComputerThrowResultWrites extends Writes[ComputerThrowResult] {
+object ComputerThrowResult {
 
-	def writes(result: ComputerThrowResult) = {
-		val status = result.status match {
-			case Win => "win"
-			case Broken => "broken"
-			case Normal => "normal"
-		}
 
-		val darts: List[JsValue] = result.darts.map((x: WishedDone) => DartResultWrites.writes(DartResult(x._1, x._2)))
+  implicit object ComputerThrowResultWrites extends Writes[ComputerThrowResult] {
 
-		JsObject(Seq(
-			"comKey" -> JsNumber(result.comKey),
-			"score" -> JsNumber(result.scoreDone),
-			"status" -> JsString(status),
-			"darts" -> JsArray(darts)))
-	}
+    def writes(result: ComputerThrowResult) = {
+      val status = result.status match {
+        case Win => "win"
+        case Broken => "broken"
+        case Normal => "normal"
+      }
+
+      val darts: List[JsValue] = result.darts.map((x: WishedDone) => DartResult.DartResultWrites.writes(DartResult(x._1, x._2)))
+
+      JsObject(Seq(
+        "comKey" -> JsNumber(result.comKey),
+        "score" -> JsNumber(result.scoreDone),
+        "status" -> JsString(status),
+        "darts" -> JsArray(darts)))
+    }
+  }
+
 }

@@ -1,0 +1,67 @@
+@*
+Copyright 2012 Igor Laborie
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*@
+@(finish: collection.SortedMap[Int, List[ai.x01.Finish]])
+@import ai.x01._
+
+@script = {
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="@routes.Assets.at("javascripts/i18n.js")"></script>
+    <script type="text/javascript">
+    $(function() { i18n();});
+    </script>
+}
+
+@bootstrap("Opendarts v2 Finishs", false, script) {
+
+    <div class="well well-small">
+        <ul class="nav nav-pills">
+            @for(i <- 17 to  1 by -1) {
+                <li><a href="#group_@i">@{i}0</a></li>
+            }
+        </ul>
+        <hr/>
+
+        <ul class="finishs unstyled">
+            @for( (score, scoreFinish) <- finish) {
+                @if(score%10==9){<li class="separator"><a name="group_@{score/10}"></a>&nbsp;</li>}
+                <li class="score">@score</li>
+                <ul class="unstyled finish">
+                @if(scoreFinish.isEmpty) {
+                    <li class="finish">
+                        <p class="text-warning" data-i18n="x01.finish.noFinish"></p>
+                    </li>
+                }
+                @for(f<-scoreFinish) {
+                    <li>
+                        <p class="@if(f.modifiers.contains(Optional)){muted}else{text-info}">
+                            @f.darts
+                            @if(f.modifiers.contains(OnPressure)) {
+                                <i class="icon-fire" data-i18n-title="x01.finish.pressure"></i>
+                            }
+                            @if(f.modifiers.contains(NoPressureAtAll)) {
+                                <i class="icon-leaf" data-i18n-title="x01.finish.noPressure"></i>
+                            }
+                            @if(f.modifiers.contains(Aggressive)) {
+                                <i class="icon-exclamation-sign" data-i18n-title="x01.finish.aggressive"></i>
+                            }
+                        </p>
+                    </li>
+                }
+                </ul>
+            }
+        </ul>
+    </div>
+}

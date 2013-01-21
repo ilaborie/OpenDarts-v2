@@ -16,161 +16,142 @@
 package ai.x01
 
 import dart._
-import dart.Dart._
-import scala.util.Random
-import scala.collection.immutable.Set
+import ai.Level
+import scala.collection.immutable._
 import play.api.Logger
 
 object AiPlayerX01 {
 
-	type WishedDone = (Dart, Dart)
+  type WishedDone = (Dart, Dart)
 
-	val log = Logger("ai.x01")
+  val log = Logger("ai.x01")
 
-	/**
-	 * Process Computer Request
-	 * @param request the request
-	 * @return the result
-	 */
-	def processComputerRequest(request: ComputerThrowRequest): ComputerThrowResult = {
-		val score = request.score
-		val level = Level(request.level)
-		val dart = Dart(request.default)
-		val modifiers: List[Modifier] = Modifier.fromRequest(request)
+  /**
+   * Process Computer Request
+   * @param request the request
+   * @return the result
+   */
+  def processComputerRequest(request: ComputerThrowRequest): ComputerThrowResult = {
+    val score = request.score
+    val level = Level(request.level)
+    val dart = Dart(request.default)
+    val modifiers: List[Modifier] = Modifier.fromRequest(request)
 
-		log.debug("#%s>  %s - %s [%s] - %s".format(request.comKey, score, level, dart, modifiers))
-		val req = PlayerRequest(level, dart, modifiers.toSet)
+    log.debug("#%s>  %s - %s [%s] - %s".format(request.comKey, score, level, dart, modifiers))
+    val req = PlayerRequest(level, dart, modifiers.toSet)
 
-		val (status, darts) = playTurn(score, req)
-		val scoreDone = status match {
-			case Win => 0
-			case Broken => score
-			case _ => darts.foldLeft(0)((x: Int, d: WishedDone) => x + d._2.score)
-		}
+    val (status, darts) = playTurn(score, req)
+    val scoreDone = status match {
+      case Win => 0
+      case Broken => score
+      case _ => darts.foldLeft(0)((x: Int, d: WishedDone) => x + d._2.score)
+    }
 
-		ComputerThrowResult(request.comKey, darts.reverse, status, scoreDone)
-	}
+    ComputerThrowResult(request.comKey, darts.reverse, status, scoreDone)
+  }
 
-	/**
-	 * Throw three darts
-	 * @param score the initial score
-	 * @param request the request
-	 * @return the result
-	 */
-	def playTurn(score: Int, request: PlayerRequest): (Status, List[WishedDone]) = playTurnAux(score, 3, request, Normal, Nil)
+  /**
+   * Throw three darts
+   * @param score the initial score
+   * @param request the request
+   * @return the result
+   */
+  def playTurn(score: Int, request: PlayerRequest): (Status, List[WishedDone]) = playTurnAux(score, 3, request, Normal, Nil)
 
-	private def playTurnAux(score: Int, dartLeft: Int, request: PlayerRequest, currentStatus: Status, playedDarts: List[WishedDone]): (Status, List[WishedDone]) = {
-		currentStatus match {
-			case Win => (currentStatus, playedDarts)
-			case Broken => (currentStatus, playedDarts)
-			case _ => if (dartLeft == 0) (currentStatus, playedDarts) else {
-				val (wished, dart) = playDart(score, dartLeft, request)
-				val newStatus = checkStatus(score, dart)
-				val scoreLeft = newStatus match {
-					case Win => 0
-					case Broken => score
-					case Normal => score - dart.score
-				}
+  private def playTurnAux(score: Int, dartLeft: Int, request: PlayerRequest, currentStatus: Status, playedDarts: List[WishedDone]): (Status, List[WishedDone]) = {
+    currentStatus match {
+      case Win => (currentStatus, playedDarts)
+      case Broken => (currentStatus, playedDarts)
+      case _ => if (dartLeft == 0) (currentStatus, playedDarts)
+      else {
+        val (wished, dart) = playDart(score, dartLeft, request)
+        val newStatus = checkStatus(score, dart)
+        val scoreLeft = newStatus match {
+          case Win => 0
+          case Broken => score
+          case Normal => score - dart.score
+        }
 
-				playTurnAux(scoreLeft, dartLeft - 1, request, newStatus, (wished, dart) :: playedDarts)
-			}
-		}
-	}
+        playTurnAux(scoreLeft, dartLeft - 1, request, newStatus, (wished, dart) :: playedDarts)
+      }
+    }
+  }
 
-	private def checkStatus(score: Int, dart: Dart): Status = {
-		val newScore = score - dart.score
-		if (newScore == 0 && dart.zone == Double) Win
-		else if (newScore < 2) Broken
-		else Normal
-	}
+  private def checkStatus(score: Int, dart: Dart): Status = {
+    val newScore = score - dart.score
+    if (newScore == 0 && dart.zone == Double) Win
+    else if (newScore < 2) Broken
+    else Normal
+  }
 
-	/**
-	 * Throw a dart
-	 * @param score the starting score
-	 * @param level the computer level
-	 * @param dartLeft the number of dart left
-	 * @param defaultDart the default dart
-	 * @param modifiers some modifier
-	 * @return the played dart
-	 */
-	def playDart(score: Int, dartLeft: Int, request: PlayerRequest): WishedDone = {
-		require(dartLeft > 0 && dartLeft < 4)
+  /**
+   * Throw a dart
+   * @param score the starting score
+   * @param dartLeft the number of dart left
+   * @return the played dart
+   */
+  def playDart(score: Int, dartLeft: Int, request: PlayerRequest): WishedDone = {
+    require(dartLeft > 0 && dartLeft < 4)
 
-		val bestDart = getBestDart(score, dartLeft, request.defaultDart, request.modifiers)
-		log.trace("%s in % darts choose %s".format(score, dartLeft, bestDart))
-		val done = ComputerDart.throwDart(request.level, bestDart)
-		log.trace("...done %s".format(done))
+    val bestDart = getBestDart(score, dartLeft, request.defaultDart, request.modifiers)
+    log.trace("%s in %s darts choose %s".format(score, dartLeft, bestDart))
+    val done = ComputerDart.throwDart(request.level, bestDart)
+    log.trace("...done %s".format(done))
 
-		(bestDart, done)
-	}
+    (bestDart, done)
+  }
 
-	/**
-	 * Get best dart
-	 * @param score the starting score
-	 * @param dartLeft the number of dart left
-	 * @param defaultDart the default dart
-	 * @param modifiers some modifier
-	 * @return the best dart
-	 */
-	private def getBestDart(score: Int, dartLeft: Int, defaultDart: Dart, modifiers: Set[Modifier]): Dart = {
-		val bestDartChooser: BestDart = dartLeft match {
-			case 1 => BestDartOneLeft
-			case 2 => BestDartTwoLeft
-			case _ => BestDartThreeLeft
-		}
+  /**
+   * Get Finish
+   * @param score the score
+   * @return all defined finish
+   */
+  def getFinish(score: Int): List[Finish] = {
+    val defaultDart = Dart.T20
+    val res = for {
+      (dart1, modifiers1) <- bestDartChooser(3).getBestDart(score, defaultDart).allDarts
+      (dart2, modifiers2) <- bestDartChooser(2).getBestDart(score - dart1.score, defaultDart).allDarts
+      (dart3, modifiers3) <- bestDartChooser(1).getBestDart(score - dart1.score - dart2.score, defaultDart).allDarts
+      if score == (dart1.score + dart2.score + dart3.score)
+    } yield Finish(dart1, dart2, dart3, (modifiers1 ++ modifiers2 ++ modifiers3))
+    res.toList
+  }
 
-		// Get all choices
-		val dartChoices: DartChoice = bestDartChooser.getBestDart(score, defaultDart)
+  /**
+   * Get best dart
+   * @param score the starting score
+   * @param dartLeft the number of dart left
+   * @param defaultDart the default dart
+   * @param modifiers some modifier
+   * @return the best dart
+   */
+  private def getBestDart(score: Int, dartLeft: Int, defaultDart: Dart, modifiers: Set[Modifier]): Dart = {
+    val dartChooser = bestDartChooser(dartLeft)
+    // Get all choices
+    val dartChoices: DartChoice = dartChooser.getBestDart(score, defaultDart)
 
-		// Choose
-		dartChoices.chooseDart(modifiers)
-	}
+    // Choose
+    dartChoices.chooseDart(modifiers)
+  }
+
+  private def bestDartChooser(dartLeft: Int): BestDart = dartLeft match {
+    case 1 => BestDartOneLeft
+    case 2 => BestDartTwoLeft
+    case _ => BestDartThreeLeft
+  }
 }
 
 /**
  * Get best dart
  */
 trait BestDart {
-	def getBestDart(score: Int, defaultDart: Dart): DartChoice
+  def getBestDart(score: Int, defaultDart: Dart): DartChoice
 }
 
 sealed abstract class Status
+
 case object Normal extends Status
+
 case object Broken extends Status
+
 case object Win extends Status
-
-/**
- * Modifier
- */
-sealed abstract class Modifier {
-	def shouldApply(request: ComputerThrowRequest): Boolean
-}
-object Modifier {
-	def fromRequest(request: ComputerThrowRequest): List[Modifier] = {
-		val base: List[Modifier] = List(OnPressure, NoPressureAtAll, GoodDouble, Aggressive)
-		LikeDart(Dart(request.default)) :: (base filter (_.shouldApply(request)))
-	}
-}
-
-/** Opponent might finish */
-case object OnPressure extends Modifier {
-	def shouldApply(request: ComputerThrowRequest): Boolean = request.opponent <= 1.5
-}
-/** Have time to better placement */
-case object NoPressureAtAll extends Modifier {
-	def shouldApply(request: ComputerThrowRequest): Boolean = request.opponent > 4
-}
-/** Start with a good Double */
-case object GoodDouble extends Modifier {
-	val goodDouble = List(32, 40, 16, 24, 36, 20, 8)
-	def shouldApply(request: ComputerThrowRequest): Boolean = goodDouble contains request.score
-}
-/** Play all doubles */
-case object Aggressive extends Modifier {
-	def shouldApply(request: ComputerThrowRequest): Boolean = request.decisive
-}
-/** Choose prefered dart */
-case class LikeDart(dart: Dart) extends Modifier {
-	def shouldApply(request: ComputerThrowRequest): Boolean = (dart == Dart(request.default))
-} 
-

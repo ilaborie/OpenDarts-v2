@@ -15,12 +15,9 @@
 */
 package test
 import org.specs2.mutable._
-import play.api.test._
-import play.api.test.Helpers._
 import dart._
 import dart.Dart._
 import ai._
-import ai.x01._
 import ai.x01.AiPlayerX01._
 import test.x01._
 

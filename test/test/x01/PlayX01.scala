@@ -20,7 +20,6 @@ import dart.Dart._
 import ai._
 import ai.x01._
 import ai.x01.AiPlayerX01._
-import scala.collection.immutable.Seq
 import scala.collection.immutable.Stream
 import scala.collection.immutable.Set
 
@@ -56,7 +55,6 @@ object PlayX01 {
 
 	/**
 	 * Play some 501
-	 * @param nbPlayed the number of playing leg
 	 * @param lvl the level
 	 * @return the result
 	 */
@@ -67,7 +65,6 @@ object PlayX01 {
 
 	/**
 	 * Return a stream of played dart for the score
-	 * @param score the score
 	 * @param lvl the level
 	 * @return Dart Stream
 	 */

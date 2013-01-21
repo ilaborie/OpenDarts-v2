@@ -1,6 +1,6 @@
 import sbt._
 import Keys._
-import PlayProject._
+import play.Project._
 import cloudbees.Plugin._
 import com.github.play2war.plugin._
 
@@ -14,7 +14,7 @@ object ApplicationBuild extends Build {
       // Not yet compatible: "com.google.guava" % "guava" % "13.0.1"
   )
 
-  val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA)
+  val main = play.Project(appName, appVersion, appDependencies)
     .settings(lessEntryPoints <<= baseDirectory(customLessEntryPoints))
     .settings(cloudBeesSettings :_*)
     .settings(CloudBees.applicationId := Some("ilaborie/opendarts2-2"))
