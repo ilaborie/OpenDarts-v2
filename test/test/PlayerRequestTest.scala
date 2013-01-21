@@ -21,31 +21,31 @@ import ai.x01._
 
 class PlayerRequestTest extends Specification {
 
-	"The request" should {
+  "The request" should {
 
-		"be write to JSON" in {
-			val request = ComputerThrowRequest(3, 501, 6, "T20", 65.42d, false)
-			val json: JsValue = Json.toJson(request)(ComputerThrowRequestsFormat)
+    "be write to JSON" in {
+      val request = ComputerThrowRequest(3, 501, 6, "T20", 65.42d, false)
+      val json: JsValue = Json.toJson(request)(ComputerThrowRequestsFormat)
 
-			(json \ "comKey").as[Int] === 3
-		}
+      (json \ "comKey").as[Int] === 3
+    }
 
-		"be read from JsValue" in {
-			val json: JsValue = JsObject(Seq(
-				"comKey" -> JsNumber(3),
-				"left" -> JsNumber(501),
-				"lvl" -> JsNumber(6),
-				"type" -> JsString("T20"),
-				"opponent" -> JsNumber(35.45),
-				"decisive" -> JsBoolean(false)
-				))
-			val request = Json.fromJson(json)(ComputerThrowRequestsFormat)
+    "be read from JsValue" in {
+      val json: JsValue = JsObject(Seq(
+        "comKey" -> JsNumber(3),
+        "left" -> JsNumber(501),
+        "lvl" -> JsNumber(6),
+        "type" -> JsString("T20"),
+        "opponent" -> JsNumber(35.45),
+        "decisive" -> JsBoolean(false)
+      ))
+      val request = Json.fromJson(json)(ComputerThrowRequestsFormat)
 
-			request.get.comKey === 3
-		}
+      request.get.comKey === 3
+    }
 
-		"be read from JSON" in {
-			val json = """ {
+    "be read from JSON" in {
+      val json = """ {
 				"comKey": 19,
 				"left": 501,
 				"lvl": 6, 
@@ -53,10 +53,10 @@ class PlayerRequestTest extends Specification {
 				"opponent": 7.35,
 				"decisive": false
 			} """
-			val value = Json.parse(json)
-			val request = Json.fromJson(value)(ComputerThrowRequestsFormat)
-			request.get.comKey === 19
-		}
-	}
+      val value = Json.parse(json)
+      val request = Json.fromJson(value)(ComputerThrowRequestsFormat)
+      request.get.comKey === 19
+    }
+  }
 
 }

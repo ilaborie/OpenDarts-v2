@@ -14,6 +14,7 @@
    limitations under the License.
 */
 package test
+
 import org.specs2.mutable._
 import dart._
 import dart.Dart._
@@ -23,30 +24,30 @@ import test.x01._
 
 class AiX01Test extends Specification {
 
-	"Level 10" should {
-		"hit 80% in T20" in {
-			val level = Level(10)
-			// Play darts
-			val stream = PlayX01.playScoreStream(T20, level)
-			val darts = stream take 100
+  "Level 10" should {
+    "hit 80% in T20" in {
+      val level = Level(10)
+      // Play darts
+      val stream = PlayX01.playScoreStream(T20, level)
+      val darts = stream take 100
 
-			// Take 20s
-			val nb20 = darts.count((wd: WishedDone) => (wd._2.sector.value == 20))
+      // Take 20s
+      val nb20 = darts.count((wd: WishedDone) => (wd._2.sector.value == 20))
 
-			// Test
-			nb20 must be_>=(80)
-		}
-		"hit 60% in Bull" in {
-			val level = Level(10)
-			// Play darts
-			val stream = PlayX01.playScoreStream(DoubleBull, level)
-			val darts = stream take 100
+      // Test
+      nb20 must be_>=(80)
+    }
+    "hit 60% in Bull" in {
+      val level = Level(10)
+      // Play darts
+      val stream = PlayX01.playScoreStream(DoubleBull, level)
+      val darts = stream take 100
 
-			// Take 20s
-			val nbBull = darts.count((wd: WishedDone) => (wd._2.sector == Bull))
+      // Take 20s
+      val nbBull = darts.count((wd: WishedDone) => (wd._2.sector == Bull))
 
-			// Test
-			nbBull must be_>=(60)
-		}
-	}
+      // Test
+      nbBull must be_>=(60)
+    }
+  }
 }
