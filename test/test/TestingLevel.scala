@@ -2,15 +2,28 @@ package test
 
 import org.specs2.mutable._
 import ai._
+import ai.x01.AiPlayerX01._
 import test.x01.PlayX01
+import dart.Dart._
+import dart.Dart
 
 class TestingLevel extends Specification {
   val nbLegs = 100000
+  val nbDarts = 1000000
 
+  /**
+   * Test ai average on 501
+   * @param level the ai level
+   * @param expected the expected average
+   * @param diff the dif
+   * @return
+   */
   def testDiff(level: Int, expected: Double, diff: Double) = {
     val lvl = Level(level)
     /* Launch */
     val result = PlayX01.test501(nbLegs, lvl)
+
+    print(buildLevelTable())
 
     print(level)
     print(":  ")
@@ -20,6 +33,29 @@ class TestingLevel extends Specification {
   }
 
   def test(level: Int, expected: Double) = testDiff(level, expected, 0.2)
+
+  def buildLevelTable() = {
+    def avgDart(level: Level, dart: Dart) = {
+      val stream: Stream[WishedDone] = PlayX01.playScoreStream(dart, level)
+      val darts = stream take nbDarts
+      ((0.0 /: darts)(_ + _._2.score) / nbDarts)
+    }
+    def buildLevelRow(level: Level): String = {
+      val lvl = level.value
+
+      val avgLegT20 = PlayX01.test501(nbLegs, level).avg
+      val avgDartT20 = avgDart(level, T20) * 3
+
+      val avgLegT19 = PlayX01.test501(nbLegs, level, T19).avg
+      val avgDartT19 = avgDart(level, T19) * 3
+
+      f"<tr><td>$lvl</td><td>$avgDartT20%.2f</td><td>$avgDartT19%.2f</td><td>$avgLegT20%.1f</td><td>$avgLegT19%.1f</td></tr>"
+    }
+
+    val s = for (lvl <- 0 to 15) yield buildLevelRow(Level(lvl))
+
+    s.mkString("\n") + "\n"
+  }
 
   "Level 0" should {
     "play around 52 darts" in testDiff(0, 52, 2)
