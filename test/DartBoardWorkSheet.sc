@@ -13,22 +13,23 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
 import dart._
 import dart.Dart._
 
 object DartBoardWorkSheet {
-	println("Welcome to the Scala worksheet")
-	T20
+  println("Welcome to the Scala worksheet")
+  T20
 
-	DartBoard.getDartPosition(D6)
-	DartBoard.getDartPosition(T10)
+  DartBoard.getDartPosition(D6)
+  DartBoard.getDartPosition(T10)
 
-	val pos = (101.0, -3.0)
+  val pos = (101.0, -3.0)
 
-	DartBoard.getDart(pos)
+  DartBoard.getDart(pos)
 
-	DartBoard.sectorAngleList
+  DartBoard.sectorAngleList
 
-	DartBoard.getSector(pos)
+  DartBoard.getSector(pos)
 
 }

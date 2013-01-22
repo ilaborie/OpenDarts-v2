@@ -11,6 +11,8 @@ class TestingLevel extends Specification {
   val nbLegs = 100000
   val nbDarts = 1000000
 
+  print(buildLevelTable())
+
   /**
    * Test ai average on 501
    * @param level the ai level
@@ -22,9 +24,6 @@ class TestingLevel extends Specification {
     val lvl = Level(level)
     /* Launch */
     val result = PlayX01.test501(nbLegs, lvl)
-
-    print(buildLevelTable())
-
     print(level)
     print(":  ")
     println(result)
@@ -49,7 +48,7 @@ class TestingLevel extends Specification {
       val avgLegT19 = PlayX01.test501(nbLegs, level, T19).avg
       val avgDartT19 = avgDart(level, T19) * 3
 
-      f"<tr><td>$lvl</td><td>$avgDartT20%.2f</td><td>$avgDartT19%.2f</td><td>$avgLegT20%.1f</td><td>$avgLegT19%.1f</td></tr>"
+      f"<tr><td>$lvl</td> <td>$avgDartT20%.2f</td> <td>$avgDartT19%.2f</td> <td>$avgLegT20%.1f</td> <td>$avgLegT19%.1f</td> </tr>"
     }
 
     val s = for (lvl <- 0 to 15) yield buildLevelRow(Level(lvl))

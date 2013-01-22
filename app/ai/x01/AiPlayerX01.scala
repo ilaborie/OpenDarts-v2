@@ -67,7 +67,7 @@ object AiPlayerX01 {
         val (wished, dart) = playDart(score, dartLeft, request)
         val newStatus = checkStatus(score, dart)
         val scoreLeft = newStatus match {
-          case Win => 0
+          case Win => score
           case Broken => score
           case Normal => score - dart.score
         }
@@ -107,6 +107,7 @@ object AiPlayerX01 {
    * @return all defined finish
    */
   def getFinish(score: Int): List[Finish] = {
+    log.debug(f"Get Finish: $score")
     val defaultDart = Dart.T20
     val res = for {
       (dart1, modifiers1) <- bestDartChooser(3).getBestDart(score, defaultDart).allDarts
@@ -114,6 +115,8 @@ object AiPlayerX01 {
       (dart3, modifiers3) <- bestDartChooser(1).getBestDart(score - dart1.score - dart2.score, defaultDart).allDarts
       if score == (dart1.score + dart2.score + dart3.score)
     } yield Finish(dart1, dart2, dart3, (modifiers1 ++ modifiers2 ++ modifiers3))
+
+    log.debug(f"... $res")
     res.toList
   }
 

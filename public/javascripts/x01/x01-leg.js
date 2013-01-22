@@ -571,6 +571,9 @@ function LegX01(parentSet) {
 
     // Player Finish Helper
     this.getPlayerFinishHelper = function (player) {
+        if (player.com) {
+            return "";
+        }
         return tmpl("LegFinishHelperPlayer", {
             leg: this,
             player: player

@@ -109,7 +109,7 @@ object BestDartTwoLeft extends BestDart {
     // 1x
     19 -> S3,
     15 -> (S7 butSometime S11),
-    14 -> S7,
+    14 -> D7,
     13 -> S5,
 
     // 0x
