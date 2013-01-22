@@ -13,21 +13,20 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-import dart._
+
 import dart.Dart._
 import ai._
-import ai.x01._
 import test.x01._
 
 object TestingAi {
 
-	//val nbLegs = 100000
-	val nbLegs = 100
+  //val nbLegs = 100000
+  val nbLegs = 100
 
-	val stream = PlayX01.playScoreStream(T20, Level(6))
-	val lst = stream take 10
+  val stream = PlayX01.playScoreStream(T20, Level(6))
+  val lst = stream take 10
 
-	val map = for (lvl <- 0 to 15) yield (lvl, PlayX01.test501(nbLegs, Level(lvl)))
+  val map = for (lvl <- 0 to 15) yield (lvl, PlayX01.test501(nbLegs, Level(lvl)))
 
-	print(map.mkString("===\n", "\n", "\n==="))
+  print(map.mkString("===\n", "\n", "\n==="))
 }

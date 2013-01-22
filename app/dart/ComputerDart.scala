@@ -21,49 +21,49 @@ import ai.Level
 
 object ComputerDart {
 
-	/**
-	 * Unlucky stats (1 on value)
-	 */
-	private val unLuckyBull = 50
-	private val unLuckyOthers = 100
+  /**
+   * Unlucky stats (1 on value)
+   */
+  private val unLuckyBull = 50
+  private val unLuckyOthers = 100
 
-	/**
-	 * It's easier to keep the x than the y
-	 */
-	private val xCorrect = 0.75
-	private val yCorrect = 1.25
+  /**
+   * It's easier to keep the x than the y
+   */
+  private val xCorrect = 0.75
+  private val yCorrect = 1.25
 
-	/**
-	 * Let's throw the dart
-	 */
-	def throwDart(level: Level, expected: Dart): Dart = {
-		// UnLucky factor 
-		val unluckyFactor = expected match {
-			case DoubleBull => unLuckyBull
-			case SemiBull => unLuckyBull
-			case _ => unLuckyOthers
-		}
+  /**
+   * Let's throw the dart
+   */
+  def throwDart(level: Level, expected: Dart): Dart = {
+    // UnLucky factor
+    val unluckyFactor = expected match {
+      case DoubleBull => unLuckyBull
+      case SemiBull => unLuckyBull
+      case _ => unLuckyOthers
+    }
 
-		// Test unLucky
-		if (nextInt(unluckyFactor) == 0) UnluckyDart
-		else {
-			val coeff = level.coefficient
-			val expectedPosition = DartBoard.getDartPosition(expected)
+    // Test unLucky
+    if (nextInt(unluckyFactor) == 0) UnluckyDart
+    else {
+      val coeff = level.coefficient
+      val expectedPosition = DartBoard.getDartPosition(expected)
 
       // Throw on x and y
-			val x = randomPosition(expectedPosition._1, coeff * xCorrect)
-			val y = randomPosition(expectedPosition._2, coeff * yCorrect)
+      val x = randomPosition(expectedPosition._1, coeff * xCorrect)
+      val y = randomPosition(expectedPosition._2, coeff * yCorrect)
 
-			DartBoard.getDart(x, y)
-		}
-	}
+      DartBoard.getDart(x, y)
+    }
+  }
 
-	/**
-	 * Get a position (x or y)
-	 * @param expected the expected position
-	 * @param coeff the random coefficient
-	 * @return the random position
-	 */
-	private def randomPosition(expected: Double, coeff: Double): Double = expected + (nextGaussian * coeff)
+  /**
+   * Get a position (x or y)
+   * @param expected the expected position
+   * @param coeff the random coefficient
+   * @return the random position
+   */
+  private def randomPosition(expected: Double, coeff: Double): Double = expected + (nextGaussian * coeff)
 
 }
