@@ -42,8 +42,8 @@ object AiPlayerX01 {
 
     val (status, darts) = playTurn(score, req)
     val scoreDone = status match {
-      case Win => 0
-      case Broken => score
+      case Win => score
+      case Broken => 0
       case _ => darts.foldLeft(0)((x: Int, d: WishedDone) => x + d._2.score)
     }
 
@@ -67,7 +67,7 @@ object AiPlayerX01 {
         val (wished, dart) = playDart(score, dartLeft, request)
         val newStatus = checkStatus(score, dart)
         val scoreLeft = newStatus match {
-          case Win => score
+          case Win => 0
           case Broken => score
           case Normal => score - dart.score
         }

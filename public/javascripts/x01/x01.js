@@ -139,7 +139,6 @@ var processFinish = function (nbDart, entry, callback) {
     }
 };
 
-
 // Show new X01
 var showNewX01 = function (event) {
     if (x01.currentGame) {
@@ -168,6 +167,25 @@ var showNewX01 = function (event) {
     var $nbLeg = $("#nbLeg");
     var $nbSet = $("#nbSet");
     var $startScore = $("#startScore");
+
+    $nbLeg.keypress(function(event) {
+        if (event.which===13) {
+            launchX01(event);
+        }
+        return true;
+    });
+    $nbSet.keypress(function(event) {
+        if (event.which===13) {
+            launchX01(event);
+        }
+        return true;
+    });
+    $startScore.keypress(function(event) {
+        if (event.which===13) {
+            launchX01(event);
+        }
+        return true;
+    });
 
     // Set Options
     $startScore.val(lastOption.score);
