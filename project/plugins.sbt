@@ -4,9 +4,6 @@ logLevel := Level.Warn
 // The Typesafe repository
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
-// The Play2war repository
-resolvers += "Play2war plugins release" at "http://repository-play-war.forge.cloudbees.com/release/"
-
 // The Sonatype OSS repository
 resolvers += "Sonatype OSS Snasphots" at "https://oss.sonatype.org/content/repositories/snapshots"
 
@@ -16,7 +13,7 @@ scalacOptions ++= Seq("-unchecked", "-deprecation")
 // Use the Play sbt plugin for Play projects
 
 // addSbtPlugin("play" % "sbt-plugin" % "2.0.4")
-addSbtPlugin("play" % "sbt-plugin" % "2.1-RC2")
+addSbtPlugin("play" % "sbt-plugin" % "2.1-RC4")
 
 // Use the Cloudbees plugin
 addSbtPlugin("com.cloudbees.deploy.play" % "sbt-cloudbees-play-plugin" % "0.5-SNAPSHOT")

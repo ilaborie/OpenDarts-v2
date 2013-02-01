@@ -148,13 +148,9 @@ x01Stats.db.getPlayerStats = function (game, set, leg, player, callback) {
     var plus100 = 0;
     var plus140 = 0;
 
-    var avgDart = 0;
-    var avg3Dart = 0;
-
     var countLeg = 0;
     var winLeg = 0;
     var bestLeg;
-    var avgLeg = 0;
 
     var bestOut;
     var totalScore = 0;
@@ -280,9 +276,9 @@ x01Stats.db.getPlayerStats = function (game, set, leg, player, callback) {
         }
     }
 
-    avgDart = (totalScore / totalDart);
-    avg3Dart = (avgDart * 3);
-    avgLeg = (countLeg / winLeg);
+    var avgDart = (totalScore / totalDart);
+    var avg3Dart = (avgDart * 3);
+    var avgLeg = (countLeg / winLeg);
 
     var gameStats = {
         count60: count60,

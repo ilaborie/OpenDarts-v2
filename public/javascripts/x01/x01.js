@@ -98,7 +98,7 @@ shortcuts[116] = 60;	// F5
 shortcuts[117] = 81;	// F6
 shortcuts[118] = 85;	// F7
 shortcuts[119] = 100;	// F8
-shortcuts[120] = function (entry, callback) { // F9
+shortcuts[120] = function (entry) { // F9
     var leg = entry.getParent();
     var player = entry.getLastPlayer();
     var left = leg.getPlayerScore(player);
@@ -168,20 +168,20 @@ var showNewX01 = function (event) {
     var $nbSet = $("#nbSet");
     var $startScore = $("#startScore");
 
-    $nbLeg.keypress(function(event) {
-        if (event.which===13) {
+    $nbLeg.keypress(function (event) {
+        if (event.which === 13) {
             launchX01(event);
         }
         return true;
     });
-    $nbSet.keypress(function(event) {
-        if (event.which===13) {
+    $nbSet.keypress(function (event) {
+        if (event.which === 13) {
             launchX01(event);
         }
         return true;
     });
-    $startScore.keypress(function(event) {
-        if (event.which===13) {
+    $startScore.keypress(function (event) {
+        if (event.which === 13) {
             launchX01(event);
         }
         return true;
@@ -199,7 +199,7 @@ var showNewX01 = function (event) {
         $nbSet.val(1);
     }
 
-    $nbLeg.on("input", function (e) {
+    $nbLeg.on("input", function () {
         var nbLeg = parseInt($("#nbLeg").val(), 10);
         if (nbLeg > 1) {
             $(".nbSet").show();
@@ -276,21 +276,21 @@ var updatePlayersTableField = function () {
             $tr.find("a.down").show();
         }
         // Bind remove
-        $tr.find("a.remove").click(function (e) {
+        $tr.find("a.remove").click(function () {
             var $row = $(this).parent().parent();
             $row.remove();
             updatePlayersTableField();
             return stopEvent(event);
         });
         // Bind up
-        $tr.find("a.up").click(function (e) {
+        $tr.find("a.up").click(function () {
             var $row = $(this).parent().parent();
             $row.prev().before($row);
             updatePlayersTableField();
             return stopEvent(event);
         });
         // Bind down
-        $tr.find("a.down").click(function (e) {
+        $tr.find("a.down").click(function () {
             var $row = $(this).parent().parent();
             $row.next().after($row);
             updatePlayersTableField();
@@ -413,7 +413,9 @@ var analyseInputX01 = function (entry, value, score, callback) {
             if ((typeof entry.nbDart === "number") && (entry.nbDart > 0)) {
                 callback("win", entry.nbDart);
             } else {
-                getNbDart(val, callback);
+                setTimeout(function() {
+                    getNbDart(val, callback);
+                },250)
             }
         } else {
             callback("normal");
@@ -487,114 +489,70 @@ var getNbDart = function (score, func) {
     var buttons = [];
 
     // Broken
-    $(document).bind("keypress.0", function () {
-        $(document).unbind("keypress.0");
-        $(document).unbind("keypress.1");
-        $(document).unbind("keypress.2");
-        $(document).unbind("keypress.3");
+    var brokenFunction = function () {
+        unbindButtons();
         bootbox.hideAll();
         setTimeout(function () {
             func("broken");
         }, 100);
-    });
+    };
+    $(document).bind("keypress.0", brokenFunction);
     buttons.push({
         label: msg.get("dia.x01.nbdart.broken"),
         "class": "btn-danger btn-broken",
-        callback: function () {
-            $(document).unbind("keypress.0");
-            $(document).unbind("keypress.1");
-            $(document).unbind("keypress.2");
-            $(document).unbind("keypress.3");
-            setTimeout(function () {
-                func("broken");
-            }, 100);
-        }
+        callback: brokenFunction
     });
 
     // do in 3 darts
-    $(document).bind("keypress.3", function () {
-        $(document).unbind("keypress.0");
-        $(document).unbind("keypress.1");
-        $(document).unbind("keypress.2");
-        $(document).unbind("keypress.3");
+    var dart3Function = function () {
+        unbindButtons();
         bootbox.hideAll();
         setTimeout(function () {
             func("win", 3);
         }, 100);
-    });
+    };
+    $(document).bind("keypress.3", dart3Function);
     buttons.push({
         label: msg.get("dia.x01.nbdart.3"),
         "class": "btn-success btn-three",
-        callback: function () {
-            $(document).unbind("keypress.0");
-            $(document).unbind("keypress.1");
-            $(document).unbind("keypress.2");
-            $(document).unbind("keypress.3");
-            setTimeout(function () {
-                func("win", 3);
-            }, 100);
-        }
+        callback: dart3Function
     });
     // do in 2 darts
     if (couldFinish(score, 2)) {
-        $(document).bind("keypress.2", function () {
-            $(document).unbind("keypress.0");
-            $(document).unbind("keypress.1");
-            $(document).unbind("keypress.2");
-            $(document).unbind("keypress.3");
+        var dart2Function = function () {
+            unbindButtons();
             bootbox.hideAll();
             setTimeout(function () {
                 func("win", 2);
             }, 100);
-        });
+        };
+        $(document).bind("keypress.2", dart2Function);
         buttons.push({
             label: msg.get("dia.x01.nbdart.2"),
             "class": "btn-success btn-two",
-            callback: function () {
-                $(document).unbind("keypress.0");
-                $(document).unbind("keypress.1");
-                $(document).unbind("keypress.2");
-                $(document).unbind("keypress.3");
-                setTimeout(function () {
-                    func("win", 2);
-                }, 100);
-            }
+            callback: dart2Function
         });
     }
     // do in 1 darts
     if (couldFinish(score, 1)) {
-        $(document).bind("keypress.1", function () {
-            $(document).unbind("keypress.0");
-            $(document).unbind("keypress.1");
-            $(document).unbind("keypress.2");
-            $(document).unbind("keypress.3");
+        var dart1Function = function () {
+            unbindButtons();
             bootbox.hideAll();
             setTimeout(function () {
                 func("win", 1);
             }, 100);
-        });
+        };
+        $(document).bind("keypress.1", dart1Function);
         buttons.push({
             label: msg.get("dia.x01.nbdart.1"),
             "class": "btn-success btn-two",
-            callback: function () {
-                $(document).unbind("keypress.0");
-                $(document).unbind("keypress.1");
-                $(document).unbind("keypress.2");
-                $(document).unbind("keypress.3");
-                setTimeout(function () {
-                    func("win", 1);
-                }, 100);
-            }
+            callback: dart1Function
         });
     }
     // Cancel
     buttons.push({
         label: msg.get("btn.cancel"),
         callback: function () {
-            $(document).unbind("keypress.0");
-            $(document).unbind("keypress.1");
-            $(document).unbind("keypress.2");
-            $(document).unbind("keypress.3");
             setTimeout(function () {
                 func();
             }, 100);
@@ -606,6 +564,12 @@ var getNbDart = function (score, func) {
         header: msg.get("dia.x01.nbdart.title"),
         headerCloseButton: ""
     });
+};
+var unbindButtons = function () {
+    $(document).unbind("keypress.0")
+        .unbind("keypress.1")
+        .unbind("keypress.2")
+        .unbind("keypress.3");
 };
 
 // Could finish
@@ -625,4 +589,4 @@ var couldFinish = function (score, nbDart) {
 
 var isSpecial = function (left) {
     return (left !== 0) && (left % 111 === 0);
-}
+};

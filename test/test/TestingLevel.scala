@@ -11,7 +11,7 @@ class TestingLevel extends Specification {
   val nbLegs = 100000
   val nbDarts = 1000000
 
-  print(buildLevelTable())
+  //print(buildLevelTable())
 
   /**
    * Test ai average on 501

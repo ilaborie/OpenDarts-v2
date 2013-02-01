@@ -137,7 +137,7 @@ function GameX01(options) {
         for (var k = 0; k < this.getSets().length; k++) {
             set = this.getSets()[k];
             // Add Set
-            $setDetail = $("<h2/>").append(set.getName());
+            $("<h2/>").append(set.getName());
 
             $setContent = $("<div/>").addClass("tab-pane").attr("id", set.uuid);
             $setContent.append($("<div/>").addClass("row-fluid")

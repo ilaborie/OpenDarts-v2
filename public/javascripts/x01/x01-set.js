@@ -98,7 +98,6 @@ function SetX01(parentGame) {
                 // Winner
                 winner = p;
                 parent.next();
-                return;
             } else if (!this.isFinished()) {
                 currentLeg.displayFinished();
             }
@@ -160,9 +159,9 @@ function SetX01(parentGame) {
         var $row;
 
         var currentValue = null;
-        var bestValue = null;
+        var bestValue;
         var $currentCell = null;
-        var $bestCells = [];
+        var $bestCells;
         var comp;
         for (var key in stats) {
             clazz = "textRight";
