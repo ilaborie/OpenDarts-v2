@@ -33,7 +33,7 @@ $(function () {
 
     // i18n
     i18n();
-    $("#switchLang a").click(function (e) {
+    $("#switchLang").find("a").click(function (e) {
         var lang = $(this).attr("href");
         switchLang(lang);
         return stopEvent(e);

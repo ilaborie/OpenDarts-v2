@@ -31,7 +31,6 @@ function EntryX01(parentLeg, index) {
     var playerPreviousLeft = {};
     var playerStatus = {}; // normal, win, broken
     var playerStatEntry = {};
-    var stats = {};
     this.nbDart = null;
     var winner = null;
     this.procesing = false;
@@ -63,7 +62,7 @@ function EntryX01(parentLeg, index) {
         if (lastPlayer === null) {
             lastPlayer = players[0]; // First player
         } else {
-            var $input = $("#" + parent.getInputPlayerId(lastPlayer))
+            var $input = $("#" + parent.getInputPlayerId(lastPlayer));
             $input.attr("disabled", "disabled").blur();
 
             // get next player
@@ -268,8 +267,7 @@ function EntryX01(parentLeg, index) {
         var $input = $("#" + parent.getInputPlayerId(lastPlayer));
 
         var entry = this;
-        var player = lastPlayer;
-        var status = analyseInputX01(this, value, left, function (status, nbDart) {
+        analyseInputX01(this, value, left, function (status, nbDart) {
             if (!status) {
                 // the user cancel the input
                 entry.procesing = false;

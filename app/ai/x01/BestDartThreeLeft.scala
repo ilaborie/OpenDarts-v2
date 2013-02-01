@@ -216,7 +216,7 @@ object BestDartThreeLeft extends BestDart {
     25 -> (S17 butSometime S9),
     24 -> D12,
     23 -> (S7 butSometime S3),
-    22 -> (S7 withoutPressureOtherwise D11),
+    22 -> (S6 withoutPressureOtherwise D11),
     21 -> (S5 butSometime S17),
     20 -> D10,
 

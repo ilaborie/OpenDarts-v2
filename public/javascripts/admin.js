@@ -51,4 +51,4 @@ var loadPlayer = function () {
                     })))
         );
     });
-}
+};

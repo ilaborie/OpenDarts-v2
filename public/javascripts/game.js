@@ -357,7 +357,7 @@ var updatePlayerList = function (prefix) {
     $.each(p, function (idx, player) {
         $dialog.find(".playerList").append(
             $("<li/>").append(
-                $("<a/>").attr("href", "#").append(player.getDisplayName()).click(function (event) {
+                $("<a/>").attr("href", "#").append(player.getDisplayName()).click(function () {
                     if ($(this).parent().hasClass("active")) {
                         $("#diaSelectedPlayer").val("");
                         $dialog.find(".btn-primary").attr("disabled", "disabled");
@@ -384,13 +384,13 @@ var selectPlayer = function (callback) {
             var prefix = $(this).val();
             updatePlayerList(prefix);
         });
-        $("#diaPlayerSelect").on("shown", function () {
+        $dialog.on("shown", function () {
             $dialog.find(".input").focus();
         });
     }
     updatePlayerList($dialog.find(".input").val());
 
-    $dialog.find(".btn-primary").unbind("click").click(function (e) {
+    $dialog.find(".btn-primary").unbind("click").click(function () {
         var playerId = $("#diaSelectedPlayer").val();
         if (playerId !== "") {
             var player = players.getPlayer(playerId);
@@ -403,14 +403,16 @@ var selectPlayer = function (callback) {
 
 // Create player Dialog
 
-$("#diaPlayerCreation").on("shown", function (event) {
+$("#diaPlayerCreation").on("shown", function () {
     $("#playerName").focus();
 });
 var diaCreatePlayerLoaded = false;
 var createPlayer = function (callback) {
+    var $isComputer = $("#isComputer");
+
     if (!diaCreatePlayerLoaded) {
         diaCreatePlayerLoaded = true;
-        $("#isComputer").toggleButtons({
+        $isComputer.toggleButtons({
             label: {
                 enabled: msg.get("btn.on"),
                 disabled: msg.get("btn.off")
@@ -427,7 +429,6 @@ var createPlayer = function (callback) {
         });
     }
     // initial state
-    var $isComputer = $("#isComputer");
     if ($isComputer.find("input").is(":checked")) {
         $(".playerComputer").show();
         $(".humanPlayer").hide();
@@ -449,11 +450,12 @@ var createPlayer = function (callback) {
 var doCreatePlayer = function (event, callback) {
     var name;
     var surname;
+    var $dialog = $("#diaPlayerCreation");
 
     var isComputer = $("#isComputer").find("input").is(":checked");
     if (isComputer) {
         name = "Ishur #" + $("#playerLevel").val();
-        surname = $("#diaPlayerCreation").find(".btnTarget .active").html();
+        surname = $dialog.find(".btnTarget .active").html();
     } else {
         name = $("#playerName").val();
         surname = $("#playerSurname").val();
@@ -464,7 +466,6 @@ var doCreatePlayer = function (event, callback) {
 
     // Create player
     var player;
-    var $dialog = $("#diaPlayerCreation");
     // Computer field
     if (isComputer) {
         player = players.getPlayerByNameSurname(name, surname);
