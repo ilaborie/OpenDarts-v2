@@ -12,8 +12,7 @@ scalacOptions ++= Seq("-unchecked", "-deprecation")
 
 // Use the Play sbt plugin for Play projects
 
-// addSbtPlugin("play" % "sbt-plugin" % "2.0.4")
-addSbtPlugin("play" % "sbt-plugin" % "2.1-RC4")
+addSbtPlugin("play" % "sbt-plugin" % "2.1.0")
 
 // Use the Cloudbees plugin
 addSbtPlugin("com.cloudbees.deploy.play" % "sbt-cloudbees-play-plugin" % "0.5-SNAPSHOT")
