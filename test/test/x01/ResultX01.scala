@@ -15,6 +15,8 @@
 */
 package test.x01
 
+import dart.Dart
+
 /**
  * The result of a leg played alone
  */
@@ -42,5 +44,37 @@ object TestResultX01 {
     val outs = results.map(_.out)
 
     TestResultX01(nbDarts.min, nbDarts.max, avg, outs.max, size)
+  }
+}
+
+/**
+ * The result for finish battle
+ */
+case class FinishResultX01(dart:Dart, avg: Double, less3Percentage: Double, less6Percentage: Double, more6Percentage: Double) {
+  override def toString: String = f"Start $dart\tavg: $avg%.2f\t≤3: $less3Percentage%.2f\t≤6: $less6Percentage%.2f\t>6: $more6Percentage"
+}
+
+object FinishResultX01 {
+
+  /**
+   * Create from a sequence of result
+   * @param results the sequence result
+   * @return the finish result
+   */
+  def apply(dart:Dart, results: Seq[ResultX01]): FinishResultX01 = {
+    val size = results.size
+
+    val nbDarts = results.map(_.nbDart)
+    val avg = ((nbDarts.foldLeft(0)(_ + _)) toDouble) / size
+
+    val less3 = results.filter(p => p.nbDart <= 3).size
+    val less6 = results.filter(p => p.nbDart > 3 && p.nbDart <= 6).size
+    val more6 = size - (less3 + less6)
+
+    val less3Percentage = (100d * less3) / size
+    val less6Percentage = (100d * less6) / size
+    val more6Percentage = (100d * more6) / size
+
+    FinishResultX01(dart, avg, less3Percentage, less6Percentage, more6Percentage)
   }
 }

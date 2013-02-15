@@ -20,6 +20,7 @@ import dart.Dart._
 import ai._
 import ai.x01._
 import ai.x01.AiPlayerX01._
+import scala.List
 
 object PlayX01 {
 
@@ -57,6 +58,50 @@ object PlayX01 {
       case Normal => {
         val left = darts.foldLeft(scoreLeft)((x: Int, d: (Dart, Dart)) => x - d._2.score)
         playAux(left, lvl, defaultDart, nbPlayed + 3)
+      }
+    }
+  }
+
+  def battle(nbLegs: Int, lvl: Level, darts: List[Dart], score: Int) {
+    println(s"Battle for the $score finish with $lvl (with $nbLegs legs):")
+    val res = for (dart <- darts) yield finishBattle(nbLegs, lvl, dart, score)
+    res map println
+  }
+
+  /**
+   * Battle for finish
+   * @param lvl the player level
+   * @param defaultDart the default first dart
+   * @param score the starting score
+   * @return the result
+   */
+  def finishBattle(nbLegs: Int, lvl: Level, defaultDart: Dart, score: Int): FinishResultX01 = {
+    val res = for (i <- 0 to nbLegs) yield finishBattleAux(lvl, defaultDart, score)
+    FinishResultX01(defaultDart, res)
+  }
+
+  private def finishBattleAux(lvl: Level, defaultDart: Dart, score: Int): ResultX01 = {
+    val request = PlayerRequest(lvl, defaultDart, Set())
+    // Throw first dart
+    val dart: Dart = ComputerDart.throwDart(lvl, defaultDart)
+
+    val newStatus = AiPlayerX01.checkStatus(score, dart)
+    val scoreLeft = newStatus match {
+      case Win => 0
+      case Broken => score
+      case Normal => score - dart.score
+    }
+
+    // Second & Third Darts
+    val (status, darts) = AiPlayerX01.playTurnAux(scoreLeft, 2, request, newStatus, List((defaultDart, dart)))
+
+    // process
+    status match {
+      case Win => ResultX01(darts.size, scoreLeft)
+      case Broken => playAux(score, lvl, defaultDart, 3)
+      case Normal => {
+        val left = darts.foldLeft(score)((x: Int, d: (Dart, Dart)) => x - d._2.score)
+        playAux(left, lvl, defaultDart, 3)
       }
     }
   }

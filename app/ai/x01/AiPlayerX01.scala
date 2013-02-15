@@ -58,7 +58,8 @@ object AiPlayerX01 {
    */
   def playTurn(score: Int, request: PlayerRequest): (Status, List[WishedDone]) = playTurnAux(score, 3, request, Normal, Nil)
 
-  private def playTurnAux(score: Int, dartLeft: Int, request: PlayerRequest, currentStatus: Status, playedDarts: List[WishedDone]): (Status, List[WishedDone]) = {
+  def playTurnAux(score: Int, dartLeft: Int, request: PlayerRequest, currentStatus: Status, playedDarts: List[WishedDone]): (Status, List[WishedDone]) = {
+    // println(s"Playing for $score")
     currentStatus match {
       case Win => (currentStatus, playedDarts)
       case Broken => (currentStatus, playedDarts)
@@ -77,7 +78,7 @@ object AiPlayerX01 {
     }
   }
 
-  private def checkStatus(score: Int, dart: Dart): Status = {
+  def checkStatus(score: Int, dart: Dart): Status = {
     val newScore = score - dart.score
     if (newScore == 0 && dart.zone == Double) Win
     else if (newScore < 2) Broken
