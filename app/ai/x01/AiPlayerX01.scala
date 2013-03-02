@@ -59,7 +59,6 @@ object AiPlayerX01 {
   def playTurn(score: Int, request: PlayerRequest): (Status, List[WishedDone]) = playTurnAux(score, 3, request, Normal, Nil)
 
   def playTurnAux(score: Int, dartLeft: Int, request: PlayerRequest, currentStatus: Status, playedDarts: List[WishedDone]): (Status, List[WishedDone]) = {
-    // println(s"Playing for $score")
     currentStatus match {
       case Win => (currentStatus, playedDarts)
       case Broken => (currentStatus, playedDarts)

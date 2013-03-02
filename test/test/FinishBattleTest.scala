@@ -28,10 +28,12 @@ import dart._
 class FinishBattleTest extends Specification {
   val nbLegs = 100000
 
-  "Testing 104" should {
-    "always have the same result" in {
-      PlayX01.battle(nbLegs, Level(7), List(T20, T18, T19, DoubleBull), 104)
 
+  "Testing Some" should {
+    "always have the same result" in {
+      val listDarts = List(T20, T19, T18, T17, T16, T15, T14, T13, T12, T11, T10, DoubleBull, SemiBull)
+      for (score <- 90 to 150)
+        PlayX01.battle(nbLegs, Level(6), listDarts, score)
       true === true
     }
   }

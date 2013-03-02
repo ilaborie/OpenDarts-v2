@@ -66,6 +66,8 @@ object PlayX01 {
     println(s"Battle for the $score finish with $lvl (with $nbLegs legs):")
     val res = for (dart <- darts) yield finishBattle(nbLegs, lvl, dart, score)
     res map println
+    // FIXME sort by best (avg & ≤3 , keep only ~10%)
+    println()
   }
 
   /**
@@ -92,16 +94,20 @@ object PlayX01 {
       case Normal => score - dart.score
     }
 
-    // Second & Third Darts
-    val (status, darts) = AiPlayerX01.playTurnAux(scoreLeft, 2, request, newStatus, List((defaultDart, dart)))
+    if (newStatus == Win) {
+      ResultX01(1, score)
+    } else {
+      // Second & Third Darts
+      val (status, darts) = AiPlayerX01.playTurnAux(scoreLeft, 2, request, newStatus, List((defaultDart, dart)))
 
-    // process
-    status match {
-      case Win => ResultX01(darts.size, scoreLeft)
-      case Broken => playAux(score, lvl, defaultDart, 3)
-      case Normal => {
-        val left = darts.foldLeft(score)((x: Int, d: (Dart, Dart)) => x - d._2.score)
-        playAux(left, lvl, defaultDart, 3)
+      // process
+      status match {
+        case Win => ResultX01(darts.size, scoreLeft)
+        case Broken => playAux(score, lvl, defaultDart, 3)
+        case Normal => {
+          val left = darts.foldLeft(score)((x: Int, d: (Dart, Dart)) => x - d._2.score)
+          playAux(left, lvl, defaultDart, 3)
+        }
       }
     }
   }

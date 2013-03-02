@@ -51,7 +51,7 @@ object TestResultX01 {
  * The result for finish battle
  */
 case class FinishResultX01(dart:Dart, avg: Double, less3Percentage: Double, less6Percentage: Double, more6Percentage: Double) {
-  override def toString: String = f"Start $dart\tavg: $avg%.2f\t≤3: $less3Percentage%.2f\t≤6: $less6Percentage%.2f\t>6: $more6Percentage"
+  override def toString: String = f"Start $dart\tavg: $avg%.2f\t≤3: $less3Percentage%.2f\t≤6: $less6Percentage%.2f\t>6: $more6Percentage%.2f"
 }
 
 object FinishResultX01 {
